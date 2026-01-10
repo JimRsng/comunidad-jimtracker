@@ -5,6 +5,8 @@ const { name } = params;
 const { data: data } = await useFetch(`/api/user/${name}`);
 const { user, loggedIn } = useUserSession();
 
+const isOwner = computed(() => loggedIn.value && user.value?.twitchLogin.toLowerCase() === name.toLowerCase());
+
 if (!data.value) {
   throw createError({ status: 404, message: "Usuario no encontrado", fatal: true });
 }
@@ -75,7 +77,7 @@ console.info(data.value);
             </div>
           </div>
         </template>
-        <div v-if="loggedIn" class="relative overflow-hidden rounded-sm border border-dashed border-accented flex items-center justify-center h-48">
+        <div v-if="isOwner" class="relative overflow-hidden rounded-sm border border-dashed border-accented flex items-center justify-center h-48">
           <UModal v-model:open="modalOpen" title="Agregar Riot Account">
             <template #body>
               <div class="flex flex-col gap-4">
