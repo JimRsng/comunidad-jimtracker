@@ -60,6 +60,16 @@ export default defineNuxtConfig({
     fallback: "dark"
   },
 
+  colorMode: {
+    preference: "dark",
+    fallback: "dark"
+  },
+
+  ui: {
+    colorMode: true,
+    fonts: false
+  },
+
   runtimeConfig: {
     riot: {
       apiKey: ""
