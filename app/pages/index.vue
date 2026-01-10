@@ -11,8 +11,8 @@ const columns: TableColumn<any>[] = [
     header: "Usuario"
   },
   {
-    accessorKey: "server",
-    header: "Servidor"
+    accessorKey: "region",
+    header: "Región"
   },
   {
     accessorKey: "elo",
@@ -40,7 +40,7 @@ const data = [
     country: "🇵🇦",
     gameName: "Hyundai",
     tagLine: "KONA",
-    server: "NA",
+    region: "NA",
     tier: "Diamond",
     division: "IV",
     lp: 50,
@@ -54,7 +54,7 @@ const data = [
     country: "🇲🇽",
     gameName: "Nuxt",
     tagLine: "vue",
-    server: "NA",
+    region: "NA",
     tier: "Gold",
     division: "IV",
     lp: 50,
@@ -73,7 +73,7 @@ const data = [
             <Icon name="simple-icons:riotgames" class="w-4 h-4 text-red-500" />
             <div class="flex items-center gap-2">
               <span class="font-semibold">{{ row.original.gameName }} #{{ row.original.tagLine }}</span>
-              <Twemoji v-if="row.original.country" :emoji="row.original.country" png size="1.5em" />
+              <Twemoji v-if="row.original.country" class="max-w-fit" :emoji="row.original.country" png size="1.5em" />
             </div>
           </div>
           <div class="flex items-center gap-1">
@@ -84,8 +84,8 @@ const data = [
           </div>
         </div>
       </template>
-      <template #server-cell="{ row }">
-        <UBadge :label="row.original.server" size="lg" variant="outline" color="neutral" />
+      <template #region-cell="{ row }">
+        <UBadge :label="row.original.region" size="lg" variant="outline" color="neutral" />
       </template>
       <template #elo-cell="{ row }">
         <div class="flex items-center gap-1">
