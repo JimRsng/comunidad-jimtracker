@@ -1,0 +1,33 @@
+import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { unixepoch } from "../utils/db";
+
+export const users = sqliteTable("users", {
+  twitchId: text().primaryKey(),
+  twitchLogin: text().notNull(),
+  twitchDisplay: text().notNull(),
+  twitchProfileImage: text(),
+  twitchCumulativeMonths: integer(),
+  twitchSubExpiration: integer(),
+  country: text(),
+  bio: text(),
+  badges: text().$type<string[]>(),
+  createdAt: integer().notNull().default(unixepoch({ mode: "ms" })),
+  updatedAt: integer().notNull().default(unixepoch({ mode: "ms" }))
+});
+
+export const riotAccounts = sqliteTable("riot_accounts", {
+  puuid: text().primaryKey(),
+  twitchId: text().notNull().references(() => users.twitchId),
+  gameName: text().notNull(),
+  tagLine: text().notNull(),
+  region: text().notNull(),
+  tier: text(),
+  division: text(),
+  lp: integer(),
+  wins: integer(),
+  losses: integer(),
+  profileIcon: integer(),
+  verified: integer({ mode: "boolean" }).notNull().default(false),
+  createdAt: integer().notNull().default(unixepoch({ mode: "ms" })),
+  updatedAt: integer().notNull().default(unixepoch({ mode: "ms" }))
+});

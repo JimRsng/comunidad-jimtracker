@@ -17,7 +17,7 @@
   },
   "bugs": "https://github.com/ahmedrangel/comunidad-jimtracker/issues",
   "scripts": {
-    "build": "npm run docs:build && nuxt build",
+    "build": "nuxt build",
     "dev": "nuxt dev --port=5173 --public",
     "generate": "nuxt generate",
     "preview": "wrangler d1 migrations apply DB --local && wrangler dev",
@@ -38,6 +38,7 @@
     "@nuxt/ui": "^4.3.0",
     "@nuxthub/core": "^0.10.4",
     "@nuxtjs/sitemap": "^7.5.2",
+    "@types/node": "^25.0.5",
     "drizzle-kit": "^0.31.8",
     "drizzle-orm": "^0.45.1",
     "eslint": "^9.39.2",
