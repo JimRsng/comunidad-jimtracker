@@ -71,7 +71,10 @@ const updateProfile = async () => {
   const response = await $fetch(`/api/user/${userInfo.value.twitchId}/update`, {
     method: "POST",
     body: {
-      riotAccounts: riotAccounts.value
+      riotAccounts: riotAccounts.value.map(account => ({
+        puuid: account.puuid,
+        region: account.region
+      }))
     }
   }).catch(() => null);
   updateLoading.value = false;
