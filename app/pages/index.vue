@@ -45,7 +45,7 @@ const accounts = data.value?.sort((a, b) => b.eloValue - a.eloValue) || [];
             <Icon name="simple-icons:riotgames" class="w-4 h-4 text-red-500" />
             <div class="flex items-center gap-2">
               <span class="font-semibold">{{ row.original.gameName }} #{{ row.original.tagLine }}</span>
-              <Twemoji v-if="row.original.country" class="max-w-fit" :emoji="row.original.country" png size="1.5em" />
+              <Twemoji v-if="row.original.user.country" class="max-w-fit" :emoji="row.original.user.country" png size="1.5em" />
             </div>
           </div>
           <div class="flex items-center gap-1">
