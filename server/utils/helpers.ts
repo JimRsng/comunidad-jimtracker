@@ -16,12 +16,13 @@ export const LEAGUE_TIERS = [
 const divisionValues = { IV: 0, III: 100, II: 200, I: 300 };
 
 export const eloToValue = (tier: string, division: string, lp: number): number => {
-  const tierIndex = LEAGUE_TIERS.findIndex(t => t.id.toLowerCase() === tier.toLowerCase());
+  tier = tier.toLowerCase();
+  const tierIndex = LEAGUE_TIERS.findIndex(t => t.id.toLowerCase() === tier);
   if (tierIndex === -1) return 0;
 
   const baseValue = tierIndex * 400; // 400 puntos por tier
 
-  if (tier.toLowerCase() === "master" || tier.toLowerCase() === "grandmaster" || tier.toLowerCase() === "challenger") {
+  if (tier === "master" || tier === "grandmaster" || tier === "challenger") {
     return baseValue + lp;
   }
 
