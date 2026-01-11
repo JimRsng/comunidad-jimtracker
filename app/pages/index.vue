@@ -32,41 +32,13 @@ const columns: TableColumn<any>[] = [
   }
 ];
 
-const data = [
-  {
-    rank: 1,
-    twitchLogin: "ahmed_r",
-    twitchDisplay: "Ahmed_R",
-    country: "🇵🇦",
-    gameName: "Hyundai",
-    tagLine: "KONA",
-    region: "NA",
-    tier: "Diamond",
-    division: "IV",
-    lp: 50,
-    wins: 100,
-    losses: 80
-  },
-  {
-    rank: 2,
-    twitchLogin: "yizack",
-    twitchDisplay: "Yizack",
-    country: "🇲🇽",
-    gameName: "Nuxt",
-    tagLine: "vue",
-    region: "NA",
-    tier: "Gold",
-    division: "IV",
-    lp: 50,
-    wins: 100,
-    losses: 80
-  }
-];
+const { data } = await useFetch("/api/riotAccounts");
+const accounts = data.value?.sort((a, b) => b.eloValue - a.eloValue) || [];
 </script>
 
 <template>
   <main>
-    <UTable :data="data" :columns="columns" class="flex-1" :ui="{ td: 'p-2 text-highlighted text-base' }">
+    <UTable :data="accounts" :columns="columns" class="flex-1" :ui="{ td: 'p-2 text-highlighted text-base' }">
       <template #user-cell="{ row }">
         <div class="flex flex-col items-start gap-0.5">
           <div class="flex items-center gap-1">
@@ -78,19 +50,19 @@ const data = [
           </div>
           <div class="flex items-center gap-1">
             <Icon name="simple-icons:twitch" class="w-4 h-4 text-violet-500" />
-            <NuxtLink :to="`/u/${row.original.twitchLogin}`" class="hover:underline">
-              <span class="text-xs text-neutral-400">{{ row.original.twitchDisplay }}</span>
+            <NuxtLink :to="`/u/${row.original.user.twitchLogin}`" class="hover:underline">
+              <span class="text-xs text-neutral-400 font-semibold">{{ row.original.user.twitchDisplay }}</span>
             </NuxtLink>
           </div>
         </div>
       </template>
       <template #region-cell="{ row }">
-        <UBadge :label="row.original.region" size="lg" variant="outline" color="neutral" />
+        <UBadge :label="getRegionLabel(row.original.region)" size="lg" variant="outline" color="neutral" />
       </template>
       <template #elo-cell="{ row }">
         <div class="flex items-center gap-1">
           <img :src="`/images/lol/${row.original.tier?.toLowerCase() || 'unranked'}.png`" class="w-10 h-10 md:w-10 md:h-10 max-w-fit" :title="row.original.tier">
-          <span>{{ row.original.division }} · {{ row.original.lp }} LP</span>
+          <span v-if="row.original.division || row.original.lp">{{ row.original.division }} · {{ row.original.lp }} LP</span>
         </div>
       </template>
       <template #winRate-cell="{ row }">
@@ -98,7 +70,7 @@ const data = [
           {{
             row.original.wins && row.original.losses
               ? ((row.original.wins / (row.original.wins + row.original.losses)) * 100).toFixed(2) + '%'
-              : '0%'
+              : ''
           }}
         </span>
       </template>

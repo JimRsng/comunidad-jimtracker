@@ -70,10 +70,6 @@ export default defineNuxtConfig({
     riot: {
       apiKey: ""
     },
-    twitch: {
-      clientId: "",
-      clientSecret: ""
-    },
     webhook: {
       twitch: {
         secretKey: ""

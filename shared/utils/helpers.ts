@@ -6,3 +6,8 @@ export const regionMap = [
   { label: "EUNE", value: "EUN1" },
   { label: "BR", value: "BR1" }
 ];
+
+export const getRegionLabel = (value: string): string => {
+  const region = regionMap.find(r => r.value === value);
+  return region ? region.label : "Unknown";
+};

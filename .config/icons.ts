@@ -5,5 +5,7 @@ export default [
   "lucide:plus",
   "lucide:log-out",
   "lucide:x",
-  "lucide:ellipsis-vertical"
+  "lucide:ellipsis-vertical",
+  "lucide:refresh-cw",
+  "lucide:loader-circle"
 ];

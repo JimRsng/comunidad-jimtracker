@@ -39,6 +39,8 @@
     "@nuxt/ui": "^4.3.0",
     "@nuxthub/core": "^0.10.4",
     "@nuxtjs/sitemap": "^7.5.2",
+    "@twurple/api": "^8.0.2",
+    "@twurple/auth": "^8.0.2",
     "@types/node": "^25.0.5",
     "drizzle-kit": "^0.31.8",
     "drizzle-orm": "^0.45.1",

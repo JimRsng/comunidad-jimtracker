@@ -11,9 +11,12 @@ if (!data.value) {
   throw createError({ status: 404, message: "Usuario no encontrado", fatal: true });
 }
 
+const userInfo = ref(data.value?.user);
+const riotAccounts = ref(data.value?.riotAccounts || []);
 const toast = useToast();
 const modalOpen = ref(false);
-const riotAccounts = ref(data.value?.riotAccounts || []);
+const loading = ref(false);
+const updateLoading = ref(false);
 const form = reactive({
   gameName: "",
   tagLine: "",
@@ -23,6 +26,7 @@ const form = reactive({
 
 const addAccount = async () => {
   if (!loggedIn.value || !user.value) return;
+  loading.value = true;
   const response = await $fetch(`/api/user/${user.value.twitchId}/riotAccount`, {
     method: "POST",
     body: {
@@ -34,12 +38,14 @@ const addAccount = async () => {
   }).catch((err) => {
     toast.add({
       title: "Error",
-      description: err.data?.message || "Ocurrió un error al agregar la cuenta de Riot."
+      description: err.data?.message || "Ocurrió un error al agregar la cuenta de Riot.",
+      color: "error"
     });
     return null;
   });
-  if (response) {
-    riotAccounts.value = [...(riotAccounts.value || []), response];
+  loading.value = false;
+  if (response && data.value) {
+    riotAccounts.value.push(response);
     modalOpen.value = false;
     toast.add({
       title: "Éxito",
@@ -51,40 +57,65 @@ const addAccount = async () => {
 
 const removeAccount = async (puuid: string) => {
   if (!loggedIn.value || !user.value) return;
+  const confirm = window.confirm("¿Estás seguro de que deseas eliminar esta cuenta?");
+  if (!confirm) return;
   await $fetch(`/api/user/${user.value.twitchId}/riotAccount`, {
     method: "DELETE",
     query: { puuid }
   }).catch(() => null);
-  if (riotAccounts.value) {
-    riotAccounts.value = riotAccounts.value?.filter(acc => acc.puuid !== puuid) || [];
+  riotAccounts.value = riotAccounts.value.filter((acc: any) => acc.puuid !== puuid);
+};
+
+const updateProfile = async () => {
+  if (!loggedIn.value || !user.value) return;
+  updateLoading.value = true;
+  const response = await $fetch(`/api/user/${user.value.twitchId}/update`, {
+    method: "POST",
+    body: {
+      riotAccounts: riotAccounts.value
+    }
+  }).catch(() => null);
+  updateLoading.value = false;
+  if (response) {
+    userInfo.value = response.user;
+    riotAccounts.value = response.riotAccounts;
+    toast.add({
+      title: "Éxito",
+      description: "Perfil actualizado correctamente.",
+      color: "success"
+    });
   }
 };
 </script>
 
 <template>
-  <main v-if="data?.user">
+  <main v-if="userInfo">
     <div class="flex items-center gap-2 mb-2">
-      <span class="font-bold text-3xl">{{ data.user.twitchDisplay }}</span>
-      <Twemoji v-if="data.user.country" :emoji="data.user.country" png size="2em" />
+      <span class="font-bold text-3xl">{{ userInfo.twitchDisplay }}</span>
+      <Twemoji v-if="userInfo.country" :emoji="userInfo.country" png size="2em" />
     </div>
     <div class="grid sm:grid-flow-col lg:grid-rows-24 md:grid-rows-4 sm:grid-rows-4 gap-4">
       <div class="lg:row-span-24 md:row-span-4 sm:row-span-4 flex flex-col gap-1">
-        <img v-if="data.user.twitchProfileImage" :src="data.user.twitchProfileImage" alt="Avatar" class="w-full rounded-sm mx-auto">
-        <div v-if="data.user.badges" class="flex items-center gap-2 text-lg">
+        <img v-if="userInfo.twitchProfileImage" :src="userInfo.twitchProfileImage" alt="Avatar" class="w-full rounded-sm mx-auto">
+        <div v-if="userInfo.badges" class="flex items-center gap-2 text-lg">
           <!-- TODO: Badges -->
         </div>
-        <div v-if="data.user.bio" class="p-3 bg-neutral-500/10 rounded-sm border border-white/10">
-          {{ data.user.bio }}
+        <div v-if="userInfo.bio" class="p-3 bg-neutral-500/10 rounded-sm border border-white/10">
+          {{ userInfo.bio }}
         </div>
+        <UButton class="w-full py-4 flex items-center gap-2" variant="subtle" color="info" :loading="updateLoading" @click="updateProfile">
+          <Icon v-if="!updateLoading" name="lucide:refresh-cw" class="w-5 h-5" />
+          <span>{{ updateLoading ? "Actualizando..." : "Actualizar" }}</span>
+        </UButton>
       </div>
       <div class="lg:col-span-23 md:col-span-3 sm:col-span-24 grid lg:grid-cols-2 gap-4">
-        <template v-if="riotAccounts?.length">
+        <template v-if="riotAccounts.length">
           <div v-for="account in riotAccounts" :key="account.puuid" class="relative overflow-hidden rounded-sm border border-accented p-4 flex flex-col justify-center gap-2 bg-black/20">
             <div class="flex items-center justify-center gap-2 text-xl">
               <img v-if="account.profileIcon" :src="getIconURL(account.profileIcon)" class="w-10 h-10 rounded-full border border-white/10 shadow-lg shadow-black/20" :alt="`Icono de perfil de ${account.gameName}`">
               <span class="font-semibold">{{ account.gameName }}</span>
               <span class="text-neutral-400">#{{ account.tagLine }}</span>
-              <span class="text-xs bg-black/50 border border-white/10 px-2 py-1">{{ regionMap.find(r => r.value === account.region)?.label }}</span>
+              <span class="text-xs bg-black/50 border border-white/10 px-2 py-1">{{ getRegionLabel(account.region) }}</span>
             </div>
             <div class="absolute top-2 right-2 text-xs text-white rounded">
               <div class="flex items-center gap-1">
@@ -137,12 +168,12 @@ const removeAccount = async (puuid: string) => {
                     required
                   />
                   <span class="text-sm text-white">
-                    Para verificar la propiedad de la cuenta, por favor cambia tu icono al siguiente icono temporalmente y luego haz clic en "Agregar".
+                    Para verificar la propiedad de la cuenta, por favor coloca el siguiente icono temporalmente y luego haz clic en "Agregar".
                   </span>
                   <img :src="getIconURL(form.iconVerificationId)" alt="Icono de Verificación" class="w-20 h-20 rounded-full border border-white/10 shadow-lg shadow-black/20 mx-auto">
                   <div class="flex justify-end gap-2">
-                    <UButton type="submit" label="Agregar" />
-                    <UButton label="Cancelar" color="neutral" @click="modalOpen = false" />
+                    <UButton type="submit" label="Agregar" variant="subtle" :loading="loading" />
+                    <UButton label="Cancelar" color="neutral" variant="subtle" @click="modalOpen = false" />
                   </div>
                 </div>
               </UForm>
