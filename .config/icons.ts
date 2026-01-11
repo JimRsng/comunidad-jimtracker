@@ -4,5 +4,6 @@ export default [
   "lucide:chevron-down",
   "lucide:plus",
   "lucide:log-out",
-  "i-lucide:x"
+  "i-lucide:x",
+  "lucide:ellipsis-vertical"
 ];

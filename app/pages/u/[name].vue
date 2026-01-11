@@ -13,11 +13,12 @@ if (!data.value) {
 
 const toast = useToast();
 const modalOpen = ref(false);
+const riotAccounts = ref(data.value?.riotAccounts || []);
 const form = reactive({
   gameName: "",
   tagLine: "",
   region: "",
-  iconVerificationId: 0
+  iconVerificationId: getRandomIconId()
 });
 
 const addAccount = async () => {
@@ -37,7 +38,26 @@ const addAccount = async () => {
     });
     return null;
   });
-  if (response) modalOpen.value = false;
+  if (response) {
+    riotAccounts.value = [...(riotAccounts.value || []), response];
+    modalOpen.value = false;
+    toast.add({
+      title: "Éxito",
+      description: "Cuenta de Riot agregada correctamente.",
+      color: "success"
+    });
+  }
+};
+
+const removeAccount = async (puuid: string) => {
+  if (!loggedIn.value || !user.value) return;
+  await $fetch(`/api/user/${user.value.twitchId}/riotAccount`, {
+    method: "DELETE",
+    query: { puuid }
+  }).catch(() => null);
+  if (riotAccounts.value) {
+    riotAccounts.value = riotAccounts.value?.filter(acc => acc.puuid !== puuid) || [];
+  }
 };
 </script>
 
@@ -58,15 +78,28 @@ const addAccount = async () => {
         </div>
       </div>
       <div class="lg:col-span-23 md:col-span-3 sm:col-span-24 grid lg:grid-cols-2 gap-4">
-        <template v-if="data.riotAccounts?.length">
-          <div v-for="account in data.riotAccounts" :key="account.puuid" class="relative overflow-hidden rounded-sm border border-accented p-4 flex flex-col justify-center gap-2 bg-black/20">
+        <template v-if="riotAccounts?.length">
+          <div v-for="account in riotAccounts" :key="account.puuid" class="relative overflow-hidden rounded-sm border border-accented p-4 flex flex-col justify-center gap-2 bg-black/20">
             <div class="flex items-center justify-center gap-2 text-xl">
               <img v-if="account.profileIcon" :src="getIconURL(account.profileIcon)" class="w-10 h-10 rounded-full border border-white/10 shadow-lg shadow-black/20" :alt="`Icono de perfil de ${account.gameName}`">
               <span class="font-semibold">{{ account.gameName }}</span>
               <span class="text-neutral-400">#{{ account.tagLine }}</span>
+              <span class="text-xs bg-black/50 border border-white/10 px-2 py-1">{{ regionMap.find(r => r.value === account.region)?.label }}</span>
             </div>
-            <div class="absolute top-2 right-2 bg-black/50 border border-white/10 text-xs text-white rounded px-2 py-1">
-              {{ regionMap.find(r => r.value === account.region)?.label }}
+            <div class="absolute top-2 right-2 text-xs text-white rounded">
+              <div class="flex items-center gap-1">
+                <UDropdownMenu :items="[
+                  {
+                    label: 'Eliminar',
+                    onSelect() {
+                      removeAccount(account.puuid);
+                    },
+                  },
+                ]"
+                >
+                  <UButton icon="i-lucide-ellipsis-vertical" variant="ghost" color="neutral" />
+                </UDropdownMenu>
+              </div>
             </div>
             <div class="flex flex-col items-center gap-2">
               <div class="flex items-center gap-1">
@@ -85,7 +118,7 @@ const addAccount = async () => {
           </div>
         </template>
         <div v-if="isOwner" class="relative overflow-hidden rounded-sm border border-dashed border-accented flex items-center justify-center h-48">
-          <UModal v-model:open="modalOpen" title="Agregar Riot Account" @update:open="form.iconVerificationId = getRandomIconId()">
+          <UModal v-model:open="modalOpen" title="Agregar Riot Account">
             <template #body>
               <UForm @submit.prevent="addAccount">
                 <div class="flex flex-col gap-4">
