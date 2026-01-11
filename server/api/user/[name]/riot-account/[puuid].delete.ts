@@ -12,14 +12,12 @@ export default defineEventHandler(async (event) => {
     throw createError({ status: ErrorCode.FORBIDDEN, message: "No tienes permiso para realizar esta acción" });
   }
 
-  const deleteResult = await db.delete(tables.riotAccounts).where(and(
+  const result = await db.delete(tables.riotAccounts).where(and(
     eq(tables.riotAccounts.twitchId, twitchId),
     eq(tables.riotAccounts.puuid, params.puuid)
-  )).returning().get();
+  )).run();
 
-  if (!deleteResult) {
+  if (result.rowsAffected === 0) {
     throw createError({ status: ErrorCode.NOT_FOUND, message: "Cuenta de Riot no encontrada" });
   }
-
-  return deleteResult;
 });
