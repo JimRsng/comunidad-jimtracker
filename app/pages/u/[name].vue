@@ -136,7 +136,7 @@ onUnmounted(() => {
               <span class="text-neutral-400">#{{ account.tagLine }}</span>
               <span class="text-xs bg-black/50 border border-white/10 px-2 py-1">{{ getRegionLabel(account.region) }}</span>
             </div>
-            <div class="absolute top-2 right-2 text-xs text-white rounded">
+            <div v-if="isOwner" class="absolute top-2 right-2 text-xs text-white rounded">
               <div class="flex items-center gap-1">
                 <UDropdownMenu :items="[
                   {
