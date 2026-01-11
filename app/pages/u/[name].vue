@@ -7,7 +7,7 @@ const { user, loggedIn } = useUserSession();
 const isOwner = computed(() => loggedIn.value && user.value?.twitchLogin.toLowerCase() === name.toLowerCase());
 
 if (!data.value) {
-  throw createError({ status: ErrorCode.NOT_FOUND, message: "Usuario no encontrado", fatal: true });
+  throw createError({ status: ErrorCode.NOT_FOUND, message: "Usuario no encontrado" });
 }
 
 const toast = useToast();
