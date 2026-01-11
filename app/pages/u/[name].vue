@@ -111,9 +111,9 @@ onUnmounted(() => {
       <span class="font-bold text-3xl">{{ userInfo.twitchDisplay }}</span>
       <Twemoji v-if="userInfo.country" :emoji="userInfo.country" png size="2em" />
     </div>
-    <div class="grid sm:grid-flow-col lg:grid-rows-24 md:grid-rows-4 sm:grid-rows-4 gap-4">
-      <div class="lg:row-span-24 md:row-span-4 sm:row-span-4 flex flex-col gap-1">
-        <img v-if="userInfo.twitchProfileImage" :src="userInfo.twitchProfileImage" alt="Avatar" class="w-full rounded-sm mx-auto">
+    <div class="grid lg:grid-cols-5 lg:grid-rows-2 md:grid-cols-3 md:grid-rows-1 gap-4">
+      <div class="row-span-2 flex flex-col gap-1">
+        <img v-if="userInfo.twitchProfileImage" :src="userInfo.twitchProfileImage" alt="Avatar" class="w-full rounded-sm mx-auto max-w-75">
         <div v-if="userInfo.badges" class="flex items-center gap-2 text-lg">
           <!-- TODO: Badges -->
         </div>
@@ -126,7 +126,7 @@ onUnmounted(() => {
           <span v-else>Disponible en <ClientOnly>{{ secondsToAvailable }}s</ClientOnly></span>
         </UButton>
       </div>
-      <div class="lg:col-span-23 md:col-span-3 sm:col-span-24 grid lg:grid-cols-2 gap-4">
+      <div class="lg:col-span-4 md:col-span-2 grid lg:grid-cols-2 gap-4">
         <template v-if="riotAccounts.length">
           <div v-for="account in riotAccounts" :key="account.puuid" class="relative overflow-hidden rounded-sm border border-accented p-4 flex flex-col justify-center gap-2 bg-black/20">
             <div class="flex items-center justify-center gap-2 text-xl">
@@ -166,7 +166,7 @@ onUnmounted(() => {
             </div>
           </div>
         </template>
-        <div v-if="isOwner" class="relative overflow-hidden rounded-sm border border-dashed border-accented flex items-center justify-center h-48">
+        <div v-if="isOwner" class="relative overflow-hidden rounded-sm border border-dashed border-accented flex items-center justify-center h-full">
           <UModal v-model:open="modalOpen" title="Agregar Riot Account">
             <template #body>
               <UForm @submit.prevent="addAccount">
@@ -196,7 +196,8 @@ onUnmounted(() => {
                 </div>
               </UForm>
             </template>
-            <UButton variant="soft" class="w-full h-full flex items-center justify-center opacity-75" @click="modalOpen = true">
+            <UButton variant="soft" class="w-full h-full flex flex-col items-center justify-center opacity-75 p-4" @click="modalOpen = true">
+              <span>Agregar Riot Account</span>
               <Icon name="lucide:plus" class="w-8 h-8" />
             </UButton>
           </UModal>
