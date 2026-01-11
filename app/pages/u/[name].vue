@@ -66,7 +66,7 @@ const removeAccount = async (puuid: string) => {
     method: "DELETE"
   }).catch(() => {});
 
-  riotAccounts.value = riotAccounts.value.filter((acc: any) => acc.puuid !== puuid);
+  riotAccounts.value = riotAccounts.value.filter(acc => acc.puuid !== puuid);
 };
 
 const updateProfile = async () => {
