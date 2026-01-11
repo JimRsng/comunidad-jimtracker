@@ -4,8 +4,8 @@ export default defineEventHandler(async (event) => {
   const { id } = getRouterParams(event);
   const body = await readBody(event);
 
-  if (!body.gameName || !body.tagLine || !body.region) {
-    throw createError({ statusCode: 400, statusMessage: "Missing required fields" });
+  if (!body.gameName || !body.tagLine || !body.region || !body.iconVerificationId) {
+    throw createError({ statusCode: 400, message: "Campos requeridos faltantes" });
   }
 
   const { gameName, tagLine, region } = body;
@@ -15,7 +15,7 @@ export default defineEventHandler(async (event) => {
 
   const account = await riot.Account.getByRiotId(gameName, tagLine, Constants.regionToRegionGroupForAccountAPI(region)).catch(() => null);
   if (!account?.response) {
-    throw createError({ statusCode: 404, statusMessage: "Riot account not found" });
+    throw createError({ status: 404, message: "Cuenta de Riot no encontrada" });
   }
 
   const existing = await db.select().from(tables.riotAccounts).where(and(
@@ -23,10 +23,15 @@ export default defineEventHandler(async (event) => {
   )).get();
 
   if (existing) {
-    throw createError({ statusCode: 409, statusMessage: "Riot account already linked" });
+    throw createError({ status: 409, message: "Cuenta de Riot ya vinculada" });
   }
 
   const summoner = await lol.Summoner.getByPUUID(account.response.puuid, body.region);
+
+  if (summoner.response.profileIconId !== body.iconVerificationId) {
+    throw createError({ status: 400, message: "La verificación del icono falló" });
+  }
+
   const leagueData = await lol.League.byPUUID(account.response.puuid, body.region).catch(() => null);
   const soloQueue = leagueData?.response.find(entry => entry.queueType === Constants.Queues.RANKED_SOLO_5x5);
 
@@ -36,6 +41,7 @@ export default defineEventHandler(async (event) => {
     gameName: account.response.gameName,
     tagLine: account.response.tagLine,
     region: region,
+    verified: true,
     profileIcon: summoner.response.profileIconId,
     tier: soloQueue?.tier || null,
     division: soloQueue?.rank || null,

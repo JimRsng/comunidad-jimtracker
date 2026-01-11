@@ -11,11 +11,13 @@ if (!data.value) {
   throw createError({ status: 404, message: "Usuario no encontrado", fatal: true });
 }
 
+const toast = useToast();
 const modalOpen = ref(false);
 const form = reactive({
   gameName: "",
   tagLine: "",
-  region: ""
+  region: "",
+  iconVerificationId: 0
 });
 
 const addAccount = async () => {
@@ -25,13 +27,18 @@ const addAccount = async () => {
     body: {
       gameName: form.gameName,
       tagLine: form.tagLine,
-      region: form.region
+      region: form.region,
+      iconVerificationId: form.iconVerificationId
     }
-  }).catch(() => null);
+  }).catch((err) => {
+    toast.add({
+      title: "Error",
+      description: err.data?.message || "Ocurrió un error al agregar la cuenta de Riot."
+    });
+    return null;
+  });
   if (response) modalOpen.value = false;
 };
-
-console.info(data.value);
 </script>
 
 <template>
@@ -54,7 +61,7 @@ console.info(data.value);
         <template v-if="data.riotAccounts?.length">
           <div v-for="account in data.riotAccounts" :key="account.puuid" class="relative overflow-hidden rounded-sm border border-accented p-4 flex flex-col justify-center gap-2 bg-black/20">
             <div class="flex items-center justify-center gap-2 text-xl">
-              <img :src="`https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/profile-icons/${account.profileIcon}.jpg`" class="w-10 h-10 rounded-full border border-white/10 shadow-lg shadow-black/20" :alt="`Icono de perfil de ${account.gameName}`">
+              <img v-if="account.profileIcon" :src="getIconURL(account.profileIcon)" class="w-10 h-10 rounded-full border border-white/10 shadow-lg shadow-black/20" :alt="`Icono de perfil de ${account.gameName}`">
               <span class="font-semibold">{{ account.gameName }}</span>
               <span class="text-neutral-400">#{{ account.tagLine }}</span>
             </div>
@@ -78,27 +85,34 @@ console.info(data.value);
           </div>
         </template>
         <div v-if="isOwner" class="relative overflow-hidden rounded-sm border border-dashed border-accented flex items-center justify-center h-48">
-          <UModal v-model:open="modalOpen" title="Agregar Riot Account">
+          <UModal v-model:open="modalOpen" title="Agregar Riot Account" @update:open="form.iconVerificationId = getRandomIconId()">
             <template #body>
-              <div class="flex flex-col gap-4">
-                <UFieldGroup class="w-full">
-                  <UInput v-model="form.gameName" label="gameName" placeholder="Nombre" :ui="{ root: 'w-full' }" />
-                  <UBadge color="neutral" variant="outline" label="#" />
-                  <UInput v-model="form.tagLine" label="tagLine" placeholder="Tag" :ui="{ root: 'w-full' }" />
-                </UFieldGroup>
-                <USelect
-                  v-model="form.region"
-                  label="region"
-                  class="w-full"
-                  placeholder="Región"
-                  trailing-icon="lucide:chevron-down"
-                  :items="regionMap"
-                />
-                <div class="flex justify-end gap-2">
-                  <UButton label="Agregar" @click="addAccount" />
-                  <UButton label="Cancelar" color="neutral" @click="modalOpen = false" />
+              <UForm @submit.prevent="addAccount">
+                <div class="flex flex-col gap-4">
+                  <UFieldGroup class="w-full">
+                    <UInput v-model="form.gameName" label="gameName" placeholder="Nombre" :ui="{ root: 'w-full' }" required />
+                    <UBadge color="neutral" variant="outline" label="#" />
+                    <UInput v-model="form.tagLine" label="tagLine" placeholder="Tag" :ui="{ root: 'w-full' }" required />
+                  </UFieldGroup>
+                  <USelect
+                    v-model="form.region"
+                    label="region"
+                    class="w-full"
+                    placeholder="Región"
+                    trailing-icon="lucide:chevron-down"
+                    :items="regionMap"
+                    required
+                  />
+                  <span class="text-sm text-white">
+                    Para verificar la propiedad de la cuenta, por favor cambia tu icono al siguiente icono temporalmente y luego haz clic en "Agregar".
+                  </span>
+                  <img :src="getIconURL(form.iconVerificationId)" alt="Icono de Verificación" class="w-20 h-20 rounded-full border border-white/10 shadow-lg shadow-black/20 mx-auto">
+                  <div class="flex justify-end gap-2">
+                    <UButton type="submit" label="Agregar" />
+                    <UButton label="Cancelar" color="neutral" @click="modalOpen = false" />
+                  </div>
                 </div>
-              </div>
+              </UForm>
             </template>
             <UButton variant="soft" class="w-full h-full flex items-center justify-center opacity-75" @click="modalOpen = true">
               <Icon name="lucide:plus" class="w-8 h-8" />

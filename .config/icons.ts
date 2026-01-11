@@ -3,5 +3,6 @@ export default [
   "simple-icons:twitch",
   "lucide:chevron-down",
   "lucide:plus",
-  "lucide:log-out"
+  "lucide:log-out",
+  "i-lucide:x"
 ];
