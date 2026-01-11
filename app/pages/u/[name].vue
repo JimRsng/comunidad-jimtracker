@@ -27,7 +27,7 @@ const form = reactive({
 const addAccount = async () => {
   if (!loggedIn.value || !user.value) return;
   loading.value = true;
-  const response = await $fetch(`/api/user/${name}/riotAccount`, {
+  const response = await $fetch(`/api/user/${name}/riot-account`, {
     method: "POST",
     body: {
       gameName: form.gameName,
@@ -59,7 +59,7 @@ const removeAccount = async (puuid: string) => {
   if (!loggedIn.value || !user.value) return;
   const confirm = window.confirm("¿Estás seguro de que deseas eliminar esta cuenta?");
   if (!confirm) return;
-  await $fetch(`/api/user/${name}/riotAccount`, {
+  await $fetch(`/api/user/${name}/riot-account`, {
     method: "DELETE",
     query: { puuid }
   }).catch(() => null);

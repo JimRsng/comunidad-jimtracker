@@ -32,7 +32,7 @@ const columns: TableColumn<any>[] = [
   }
 ];
 
-const { data } = await useFetch("/api/riotAccounts");
+const { data } = await useFetch("/api/riot-accounts");
 const accounts = data.value?.sort((a, b) => b.eloValue - a.eloValue) || [];
 </script>
 
