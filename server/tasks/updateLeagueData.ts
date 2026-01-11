@@ -34,7 +34,7 @@ export default defineTask({
       if (league) {
         const account = riotAccounts.find(acc => acc.puuid === league.puuid);
         if (account?.division != league.rank || account?.tier != league.tier || account?.lp != league.leaguePoints || account?.wins != league.wins || account?.losses != league.losses) {
-          toUpdatePromises.push(db.update(tables.riotAccounts).set({
+          const updateQuery = db.update(tables.riotAccounts).set({
             lp: league.leaguePoints,
             tier: league.tier,
             division: league.rank,
@@ -43,24 +43,31 @@ export default defineTask({
             updatedAt: unixepoch({ mode: "ms" })
           }).where(and(
             eq(tables.riotAccounts.puuid, league.puuid)
-          )).returning({
-            puuid: tables.riotAccounts.puuid,
-            twitchId: tables.riotAccounts.twitchId,
-            lp: tables.riotAccounts.lp,
-            tier: tables.riotAccounts.tier,
-            division: tables.riotAccounts.division,
-            wins: tables.riotAccounts.wins,
-            losses: tables.riotAccounts.losses
-          }).get());
+          ));
+
+          if (import.meta.dev) {
+            updateQuery.returning({
+              puuid: tables.riotAccounts.puuid,
+              twitchId: tables.riotAccounts.twitchId,
+              lp: tables.riotAccounts.lp,
+              tier: tables.riotAccounts.tier,
+              division: tables.riotAccounts.division,
+              wins: tables.riotAccounts.wins,
+              losses: tables.riotAccounts.losses
+            }).get();
+          }
+          else {
+            updateQuery.run();
+          }
+
+          toUpdatePromises.push(updateQuery);
         }
       }
     }
 
-    if (toUpdatePromises.length) {
-      const updatedData = await Promise.all(toUpdatePromises);
-      return { result: updatedData };
-    }
+    if (!toUpdatePromises.length) return { result: [] };
 
-    return { result: [] };
+    const updatedData = await Promise.all(toUpdatePromises);
+    return { result: updatedData };
   }
 });
