@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const { name } = useRoute("u-name").params;
 
-const { data } = await useFetch(`/api/user/${name}`);
+const { data } = await useFetch(`/api/users/${name}`);
 const { user, loggedIn } = useUserSession();
 
 const isOwner = computed(() => loggedIn.value && user.value?.twitchLogin.toLowerCase() === name.toLowerCase());
@@ -29,7 +29,7 @@ const form = useFormState({
 const addAccount = async () => {
   if (!loggedIn.value || !user.value) return;
   isLoading.value = true;
-  $fetch(`/api/user/${name}/riot-account`, {
+  $fetch(`/api/users/${name}/riot-accounts`, {
     method: "POST",
     body: {
       gameName: form.value.gameName,
@@ -62,7 +62,7 @@ const removeAccount = async (puuid: string) => {
   if (!loggedIn.value || !user.value) return;
   if (!confirm("¿Estás seguro de que deseas eliminar esta cuenta?")) return;
 
-  $fetch(`/api/user/${name}/riot-account/${puuid}`, {
+  $fetch(`/api/users/${name}/riot-accounts/${puuid}`, {
     method: "DELETE"
   }).catch(() => {});
 
@@ -71,7 +71,7 @@ const removeAccount = async (puuid: string) => {
 
 const updateProfile = async () => {
   isUpdating.value = true;
-  $fetch(`/api/user/${name}/update`, {
+  $fetch(`/api/users/${name}/update`, {
     method: "POST",
     body: {
       riotAccounts: riotAccounts.value.map(account => ({
