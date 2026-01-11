@@ -1,6 +1,5 @@
 <script setup lang="ts">
-const { params } = useRoute("u-name");
-const { name } = params;
+const { name } = useRoute("u-name").params;
 
 const { data: data } = await useFetch(`/api/user/${name}`);
 const { user, loggedIn } = useUserSession();
@@ -11,12 +10,14 @@ if (!data.value) {
   throw createError({ status: ErrorCode.NOT_FOUND, message: "Usuario no encontrado", fatal: true });
 }
 
+const toast = useToast();
+
 const userInfo = ref(data.value?.user);
 const riotAccounts = ref(data.value?.riotAccounts || []);
-const toast = useToast();
-const modalOpen = ref(false);
-const loading = ref(false);
-const updateLoading = ref(false);
+
+const isModalOpen = ref(false);
+const isLoading = ref(false);
+const isUpdating = ref(false);
 
 const form = useFormState({
   gameName: "",
@@ -27,7 +28,7 @@ const form = useFormState({
 
 const addAccount = async () => {
   if (!loggedIn.value || !user.value) return;
-  loading.value = true;
+  isLoading.value = true;
   $fetch(`/api/user/${name}/riot-account`, {
     method: "POST",
     body: {
@@ -39,7 +40,7 @@ const addAccount = async () => {
   }).then((response) => {
     if (!data.value) return;
     riotAccounts.value.push(response);
-    modalOpen.value = false;
+    isModalOpen.value = false;
     form.reset();
     toast.add({
       title: "Éxito",
@@ -53,7 +54,7 @@ const addAccount = async () => {
       color: "error"
     });
   }).finally(() => {
-    loading.value = false;
+    isLoading.value = false;
   });
 };
 
@@ -69,7 +70,7 @@ const removeAccount = async (puuid: string) => {
 };
 
 const updateProfile = async () => {
-  updateLoading.value = true;
+  isUpdating.value = true;
   $fetch(`/api/user/${name}/update`, {
     method: "POST",
     body: {
@@ -87,7 +88,7 @@ const updateProfile = async () => {
       color: "success"
     });
   }).catch(() => {}).finally(() => {
-    updateLoading.value = false;
+    isUpdating.value = false;
   });
 };
 
@@ -125,9 +126,9 @@ onUnmounted(() => {
         <div v-if="userInfo.bio" class="p-3 bg-neutral-500/10 rounded-sm border border-white/10">
           {{ userInfo.bio }}
         </div>
-        <UButton class="w-full py-4 flex items-center gap-2" variant="subtle" color="info" :loading="updateLoading" :disabled="!canUpdate || updateLoading" @click="updateProfile">
-          <Icon v-if="!updateLoading" name="lucide:refresh-cw" class="w-5 h-5" />
-          <span v-if="canUpdate">{{ updateLoading ? "Actualizando..." : "Actualizar" }}</span>
+        <UButton class="w-full py-4 flex items-center gap-2" variant="subtle" color="info" :loading="isUpdating" :disabled="!canUpdate || isUpdating" @click="updateProfile">
+          <Icon v-if="!isUpdating" name="lucide:refresh-cw" class="w-5 h-5" />
+          <span v-if="canUpdate">{{ isUpdating ? "Actualizando..." : "Actualizar" }}</span>
           <span v-else>Disponible en <ClientOnly>{{ secondsToAvailable }}s</ClientOnly></span>
         </UButton>
       </div>
@@ -172,7 +173,7 @@ onUnmounted(() => {
           </div>
         </template>
         <div v-if="isOwner" class="relative overflow-hidden rounded-sm border border-dashed border-accented flex items-center justify-center h-full">
-          <UModal v-model:open="modalOpen" title="Agregar Riot Account">
+          <UModal v-model:open="isModalOpen" title="Agregar Riot Account">
             <template #body>
               <UForm @submit.prevent="addAccount">
                 <div class="flex flex-col gap-4">
@@ -194,13 +195,13 @@ onUnmounted(() => {
                   </span>
                   <img :src="getIconURL(form.iconVerificationId)" alt="Icono de Verificación" class="w-20 h-20 rounded-full border border-white/10 shadow-lg shadow-black/20 mx-auto">
                   <div class="flex justify-end gap-2">
-                    <UButton type="submit" label="Agregar" variant="subtle" :loading="loading" />
-                    <UButton label="Cancelar" color="neutral" variant="subtle" @click="modalOpen = false" />
+                    <UButton type="submit" label="Agregar" variant="subtle" :loading="isLoading" />
+                    <UButton label="Cancelar" color="neutral" variant="subtle" @click="isModalOpen = false" />
                   </div>
                 </div>
               </UForm>
             </template>
-            <UButton variant="soft" class="w-full h-full flex flex-col items-center justify-center opacity-75 p-4" @click="modalOpen = true">
+            <UButton variant="soft" class="w-full h-full flex flex-col items-center justify-center opacity-75 p-4" @click="isModalOpen = true">
               <span>Agregar Riot Account</span>
               <Icon name="lucide:plus" class="w-8 h-8" />
             </UButton>
