@@ -1,0 +1,1 @@
+CREATE INDEX `users_twitch_login_idx` ON `users` (`twitch_login`);

@@ -1,4 +1,4 @@
-import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { index, integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 import { unixepoch } from "../utils/db";
 
 export const users = sqliteTable("users", {
@@ -13,7 +13,9 @@ export const users = sqliteTable("users", {
   badges: text().$type<string[]>(),
   createdAt: integer().notNull().default(unixepoch({ mode: "ms" })),
   updatedAt: integer().notNull().default(unixepoch({ mode: "ms" }))
-});
+}, table => [
+  index("users_twitch_login_idx").on(table.twitchLogin)
+]);
 
 export const riotAccounts = sqliteTable("riot_accounts", {
   puuid: text().primaryKey(),
