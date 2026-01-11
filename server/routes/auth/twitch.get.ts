@@ -24,6 +24,6 @@ export default defineOAuthTwitchEventHandler({
 
     await setUserSession(event, { user });
 
-    return sendRedirect(event, "/");
+    return sendRedirect(event, `/u/${user.twitchLogin}`);
   }
 });
