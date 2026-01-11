@@ -32,7 +32,11 @@ const columns: TableColumn<any>[] = [
   }
 ];
 
-const { data } = await useFetch("/api/riot-accounts");
+const { data } = await useFetch("/api/riot-accounts", {
+  key: "riot-accounts",
+  getCachedData: (key, nuxtApp) => nuxtApp.payload.data[key]
+});
+
 const accounts = data.value?.sort((a, b) => b.eloValue - a.eloValue) || [];
 </script>
 

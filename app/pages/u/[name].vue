@@ -1,7 +1,10 @@
 <script setup lang="ts">
 const { name } = useRoute("u-name").params;
 
-const { data: userInfo } = await useFetch(`/api/users/${name}`);
+const { data: userInfo } = await useFetch(`/api/users/${name}`, {
+  key: `user:${name}`,
+  getCachedData: (key, nuxtApp) => nuxtApp.payload.data[key]
+});
 
 const { user, loggedIn } = useUserSession();
 
@@ -12,7 +15,10 @@ if (!userInfo.value) {
 }
 
 const { data: riotAccounts } = await useFetch(`/api/users/${name}/riot-accounts`, {
-  default: () => [] as JimRiotAccount[]
+  key: `user:${name}:riot-accounts`,
+  default: () => [] as JimRiotAccount[],
+  getCachedData: (key, nuxtApp) => nuxtApp.payload.data[key],
+  deep: true
 });
 
 const toast = useToast();
@@ -82,6 +88,7 @@ const updateProfile = async () => {
     }
   }).then((response) => {
     userInfo.value = response.user;
+    useCachedData(`user:${name}`, () => userInfo.value);
     riotAccounts.value = response.riotAccounts;
     toast.add({
       title: "Éxito",
@@ -101,6 +108,11 @@ const lastUpdate = computed(() => userInfo.value?.updatedAt ? new Date(userInfo.
 const secondsSinceUpdate = computed(() => Math.floor((now.value - lastUpdate.value) / 1000));
 const canUpdate = computed(() => secondsSinceUpdate.value >= updateCooldown);
 const secondsToAvailable = computed(() => Math.max(0, updateCooldown - secondsSinceUpdate.value));
+
+watch(riotAccounts, () => {
+  useCachedData(`user:${name}:riot-accounts`, () => riotAccounts.value);
+  useCachedData("riot-accounts", () => undefined); // invalidate leaderboard table cache
+}, { deep: true });
 
 onMounted(() => {
   intervalId = window.setInterval(() => {
