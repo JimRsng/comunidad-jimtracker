@@ -69,13 +69,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     riot: {
       apiKey: ""
-    },
-    webhook: {
-      twitch: {
-        secretKey: ""
-      }
-    },
-    cdnToken: ""
+    }
   },
 
   routeRules: {
@@ -104,7 +98,11 @@ export default defineNuxtConfig({
           exclude: ["/images/*"]
         }
       }
-    }
+    },
+    experimental: {
+      tasks: true
+    },
+    scheduledTasks: {}
   },
 
   hub: {
