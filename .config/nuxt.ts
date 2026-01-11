@@ -54,7 +54,7 @@ export default defineNuxtConfig({
     "~/assets/scss/app.scss"
   ],
 
-  site: { url: SITE.url },
+  site: { url: SITE.host },
 
   colorMode: {
     preference: "dark",

@@ -7,11 +7,11 @@ defineProps<{
 </script>
 
 <template>
-  <div class="w-screen h-screen flex justify-center items-center bg-neutral-400 dark:bg-neutral-950 text-lg">
-    <div class="p-5 shadow bg-neutral-100 dark:bg-neutral-800 rounded">
-      <h1>Error <span class="text-primary">{{ error.statusCode }}</span></h1>
-      <h5>{{ "error_occurred" }}: {{ error.message || error.statusMessage }}</h5>
-      <p>{{ "go_back" }}: <NuxtLink to="/" class="underline">link</NuxtLink></p>
+  <div class="flex items-center justify-center h-screen bg-default">
+    <div class="rounded-md bg-elevated p-10 shadow-lg border border-accented">
+      <h1 class="text-4xl font-bold text-primary mb-2">Error {{ error.statusCode }}</h1>
+      <h5>Ha ocurrido un error: {{ error.message || error.statusMessage || "error" }}</h5>
+      <span>Volver: <ULink to="/" class="underline">{{ SITE.domain }}</ULink></span>
     </div>
   </div>
 </template>
