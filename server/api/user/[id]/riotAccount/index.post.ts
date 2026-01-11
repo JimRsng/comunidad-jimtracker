@@ -4,7 +4,7 @@ export default defineEventHandler(async (event) => {
   const { id } = getRouterParams(event);
   const body = await readBody(event);
 
-  if (!body.gameName || !body.tagLine || !body.region || !body.iconVerificationId) {
+  if (!body.gameName || !body.tagLine || !body.region || Number.isNaN(body.iconVerificationId)) {
     throw createError({ statusCode: 400, message: "Campos requeridos faltantes" });
   }
 
