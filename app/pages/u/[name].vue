@@ -149,7 +149,7 @@ onUnmounted(() => {
         <template v-if="riotAccounts.length">
           <div v-for="account in riotAccounts" :key="account.puuid" class="relative overflow-hidden rounded-sm border border-accented p-4 flex flex-col justify-center gap-2 bg-black/20">
             <div class="flex items-center justify-center gap-2 text-xl">
-              <img v-if="account.profileIcon" :src="getIconURL(account.profileIcon)" class="w-10 h-10 rounded-full border border-white/10 shadow-lg shadow-black/20" :alt="`Icono de perfil de ${account.gameName}`">
+              <img v-if="account.profileIcon !== null" :src="getIconURL(account.profileIcon)" class="w-10 h-10 rounded-full border border-white/10 shadow-lg shadow-black/20" :alt="`Icono de perfil de ${account.gameName}`">
               <span class="font-semibold">{{ account.gameName }}</span>
               <span class="text-neutral-400">#{{ account.tagLine }}</span>
               <span class="text-xs bg-black/50 border border-white/10 px-2 py-1">{{ getRegionLabel(account.region) }}</span>
