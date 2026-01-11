@@ -11,11 +11,12 @@ export default defineEventHandler(async (event) => {
     throw createError({ status: ErrorCode.NOT_FOUND, message: "Usuario no encontrado" });
   }
 
-  const body = await readBody(event);
-
-  if (!body.gameName || !body.tagLine || !body.region || Number.isNaN(body.iconVerificationId)) {
-    throw createError({ status: ErrorCode.BAD_REQUEST, message: "Campos requeridos faltantes" });
-  }
+  const body = await readValidatedBody(event, z.object({
+    gameName: z.string(),
+    tagLine: z.string(),
+    region: z.enum(Constants.Regions),
+    iconVerificationId: z.number().min(0)
+  }).parse);
 
   const { gameName, tagLine, region } = body;
   const config = useRuntimeConfig(event);
