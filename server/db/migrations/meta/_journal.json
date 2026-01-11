@@ -15,6 +15,13 @@
       "when": 1768124672216,
       "tag": "0001_steep_butterfly",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1768164146478,
+      "tag": "0002_overjoyed_mantis",
+      "breakpoints": true
     }
   ]
 }

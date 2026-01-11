@@ -33,3 +33,12 @@ export const riotAccounts = sqliteTable("riot_accounts", {
   createdAt: integer().notNull().default(unixepoch({ mode: "ms" })),
   updatedAt: integer().notNull().default(unixepoch({ mode: "ms" }))
 });
+
+export const channelModerators = sqliteTable("channel_moderators", {
+  twitchId: text().primaryKey(),
+  accessToken: text().notNull(),
+  refreshToken: text().notNull(),
+  expiresIn: integer().notNull(),
+  createdAt: integer().notNull().default(unixepoch({ mode: "ms" })),
+  updatedAt: integer().notNull().default(unixepoch({ mode: "ms" }))
+});
