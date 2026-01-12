@@ -210,7 +210,7 @@ onUnmounted(() => {
                     required
                   />
                   <span class="text-sm text-white">
-                    Para verificar la propiedad de la cuenta, por favor coloca el siguiente icono temporalmente y luego haz clic en "Agregar".
+                    Para verificar la propiedad de la cuenta, por favor coloca el siguiente icono temporalmente en el cliente de LoL, y luego haz clic en "Agregar".
                   </span>
                   <img :src="getIconURL(form.iconVerificationId)" alt="Icono de Verificación" class="w-20 h-20 rounded-full border border-white/10 shadow-lg shadow-black/20 mx-auto">
                   <div class="flex justify-end gap-2">
