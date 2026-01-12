@@ -74,7 +74,7 @@ const accounts = data.value?.sort((a, b) => b.eloValue - a.eloValue) || [];
           </div>
         </template>
         <template #wins-losses-cell="{ row }">
-          <div class="flex flex-col items-center justify-center gap-1">
+          <div class="flex flex-col items-center justify-center gap-1 min-w-24">
             <span class="font-semibold"><span class="text-blue-400">{{ row.original.wins }}</span> V <span class="text-neutral-500">|</span> <span class="text-rose-400">{{ row.original.losses }}</span> D</span>
             <UProgress v-model="row.original.wins" :max="row.original.wins + row.original.losses" size="lg" class="max-w-30 w-full" :ui="{ base: 'bg-rose-400', indicator: 'bg-blue-400 rounded-none' }" />
           </div>
