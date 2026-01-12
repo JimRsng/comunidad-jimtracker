@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { TableColumn } from "@nuxt/ui";
-import type { TableMeta, Row } from "@tanstack/vue-table";
+import type { Row, TableMeta } from "@tanstack/vue-table";
 
 const columns: TableColumn<any>[] = [
   {
@@ -29,7 +29,6 @@ const columns: TableColumn<any>[] = [
   }
 ];
 
-
 const { data } = await useFetch("/api/riot-accounts", {
   key: "riot-accounts",
   getCachedData: (key, nuxtApp) => nuxtApp.payload.data[key]
@@ -51,7 +50,7 @@ const meta: TableMeta<any> = {
       return "";
     }
   }
-}
+};
 </script>
 
 <template>
