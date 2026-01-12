@@ -38,7 +38,7 @@ export default defineEventHandler(async (event) => {
 
   const summoner = await lol.Summoner.getByPUUID(account.response.puuid, body.region);
 
-  if (summoner.response.profileIconId !== body.iconVerificationId) {
+  if (summoner.response.profileIconId !== body.iconVerificationId && !import.meta.dev) {
     throw createError({ status: ErrorCode.BAD_REQUEST, message: "La verificación del icono falló" });
   }
 
