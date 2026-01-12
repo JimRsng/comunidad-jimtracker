@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { TableColumn } from "@nuxt/ui";
+import type { TableMeta, Row } from "@tanstack/vue-table";
 
 const columns: TableColumn<any>[] = [
   {
@@ -28,18 +29,35 @@ const columns: TableColumn<any>[] = [
   }
 ];
 
+
 const { data } = await useFetch("/api/riot-accounts", {
   key: "riot-accounts",
   getCachedData: (key, nuxtApp) => nuxtApp.payload.data[key]
 });
 
+const { user } = useUserSession();
+
 const accounts = data.value?.sort((a, b) => b.eloValue - a.eloValue) || [];
+
+const meta: TableMeta<any> = {
+  class: {
+    tr: (row: Row<any>) => {
+      if (row.original.user.twitchId === user.value?.twitchId) {
+        return "bg-green-200/10";
+      }
+      if (row.original.user.twitchId === SITE.twitchId) {
+        return "bg-white/7";
+      }
+      return "";
+    }
+  }
+}
 </script>
 
 <template>
   <main class="flex justify-center items-center w-full">
     <div class="max-w-300 w-full bg-white/5 rounded-sm shadow">
-      <UTable :data="accounts" :columns="columns" class="flex-1" :ui="{ td: 'p-2 text-highlighted text-base', th: 'text-center' }">
+      <UTable :data="accounts" :columns="columns" :meta="meta" class="flex-1" :ui="{ td: 'p-2 text-highlighted text-base', th: 'text-center' }">
         <template #rank-cell="{ row }">
           <div class="flex items-center justify-center font-semibold">
             {{ row.original.rank }}
