@@ -11,6 +11,7 @@ const { user } = useUserSession();
 
 const accounts = ref(data.value?.toSorted((a, b) => b.eloValue - a.eloValue) || []);
 const UButton = resolveComponent("UButton");
+const USelect = resolveComponent("USelect");
 
 const setSortIcon = (isSorted?: false | SortDirection) => {
   return isSorted ? isSorted === "asc" ? "i-lucide-chevron-up" : "i-lucide-chevron-down" : "lucide:list-chevrons-up-down";
@@ -62,7 +63,18 @@ const columns: TableColumn<any>[] = [
   },
   {
     accessorKey: "region",
-    header: "Región"
+    header: () => {
+      return h(USelect, {
+        "modelValue": preferences.value.region,
+        "onUpdate:modelValue": (value: string) => {
+          preferences.value.region = value;
+        },
+        "color": "neutral",
+        "variant": "subtle",
+        "class": "min-w-24",
+        "items": [{ label: "Región", value: "ALL" }, ...regionMap]
+      });
+    }
   },
   {
     accessorKey: "elo",
@@ -147,7 +159,8 @@ const meta: TableMeta<any> = {
 };
 
 const preferences = ref({
-  hideUnrankeds: false
+  hideUnrankeds: false,
+  region: "ALL"
 });
 
 watch(preferences, () => {
@@ -157,17 +170,30 @@ watch(preferences, () => {
   else {
     localStorage.setItem("pref-hide-unrankeds", "false");
   }
+  if (preferences.value.region) {
+    localStorage.setItem("pref-region", preferences.value.region);
+  }
 }, { deep: true });
 
 onMounted(() => {
   const hideUnrankeds = localStorage.getItem("pref-hide-unrankeds");
-  if (hideUnrankeds === "true") {
-    preferences.value.hideUnrankeds = true;
+  preferences.value.hideUnrankeds = hideUnrankeds === "true";
+  const region = localStorage.getItem("pref-region");
+  if (region) {
+    preferences.value.region = region;
   }
 });
 
 const computedAccounts = computed(() => {
-  return preferences.value.hideUnrankeds ? accounts.value.filter(account => account.tier && account.tier.toLowerCase() !== "unranked") : accounts.value;
+  return accounts.value.filter((account) => {
+    if (preferences.value.hideUnrankeds && !account.tier) {
+      return false;
+    }
+    if (preferences.value.region !== "ALL" && account.region !== preferences.value.region) {
+      return false;
+    }
+    return true;
+  });
 });
 </script>
 
