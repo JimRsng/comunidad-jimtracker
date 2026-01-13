@@ -28,13 +28,13 @@ watch(loggedIn, (value) => {
       <slot />
       <footer class="flex flex-col items-center justify-center text-sm text-slate-300 pt-5 gap-4">
         <span>
-          <NuxtLink href="https://github.com/ahmedrangel/comunidad-jimtracker" target="_blank" external class="text-blue-300 font-semibold hover:underline">Creado</NuxtLink>
+          <NuxtLink href="https://github.com/ahmedrangel/comunidad-jimtracker" target="_blank" class="text-blue-300 font-semibold hover:underline">Creado</NuxtLink>
           con ❤️ por
-          <NuxtLink href="https://github.com/ahmedrangel" target="_blank" external class="text-emerald-300 font-semibold hover:underline">Ahmed</NuxtLink>
+          <NuxtLink href="https://github.com/ahmedrangel" target="_blank" class="text-emerald-300 font-semibold hover:underline">Ahmed</NuxtLink>
           y
-          <NuxtLink href="https://github.com/yizack" target="_blank" external class="text-yellow-300 font-semibold hover:underline">Yizack</NuxtLink>
+          <NuxtLink href="https://github.com/yizack" target="_blank" class="text-yellow-300 font-semibold hover:underline">Yizack</NuxtLink>
         </span>
-        <NuxtLink href="https://github.com/ahmedrangel/comunidad-jimtracker" target="_blank" external class="hover:text-white">
+        <NuxtLink href="https://github.com/ahmedrangel/comunidad-jimtracker" target="_blank" class="hover:text-white">
           <Icon name="simple-icons:github" class="w-8 h-8" />
         </NuxtLink>
       </footer>
