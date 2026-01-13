@@ -1,8 +1,9 @@
 import { eloToValue } from "../utils/helpers";
+import { eq } from "drizzle-orm";
 
 export default defineEventHandler(async () => {
-  // obtener solo los campos necesarios para la tabla
-  const riotAccounts = await db.select({
+  const riotAccountsWithUsers = await db.select({
+    // Campos de riot accounts
     twitchId: tables.riotAccounts.twitchId,
     gameName: tables.riotAccounts.gameName,
     tagLine: tables.riotAccounts.tagLine,
@@ -11,25 +12,26 @@ export default defineEventHandler(async () => {
     division: tables.riotAccounts.division,
     lp: tables.riotAccounts.lp,
     wins: tables.riotAccounts.wins,
-    losses: tables.riotAccounts.losses
-  }).from(tables.riotAccounts).all();
-
-  const users = await db.select({
-    twitchId: tables.users.twitchId,
+    losses: tables.riotAccounts.losses,
+    // Campos de usuario
     twitchLogin: tables.users.twitchLogin,
     twitchDisplay: tables.users.twitchDisplay,
     twitchProfileImage: tables.users.twitchProfileImage,
     country: tables.users.country
-  }).from(tables.users).all();
+  })
+    .from(tables.riotAccounts)
+    .leftJoin(tables.users, eq(tables.riotAccounts.twitchId, tables.users.twitchId))
+    .all();
 
-  // mapear los usuarios por su twitchId para fácil acceso
-  const userMap = new Map(users.map(user => [user.twitchId, user]));
+  return riotAccountsWithUsers.map((account) => {
+    const { twitchId, twitchLogin, twitchDisplay, twitchProfileImage, country, ...riotData } = account;
 
-  return riotAccounts.map(({ twitchId, ...account }) => ({
-    ...account,
-    eloValue: eloToValue(account.tier || "", account.division || "", account.lp || 0),
-    user: userMap.get(twitchId) || null
-  })).sort((a, b) => a.gameName.localeCompare(b.gameName)).sort((a, b) => b.eloValue - a.eloValue).map((data, index) => ({
+    return {
+      ...riotData,
+      eloValue: eloToValue(riotData.tier || "", riotData.division || "", riotData.lp || 0),
+      user: { twitchId, twitchLogin, twitchDisplay, twitchProfileImage, country }
+    };
+  }).sort((a, b) => a.gameName.localeCompare(b.gameName)).sort((a, b) => b.eloValue - a.eloValue).map((data, index) => ({
     rank: index + 1,
     ...data
   }));
