@@ -202,12 +202,8 @@ const preferences = ref({
 const searchTerm = ref("");
 
 watch(preferences, () => {
-  if (preferences.value.hideUnrankeds) {
-    localStorage.setItem("pref-hide-unrankeds", "true");
-  }
-  else {
-    localStorage.setItem("pref-hide-unrankeds", "false");
-  }
+  localStorage.setItem("pref-hide-unrankeds", String(preferences.value.hideUnrankeds));
+
   if (preferences.value.region) {
     localStorage.setItem("pref-region", preferences.value.region);
   }
