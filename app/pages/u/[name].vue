@@ -111,7 +111,7 @@ const updateProfile = async () => {
   });
 };
 
-const updateCooldown = import.meta.dev ? 10 : 120; // segundos
+const updateCooldown = import.meta.dev ? 10 : 180; // segundos
 const now = ref(Date.now());
 let intervalId: number | undefined;
 
