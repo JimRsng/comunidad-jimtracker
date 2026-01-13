@@ -1,33 +1,6 @@
 <script setup lang="ts">
 import type { TableColumn } from "@nuxt/ui";
-import type { Row, TableMeta } from "@tanstack/vue-table";
-
-const columns: TableColumn<any>[] = [
-  {
-    accessorKey: "rank",
-    header: "#"
-  },
-  {
-    accessorKey: "user",
-    header: "Usuario"
-  },
-  {
-    accessorKey: "region",
-    header: "Región"
-  },
-  {
-    accessorKey: "elo",
-    header: "Elo"
-  },
-  {
-    accessorKey: "wins-losses",
-    header: "V - D"
-  },
-  {
-    accessorKey: "winRate",
-    header: "Winrate"
-  }
-];
+import type { Row, SortDirection, TableMeta } from "@tanstack/vue-table";
 
 const { data } = await useFetch("/api/riot-accounts", {
   key: "riot-accounts",
@@ -36,13 +9,128 @@ const { data } = await useFetch("/api/riot-accounts", {
 
 const { user } = useUserSession();
 
-const accounts = data.value?.sort((a, b) => b.eloValue - a.eloValue) || [];
+const accounts = ref(data.value?.toSorted((a, b) => b.eloValue - a.eloValue) || []);
+const UButton = resolveComponent("UButton");
+
+const setSortIcon = (isSorted?: false | SortDirection) => {
+  return isSorted ? isSorted === "asc" ? "i-lucide-chevron-up" : "i-lucide-chevron-down" : "lucide:list-chevrons-up-down";
+};
+
+const calculateWinRate = (wins?: number | null, losses?: number | null): number => {
+  const totalGames = (wins || 0) + (losses || 0);
+  return totalGames === 0 ? 0 : ((wins || 0) / totalGames) * 100;
+};
+
+const columns: TableColumn<any>[] = [
+  {
+    accessorKey: "rank",
+    header: ({ column }) => {
+      const isSorted = column.getIsSorted();
+      return h(UButton, {
+        color: "neutral",
+        variant: "ghost",
+        label: "#",
+        icon: setSortIcon(isSorted),
+        onClick: () => {
+          const sort = column.getIsSorted();
+          column.toggleSorting(sort === "asc");
+        }
+      });
+    }
+  },
+  {
+    accessorKey: "user",
+    header: ({ column }) => {
+      const isSorted = column.getIsSorted();
+      return h(UButton, {
+        color: "neutral",
+        variant: "ghost",
+        label: "Cuenta",
+        icon: setSortIcon(isSorted),
+        onClick: () => {
+          const sort = column.getIsSorted();
+          column.toggleSorting(sort === "asc");
+        }
+      });
+    }
+  },
+  {
+    accessorKey: "region",
+    header: "Región"
+  },
+  {
+    accessorKey: "elo",
+    header: ({ column }) => {
+      const isSorted = column.getIsSorted();
+      return h(UButton, {
+        color: "neutral",
+        variant: "ghost",
+        label: "Elo",
+        icon: setSortIcon(isSorted),
+        onClick: () => {
+          const sort = column.getIsSorted();
+          column.toggleSorting(sort === "asc");
+          if (sort === "asc") {
+            accounts.value = data.value?.toSorted((a, b) => b.eloValue - a.eloValue) || [];
+          }
+          else {
+            accounts.value = data.value?.toSorted((a, b) => a.eloValue - b.eloValue) || [];
+          }
+        }
+      });
+    }
+  },
+  {
+    accessorKey: "wins-losses",
+    header: ({ column }) => {
+      const isSorted = column.getIsSorted();
+      return h(UButton, {
+        color: "neutral",
+        variant: "ghost",
+        label: "V - D",
+        icon: setSortIcon(isSorted),
+        onClick: () => {
+          const sort = column.getIsSorted();
+          column.toggleSorting(sort === "asc");
+          if (sort === "asc") {
+            accounts.value = data.value?.toSorted((a, b) => (a.losses || 0) - (b.losses || 0))?.toSorted((a, b) => (b.wins || 0) - (a.wins || 0)) || [];
+          }
+          else {
+            accounts.value = data.value?.toSorted((a, b) => (b.losses || 0) - (a.losses || 0))?.toSorted((a, b) => (a.wins || 0) - (b.wins || 0)) || [];
+          }
+        }
+      });
+    }
+  },
+  {
+    accessorKey: "winRate",
+    header: ({ column }) => {
+      const isSorted = column.getIsSorted();
+      return h(UButton, {
+        color: "neutral",
+        variant: "ghost",
+        label: "Winrate",
+        icon: setSortIcon(isSorted),
+        onClick: () => {
+          const sort = column.getIsSorted();
+          column.toggleSorting(sort === "asc");
+          if (sort === "asc") {
+            accounts.value = data.value?.toSorted((a, b) => calculateWinRate(b.wins, b.losses) - calculateWinRate(a.wins, a.losses)) || [];
+          }
+          else {
+            accounts.value = data.value?.toSorted((a, b) => calculateWinRate(a.wins, a.losses) - calculateWinRate(b.wins, b.losses)) || [];
+          }
+        }
+      });
+    }
+  }
+];
 
 const meta: TableMeta<any> = {
   class: {
     tr: (row: Row<any>) => {
       if (row.original.user.twitchId === user.value?.twitchId) {
-        return "bg-green-300/7";
+        return "bg-green-300/6";
       }
       if (row.original.user.twitchId === SITE.twitchId) {
         return "bg-white/7";

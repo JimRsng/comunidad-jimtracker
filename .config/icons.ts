@@ -3,6 +3,8 @@ export default [
   "simple-icons:twitch",
   "simple-icons:github",
   "lucide:chevron-down",
+  "lucide:chevron-up",
+  "lucide:list-chevrons-up-down",
   "lucide:plus",
   "lucide:log-out",
   "lucide:x",
