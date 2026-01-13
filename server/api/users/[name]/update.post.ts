@@ -37,9 +37,9 @@ export default defineEventHandler(async (event) => {
         profileIcon: summonerData.value.response.profileIconId,
         tier: soloQueue?.tier || null,
         division: soloQueue?.rank || null,
-        lp: soloQueue?.leaguePoints || null,
-        wins: soloQueue?.wins || null,
-        losses: soloQueue?.losses || null
+        lp: soloQueue?.leaguePoints ?? null,
+        wins: soloQueue?.wins ?? null,
+        losses: soloQueue?.losses ?? null
       });
     }
   }
