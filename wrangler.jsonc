@@ -27,5 +27,8 @@
       "binding": "CACHE",
       "id": "c6231afa245a45b68fb9e90b6485b991",
     }
-  ]
+  ],
+  "triggers": {
+    "crons": ["0 * * * *"]
+  }
 }

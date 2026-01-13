@@ -1,14 +1,16 @@
 import { Constants, LolApi, RiotApi } from "twisted";
 
 export default defineEventHandler(async (event) => {
+  const { user } = await requireUserSession(event);
+
   const params = await getValidatedRouterParams(event, z.object({
     name: z.string()
   }).parse);
 
   const twitchId = await getTwitchIdByLogin(event, params.name);
 
-  if (!twitchId) {
-    throw createError({ status: ErrorCode.NOT_FOUND, message: "Usuario no encontrado" });
+  if (user.twitchLogin !== params.name || user.twitchId !== twitchId) {
+    throw createError({ status: ErrorCode.FORBIDDEN, message: "No tienes permiso para realizar esta acción" });
   }
 
   const body = await readValidatedBody(event, z.object({
@@ -38,7 +40,7 @@ export default defineEventHandler(async (event) => {
 
   const summoner = await lol.Summoner.getByPUUID(account.response.puuid, body.region);
 
-  if (summoner.response.profileIconId !== body.iconVerificationId) {
+  if (summoner.response.profileIconId !== body.iconVerificationId && !import.meta.dev) {
     throw createError({ status: ErrorCode.BAD_REQUEST, message: "La verificación del icono falló" });
   }
 

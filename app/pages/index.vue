@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { TableColumn } from "@nuxt/ui";
+import type { Row, TableMeta } from "@tanstack/vue-table";
 
 const columns: TableColumn<any>[] = [
   {
@@ -33,13 +34,29 @@ const { data } = await useFetch("/api/riot-accounts", {
   getCachedData: (key, nuxtApp) => nuxtApp.payload.data[key]
 });
 
+const { user } = useUserSession();
+
 const accounts = data.value?.sort((a, b) => b.eloValue - a.eloValue) || [];
+
+const meta: TableMeta<any> = {
+  class: {
+    tr: (row: Row<any>) => {
+      if (row.original.user.twitchId === user.value?.twitchId) {
+        return "bg-green-300/7";
+      }
+      if (row.original.user.twitchId === SITE.twitchId) {
+        return "bg-white/7";
+      }
+      return "";
+    }
+  }
+};
 </script>
 
 <template>
   <main class="flex justify-center items-center w-full">
     <div class="max-w-300 w-full bg-white/5 rounded-sm shadow">
-      <UTable :data="accounts" :columns="columns" class="flex-1" :ui="{ td: 'p-2 text-highlighted text-base', th: 'text-center' }">
+      <UTable :data="accounts" :columns="columns" :meta="meta" class="flex-1" :ui="{ td: 'p-2 text-highlighted text-base', th: 'text-center' }">
         <template #rank-cell="{ row }">
           <div class="flex items-center justify-center font-semibold">
             {{ row.original.rank }}
@@ -51,7 +68,7 @@ const accounts = data.value?.sort((a, b) => b.eloValue - a.eloValue) || [];
               <Icon name="simple-icons:riotgames" class="w-5 h-5 text-red-500" />
               <div class="flex items-center gap-2">
                 <NuxtLink :to="`https://op.gg/es/lol/summoners/${getRegionLabel(row.original.region)}/${row.original.gameName}-${row.original.tagLine}`" target="_blank" external class="font-semibold hover:underline">{{ row.original.gameName }} <span class="font-normal text-neutral-400">#{{ row.original.tagLine }}</span></NuxtLink>
-                <Twemoji v-if="row.original.user.country" class="max-w-fit" :emoji="row.original.user.country" png size="1.5em" />
+                <Twemoji v-if="row.original.user.country" class="max-w-fit" :emoji="row.original.user.country" png size="1.5em" :title="getCountryName(row.original.user.country)" />
               </div>
             </div>
             <div class="flex items-center gap-1">

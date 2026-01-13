@@ -133,7 +133,7 @@ onUnmounted(() => {
   <main v-if="userInfo">
     <div class="flex items-center gap-2 mb-2">
       <span class="font-bold text-3xl">{{ userInfo.twitchDisplay }}</span>
-      <Twemoji v-if="userInfo.country" :emoji="userInfo.country" png size="2em" />
+      <Twemoji v-if="userInfo.country" :emoji="userInfo.country" png size="2em" :title="getCountryName(userInfo.country)" />
       <span class="ms-auto">{{ riotAccounts.length }} / {{ maxAccounts }}</span>
     </div>
     <div class="grid lg:grid-cols-5 lg:grid-rows-2 md:grid-cols-3 md:grid-rows-1 gap-4">
@@ -210,7 +210,7 @@ onUnmounted(() => {
                     required
                   />
                   <span class="text-sm text-white">
-                    Para verificar la propiedad de la cuenta, por favor coloca el siguiente icono temporalmente y luego haz clic en "Agregar".
+                    Para verificar la propiedad de la cuenta, por favor coloca el siguiente icono temporalmente en el cliente de LoL, y luego haz clic en "Agregar".
                   </span>
                   <img :src="getIconURL(form.iconVerificationId)" alt="Icono de Verificación" class="w-20 h-20 rounded-full border border-white/10 shadow-lg shadow-black/20 mx-auto">
                   <div class="flex justify-end gap-2">
