@@ -134,6 +134,7 @@ export default defineNuxtConfig({
 
   icon: {
     mode: "svg",
+    provider: "none",
     clientBundle: { icons }
   },
 
