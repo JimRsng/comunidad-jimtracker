@@ -50,6 +50,12 @@ const columns: TableColumn<any>[] = [
         onClick: () => {
           const sort = column.getIsSorted();
           column.toggleSorting(sort === "asc");
+          if (sort === "asc") {
+            accounts.value = data.value?.toSorted((a, b) => a.gameName.localeCompare(b.gameName)) || [];
+          }
+          else {
+            accounts.value = data.value?.toSorted((a, b) => a.gameName.localeCompare(b.gameName)) || [];
+          }
         }
       });
     }
