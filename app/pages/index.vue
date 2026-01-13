@@ -39,7 +39,7 @@ const columns: TableColumn<any>[] = [
     }
   },
   {
-    accessorKey: "user",
+    accessorKey: "account",
     header: ({ column }) => {
       const isSorted = column.getIsSorted();
       return h(UButton, {
@@ -51,7 +51,7 @@ const columns: TableColumn<any>[] = [
           const sort = column.getIsSorted();
           column.toggleSorting(sort === "asc");
           if (sort === "asc") {
-            accounts.value = data.value?.toSorted((a, b) => a.gameName.localeCompare(b.gameName)) || [];
+            accounts.value = data.value?.toSorted((a, b) => b.gameName.localeCompare(a.gameName)) || [];
           }
           else {
             accounts.value = data.value?.toSorted((a, b) => a.gameName.localeCompare(b.gameName)) || [];
@@ -156,7 +156,7 @@ const meta: TableMeta<any> = {
             {{ row.original.rank }}
           </div>
         </template>
-        <template #user-cell="{ row }">
+        <template #account-cell="{ row }">
           <div class="flex flex-col items-start gap-0.5">
             <div class="flex items-center gap-1">
               <Icon name="simple-icons:riotgames" class="w-5 h-5 text-red-500" />
