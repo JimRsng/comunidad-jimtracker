@@ -1,10 +1,10 @@
 export const regionMap = [
-  { label: "LAN", value: "LA1", color: "oklch(70.7% 0.165 254.624)" },
-  { label: "LAS", value: "LA2", color: "oklch(75% 0.183 55.934)" },
-  { label: "NA", value: "NA1", color: "oklch(70.2% 0.183 293.541)" },
-  { label: "EUW", value: "EUW1", color: "oklch(76.5% 0.177 163.223)" },
-  { label: "EUNE", value: "EUN1", color: "oklch(71.8% 0.202 349.761)" },
-  { label: "BR", value: "BR1", color: "oklch(85.2% 0.199 91.936)" }
+  { label: "LAN", value: "LA1", color: "oklch(80.9% 0.105 251.813)" },
+  { label: "LAS", value: "LA2", color: "oklch(83.7% 0.128 66.29)" },
+  { label: "NA", value: "NA1", color: "oklch(81.1% 0.111 293.571)" },
+  { label: "EUW", value: "EUW1", color: "oklch(84.5% 0.143 164.978)" },
+  { label: "EUNE", value: "EUN1", color: "oklch(82.3% 0.12 346.018)" },
+  { label: "BR", value: "BR1", color: "oklch(90.5% 0.182 98.111)" }
 ];
 
 export const getRegionLabel = (value: string): string => {

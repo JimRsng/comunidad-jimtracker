@@ -81,7 +81,7 @@ const meta: TableMeta<any> = {
         </template>
         <template #region-cell="{ row }">
           <div class="flex items-center justify-center">
-            <UBadge :label="getRegionLabel(row.original.region)" size="lg" variant="outline" :ui="{ base: 'bg-default ring-none' }" :style="{ color: getRegionColor(row.original.region), borderColor: getRegionColor(row.original.region) }" />
+            <UBadge :label="getRegionLabel(row.original.region)" size="lg" variant="outline" :ui="{ base: 'bg-default ring-0' }" :style="{ color: getRegionColor(row.original.region), border: `1px solid ${getRegionColor(row.original.region)}` }" />
           </div>
         </template>
         <template #elo-cell="{ row }">
