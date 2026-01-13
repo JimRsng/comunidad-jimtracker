@@ -51,10 +51,10 @@ const columns: TableColumn<any>[] = [
           const sort = column.getIsSorted();
           column.toggleSorting(sort === "asc");
           if (sort === "asc") {
-            accounts.value = data.value?.toSorted((a, b) => b.gameName.localeCompare(a.gameName)) || [];
+            accounts.value = accounts.value?.toSorted((a, b) => b.gameName.localeCompare(a.gameName)) || [];
           }
           else {
-            accounts.value = data.value?.toSorted((a, b) => a.gameName.localeCompare(b.gameName)) || [];
+            accounts.value = accounts.value?.toSorted((a, b) => a.gameName.localeCompare(b.gameName)) || [];
           }
         }
       });
@@ -77,10 +77,10 @@ const columns: TableColumn<any>[] = [
           const sort = column.getIsSorted();
           column.toggleSorting(sort === "asc");
           if (sort === "asc") {
-            accounts.value = data.value?.toSorted((a, b) => b.eloValue - a.eloValue) || [];
+            accounts.value = accounts.value?.toSorted((a, b) => b.eloValue - a.eloValue) || [];
           }
           else {
-            accounts.value = data.value?.toSorted((a, b) => a.eloValue - b.eloValue) || [];
+            accounts.value = accounts.value?.toSorted((a, b) => a.eloValue - b.eloValue) || [];
           }
         }
       });
@@ -99,10 +99,10 @@ const columns: TableColumn<any>[] = [
           const sort = column.getIsSorted();
           column.toggleSorting(sort === "asc");
           if (sort === "asc") {
-            accounts.value = data.value?.toSorted((a, b) => (a.losses || 0) - (b.losses || 0))?.toSorted((a, b) => (b.wins || 0) - (a.wins || 0)) || [];
+            accounts.value = accounts.value?.toSorted((a, b) => (a.losses || 0) - (b.losses || 0))?.toSorted((a, b) => (b.wins || 0) - (a.wins || 0)) || [];
           }
           else {
-            accounts.value = data.value?.toSorted((a, b) => (b.losses || 0) - (a.losses || 0))?.toSorted((a, b) => (a.wins || 0) - (b.wins || 0)) || [];
+            accounts.value = accounts.value?.toSorted((a, b) => (b.losses || 0) - (a.losses || 0))?.toSorted((a, b) => (a.wins || 0) - (b.wins || 0)) || [];
           }
         }
       });
@@ -121,10 +121,10 @@ const columns: TableColumn<any>[] = [
           const sort = column.getIsSorted();
           column.toggleSorting(sort === "asc");
           if (sort === "asc") {
-            accounts.value = data.value?.toSorted((a, b) => calculateWinRate(b.wins, b.losses) - calculateWinRate(a.wins, a.losses)) || [];
+            accounts.value = accounts.value?.toSorted((a, b) => calculateWinRate(b.wins, b.losses) - calculateWinRate(a.wins, a.losses)) || [];
           }
           else {
-            accounts.value = data.value?.toSorted((a, b) => calculateWinRate(a.wins, a.losses) - calculateWinRate(b.wins, b.losses)) || [];
+            accounts.value = accounts.value?.toSorted((a, b) => calculateWinRate(a.wins, a.losses) - calculateWinRate(b.wins, b.losses)) || [];
           }
         }
       });
@@ -153,11 +153,11 @@ const preferences = ref({
 watch(preferences, () => {
   if (preferences.value.hideUnrankeds) {
     localStorage.setItem("pref-hide-unrankeds", "true");
-    accounts.value = data.value?.filter(account => account.tier && account.tier.toLowerCase() !== "unranked").toSorted((a, b) => b.eloValue - a.eloValue) || [];
+    accounts.value = accounts.value?.filter(account => account.tier && account.tier.toLowerCase() !== "unranked").toSorted((a, b) => b.eloValue - a.eloValue) || [];
   }
   else {
     localStorage.setItem("pref-hide-unrankeds", "false");
-    accounts.value = data.value || [];
+    accounts.value = accounts.value || [];
   }
 }, { deep: true });
 
