@@ -10,5 +10,6 @@ export default [
   "lucide:x",
   "lucide:ellipsis-vertical",
   "lucide:refresh-cw",
-  "lucide:loader-circle"
+  "lucide:loader-circle",
+  "lucide:search"
 ];
