@@ -33,8 +33,7 @@ const columns: TableColumn<any>[] = [
         label: "#",
         icon: setSortIcon(isSorted),
         onClick: () => {
-          const sort = column.getIsSorted();
-          column.toggleSorting(sort === "asc");
+          column.toggleSorting();
         }
       });
     }
@@ -49,13 +48,16 @@ const columns: TableColumn<any>[] = [
         label: "Cuenta",
         icon: setSortIcon(isSorted),
         onClick: () => {
+          column.toggleSorting();
           const sort = column.getIsSorted();
-          column.toggleSorting(sort === "asc");
           if (sort === "asc") {
+            accounts.value = data.value?.toSorted((a, b) => a.gameName.localeCompare(b.gameName)) || [];
+          }
+          else if (sort === "desc") {
             accounts.value = data.value?.toSorted((a, b) => b.gameName.localeCompare(a.gameName)) || [];
           }
           else {
-            accounts.value = data.value?.toSorted((a, b) => a.gameName.localeCompare(b.gameName)) || [];
+            accounts.value = data.value || [];
           }
         }
       });
@@ -86,13 +88,16 @@ const columns: TableColumn<any>[] = [
         label: "Elo",
         icon: setSortIcon(isSorted),
         onClick: () => {
+          column.toggleSorting();
           const sort = column.getIsSorted();
-          column.toggleSorting(sort === "asc");
           if (sort === "asc") {
+            accounts.value = data.value?.toSorted((a, b) => a.eloValue - b.eloValue) || [];
+          }
+          else if (sort === "desc") {
             accounts.value = data.value?.toSorted((a, b) => b.eloValue - a.eloValue) || [];
           }
           else {
-            accounts.value = data.value?.toSorted((a, b) => a.eloValue - b.eloValue) || [];
+            accounts.value = data.value || [];
           }
         }
       });
@@ -108,13 +113,16 @@ const columns: TableColumn<any>[] = [
         label: "V - D",
         icon: setSortIcon(isSorted),
         onClick: () => {
+          column.toggleSorting();
           const sort = column.getIsSorted();
-          column.toggleSorting(sort === "asc");
           if (sort === "asc") {
+            accounts.value = data.value?.toSorted((a, b) => (b.losses || 0) - (a.losses || 0))?.toSorted((a, b) => (a.wins || 0) - (b.wins || 0)) || [];
+          }
+          else if (sort === "desc") {
             accounts.value = data.value?.toSorted((a, b) => (a.losses || 0) - (b.losses || 0))?.toSorted((a, b) => (b.wins || 0) - (a.wins || 0)) || [];
           }
           else {
-            accounts.value = data.value?.toSorted((a, b) => (b.losses || 0) - (a.losses || 0))?.toSorted((a, b) => (a.wins || 0) - (b.wins || 0)) || [];
+            accounts.value = data.value || [];
           }
         }
       });
@@ -130,13 +138,16 @@ const columns: TableColumn<any>[] = [
         label: "Partidas",
         icon: setSortIcon(isSorted),
         onClick: () => {
+          column.toggleSorting();
           const sort = column.getIsSorted();
-          column.toggleSorting(sort === "asc");
           if (sort === "asc") {
+            accounts.value = data.value?.toSorted((a, b) => (a.wins || 0) + (a.losses || 0) - ((b.wins || 0) + (b.losses || 0))) || [];
+          }
+          else if (sort === "desc") {
             accounts.value = data.value?.toSorted((a, b) => (b.wins || 0) + (b.losses || 0) - ((a.wins || 0) + (a.losses || 0))) || [];
           }
           else {
-            accounts.value = data.value?.toSorted((a, b) => (a.wins || 0) + (a.losses || 0) - ((b.wins || 0) + (b.losses || 0))) || [];
+            accounts.value = data.value || [];
           }
         }
       });
@@ -152,13 +163,16 @@ const columns: TableColumn<any>[] = [
         label: "Winrate",
         icon: setSortIcon(isSorted),
         onClick: () => {
+          column.toggleSorting();
           const sort = column.getIsSorted();
-          column.toggleSorting(sort === "asc");
           if (sort === "asc") {
+            accounts.value = data.value?.toSorted((a, b) => calculateWinRate(a.wins, a.losses) - calculateWinRate(b.wins, b.losses)) || [];
+          }
+          else if (sort === "desc") {
             accounts.value = data.value?.toSorted((a, b) => calculateWinRate(b.wins, b.losses) - calculateWinRate(a.wins, a.losses)) || [];
           }
           else {
-            accounts.value = data.value?.toSorted((a, b) => calculateWinRate(a.wins, a.losses) - calculateWinRate(b.wins, b.losses)) || [];
+            accounts.value = data.value || [];
           }
         }
       });
