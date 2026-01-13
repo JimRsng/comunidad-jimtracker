@@ -14,7 +14,7 @@ const UButton = resolveComponent("UButton");
 const USelect = resolveComponent("USelect");
 
 const setSortIcon = (isSorted?: false | SortDirection) => {
-  return isSorted ? isSorted === "asc" ? "i-lucide-chevron-up" : "i-lucide-chevron-down" : "lucide:list-chevrons-up-down";
+  return isSorted ? isSorted === "asc" ? "lucide:chevron-up" : "lucide:chevron-down" : "lucide:list-chevrons-up-down";
 };
 
 const calculateWinRate = (wins?: number | null, losses?: number | null): number => {

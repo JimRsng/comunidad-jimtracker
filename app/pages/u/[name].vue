@@ -181,7 +181,7 @@ onUnmounted(() => {
                   },
                 ]"
                 >
-                  <UButton icon="i-lucide-ellipsis-vertical" variant="ghost" color="neutral" />
+                  <UButton icon="lucide:ellipsis-vertical" variant="ghost" color="neutral" />
                 </UDropdownMenu>
               </div>
             </div>
