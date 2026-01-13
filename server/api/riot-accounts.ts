@@ -14,15 +14,13 @@ export default defineEventHandler(async () => {
     losses: tables.riotAccounts.losses
   }).from(tables.riotAccounts).all();
 
-  const twitchIds = [...new Set(riotAccounts.map(account => account.twitchId))];
-
   const users = await db.select({
     twitchId: tables.users.twitchId,
     twitchLogin: tables.users.twitchLogin,
     twitchDisplay: tables.users.twitchDisplay,
     twitchProfileImage: tables.users.twitchProfileImage,
     country: tables.users.country
-  }).from(tables.users).where(or(...twitchIds.map(id => eq(tables.users.twitchId, id)))).all();
+  }).from(tables.users).all();
 
   // mapear los usuarios por su twitchId para fácil acceso
   const userMap = new Map(users.map(user => [user.twitchId, user]));
