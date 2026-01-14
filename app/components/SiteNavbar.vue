@@ -54,6 +54,7 @@ const pages = computed<NavigationMenuItem[]>(() => {
     title=""
     class="w-full top-0 py-1 z-50 border-0 backdrop-blur-sm border-b border-default bg-elevated/50"
     :ui="{ center: 'flex' }"
+    :toggle="false"
   >
     <UNavigationMenu
       :items="pages"
