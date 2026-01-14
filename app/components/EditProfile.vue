@@ -58,7 +58,15 @@ const editProfile = async () => {
       </template>
     </USelectMenu>
     -->
-    <UTextarea v-model="form.bio" class="w-full" placeholder="Escribe algo sobre ti..." icon="lucide:message-square-more" autoresize />
+    <UFormField help="Escribe un mensaje que se mostrará públicamente en la tabla de la comunidad y en tu perfil.">
+      <UTextarea
+        v-model="form.bio"
+        class="w-full"
+        placeholder="Escribe algo..."
+        icon="lucide:message-square-more"
+        autoresize
+      />
+    </UFormField>
     <UButton type="submit" label="Guardar cambios" block :loading="isLoading" :disabled="isLoading" />
   </form>
 </template>
