@@ -121,7 +121,7 @@ onUnmounted(() => {
   <main v-if="userInfo" class="relative">
     <div class="flex items-center md:justify-start justify-center gap-2 mb-2">
       <span class="font-bold text-3xl">{{ userInfo.twitchDisplay }}</span>
-      <UTooltip v-if="userInfo.country" :text="getCountryName(userInfo.country)">
+      <UTooltip v-if="userInfo.country" :text="getCountryName(userInfo.country)" arrow>
         <Twemoji :emoji="userInfo.country" png size="2em" />
       </UTooltip>
     </div>
