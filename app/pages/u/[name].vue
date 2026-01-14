@@ -4,7 +4,8 @@ const { error } = useRoute("u-name").query;
 
 const { data: userInfo } = await useFetch(`/api/users/${name}`, {
   key: `user:${name}`,
-  getCachedData: (key, nuxtApp) => nuxtApp.payload.data[key]
+  getCachedData: (key, nuxtApp) => nuxtApp.payload.data[key],
+  deep: true
 });
 
 const { user, loggedIn } = useUserSession();
@@ -131,9 +132,15 @@ onUnmounted(() => {
         <div v-if="userInfo.badges" class="flex items-center gap-2 text-lg">
           <!-- TODO: Badges -->
         </div>
-        <div v-if="userInfo.bio" class="p-3 bg-neutral-500/10 rounded-sm border border-white/10">
+        <div v-if="userInfo.bio" class="p-3 rounded-sm border border-white/10">
           {{ userInfo.bio }}
         </div>
+        <UModal v-if="isOwner" title="Editar Perfil">
+          <UButton label="Editar perfil" icon="lucide:pencil" variant="subtle" class="py-4" />
+          <template #body="{ close }">
+            <EditProfile v-model="userInfo" @edit="close" />
+          </template>
+        </UModal>
         <UButton class="w-full py-4 flex items-center gap-2" variant="subtle" color="info" :loading="isUpdating" :disabled="!canUpdate || isUpdating" @click="updateProfile">
           <Icon v-if="!isUpdating" name="lucide:refresh-cw" class="w-5 h-5" />
           <span v-if="canUpdate">{{ isUpdating ? "Actualizando..." : "Actualizar" }}</span>
