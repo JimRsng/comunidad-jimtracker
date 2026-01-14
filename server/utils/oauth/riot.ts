@@ -50,7 +50,15 @@ export interface OAuthRiotGamesConfig {
   redirectURL?: string;
 }
 
-interface RiotGamesUser {
+interface RiotGamesUser extends RiotGamesAccount, Partial<RiotGamesUserInfo> {}
+
+interface RiotGamesAccount {
+  puuid: string;
+  gameName: string;
+  tagLine: string;
+}
+
+interface RiotGamesUserInfo {
   sub: string;
   cpid?: string;
   jti: string;
@@ -129,12 +137,26 @@ export function defineOAuthRiotGamesEventHandler ({ config, onSuccess, onError }
 
     const accessToken = tokens.access_token;
 
-    // TODO: improve typing
-    const user: any = await $fetch(`${config.apiURL}/userinfo`, {
+    let userInfo = {} as RiotGamesUserInfo;
+
+    if (config.scope?.includes("cpid")) {
+      userInfo = await $fetch<RiotGamesUserInfo>(`${config.apiURL}/userinfo`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      });
+    }
+
+    const account = await $fetch<RiotGamesAccount>("https://americas.api.riotgames.com/riot/account/v1/accounts/me", {
       headers: {
         Authorization: `Bearer ${accessToken}`
       }
     });
+
+    const user = {
+      ...account,
+      ...userInfo
+    };
 
     return onSuccess(event, {
       user,

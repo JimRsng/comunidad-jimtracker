@@ -15,19 +15,10 @@ export default defineOAuthRiotGamesEventHandler({
       return sendRedirect(event, withQuery(userURL, { error: "riot_link_failed" }));
     }
 
-    const accessToken = result.tokens.access_token;
     const config = useRuntimeConfig(event);
     const lol = new LolApi(config.riot.apiKey);
-    const account = await $fetch<{ puuid: string, gameName: string, tagLine: string }>(`https://${Constants.regionToRegionGroupForAccountAPI(cpid as Regions)}.api.riotgames.com/riot/account/v1/accounts/me`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`
-      }
-    }).catch(() => null);
-    if (!account) {
-      return sendRedirect(event, withQuery(userURL, { error: "riot_link_failed" }));
-    }
     const existing = await db.select().from(tables.riotAccounts).where(and(
-      eq(tables.riotAccounts.puuid, account.puuid)
+      eq(tables.riotAccounts.puuid, result.user.puuid)
     )).get();
 
     if (existing) {
@@ -35,17 +26,17 @@ export default defineOAuthRiotGamesEventHandler({
     }
 
     const [summoner, leagueData] = await Promise.all([
-      lol.Summoner.getByPUUID(account.puuid, cpid as Regions),
-      lol.League.byPUUID(account.puuid, cpid as Regions).catch(() => null)
+      lol.Summoner.getByPUUID(result.user.puuid, cpid as Regions),
+      lol.League.byPUUID(result.user.puuid, cpid as Regions).catch(() => null)
     ]);
 
     const soloQueue = leagueData?.response.find(entry => entry.queueType === Constants.Queues.RANKED_SOLO_5x5);
 
     await db.insert(tables.riotAccounts).values({
       twitchId: user.twitchId,
-      puuid: account.puuid,
-      gameName: account.gameName,
-      tagLine: account.tagLine,
+      puuid: result.user.puuid,
+      gameName: result.user.gameName,
+      tagLine: result.user.tagLine,
       region: cpid,
       verified: true,
       profileIcon: summoner.response.profileIconId,
