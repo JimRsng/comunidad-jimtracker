@@ -2,7 +2,7 @@
 // import countries from "~/assets/json/countries.json";
 // import type { SelectMenuItem } from "@nuxt/ui";
 
-const { user } = useUserSession();
+const { user, clear } = useUserSession();
 
 const model = defineModel<Pick<JimUser, "country" | "bio">>({ required: true });
 
@@ -18,7 +18,9 @@ const countriesMenu = countries.map(country => ({
 })) satisfies SelectMenuItem[];
 */
 
-const isLoading = ref(false);
+const isEditing = ref(false);
+const isDeleting = ref(false);
+
 const emits = defineEmits<{
   edit: [];
 }>();
@@ -26,7 +28,7 @@ const emits = defineEmits<{
 const editProfile = async () => {
   if (!user.value) return;
 
-  isLoading.value = true;
+  isEditing.value = true;
   $fetch(`/api/users/${user.value.twitchLogin}`, {
     method: "PATCH",
     body: form.value
@@ -40,13 +42,28 @@ const editProfile = async () => {
     useCachedData("riot-accounts", () => undefined);
     emits("edit");
   }).catch(() => {}).finally(() => {
-    isLoading.value = false;
+    isEditing.value = false;
+  });
+};
+
+const deleteAccount = async () => {
+  if (!user.value || !confirm("¿Estás seguro de que deseas eliminar tu cuenta de la comunidad? Se eliminarán todas las cuentas de Riot vinculadas a esta cuenta. Esta acción no se puede deshacer.")) return;
+
+  isDeleting.value = true;
+  $fetch(`/api/users/${user.value.twitchLogin}`, {
+    method: "DELETE"
+  }).then(() => {
+    clear();
+    navigateTo("/");
+  }).catch(() => {}).finally(() => {
+    isDeleting.value = false;
   });
 };
 </script>
 
 <template>
   <form v-if="user" class="space-y-2" @submit.prevent="editProfile">
+    <h3 class="font-semibold">Información</h3>
     <InputFloating id="user" v-model="user.twitchDisplay" placeholder="User" disabled />
     <!--
     <USelectMenu id="country" v-model="form.country" :items="countriesMenu" value-key="value" placeholder="País" icon="lucide:search" size="xl" class="w-full" clear>
@@ -67,6 +84,9 @@ const editProfile = async () => {
         autoresize
       />
     </UFormField>
-    <UButton type="submit" label="Guardar cambios" block :loading="isLoading" :disabled="isLoading" />
+    <UButton type="submit" label="Guardar cambios" variant="subtle" :loading="isEditing" :disabled="isEditing" block />
+    <USeparator />
+    <h3 class="font-semibold">Avanzado</h3>
+    <UButton label="Eliminar cuenta" color="error" variant="subtle" :loading="isDeleting" :disabled="isDeleting" block @click="deleteAccount" />
   </form>
 </template>
