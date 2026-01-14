@@ -15,11 +15,6 @@ export const getCountryName = (emoji: string) => {
   return country?.name;
 };
 
-export const normalizeBidi = (str: string) => {
-  // remove bidirectional characters
-  return str.replace(/[\u200E\u200F\u202A-\u202E\u2066-\u2069]/g, "");
-};
-
 const errorMap: Record<string, string> = {
   riot_account_already_linked: "La cuenta de Riot ya se ha vinculado o está vinculada a otro usuario.",
   riot_link_failed: "No se pudo vincular la cuenta de Riot."
