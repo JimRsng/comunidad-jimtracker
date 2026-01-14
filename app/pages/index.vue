@@ -262,9 +262,7 @@ onMounted(() => {
                 <Icon name="simple-icons:riotgames" class="w-5 h-5 text-red-500" />
                 <div class="flex items-center gap-2">
                   <NuxtLink :to="`https://op.gg/es/lol/summoners/${getRegionLabel(row.original.region)}/${row.original.gameName}-${row.original.tagLine}`" target="_blank" class="font-semibold hover:underline">{{ row.original.gameName }} <span class="font-normal text-muted">#{{ row.original.tagLine }}</span></NuxtLink>
-                  <UTooltip v-if="row.original.user.country" :text="getCountryName(row.original.user.country)">
-                    <Twemoji class="max-w-fit" :emoji="row.original.user.country" png size="1.5em" />
-                  </UTooltip>
+                  <Twemoji v-if="row.original.user.country" :title="getCountryName(row.original.user.country)" class="max-w-fit" :emoji="row.original.user.country" png size="1.5em" />
                 </div>
               </div>
               <div class="flex items-center gap-1">
