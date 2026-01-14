@@ -131,7 +131,7 @@ onUnmounted(() => {
         <div v-if="userInfo.badges" class="flex items-center gap-2 text-lg">
           <!-- TODO: Badges -->
         </div>
-        <div v-if="userInfo.bio" class="p-3 rounded-sm border border-accented">
+        <div v-if="userInfo.bio" class="p-3 rounded-sm border border-accented whitespace-pre-wrap">
           {{ userInfo.bio }}
         </div>
         <UModal v-if="isOwner" title="Editar Perfil">

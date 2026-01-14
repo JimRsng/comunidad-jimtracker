@@ -327,7 +327,7 @@ onMounted(() => {
           :open="tableTooltip.hovered"
           :reference="tableTooltip.reference"
           arrow
-          :ui="{ arrow: 'fill-current', content: 'py-2 px-3 whitespace-pre' }"
+          :ui="{ arrow: 'fill-current', content: 'py-2 px-3 whitespace-pre-wrap' }"
         >
           <template #content>
             {{ tableTooltip.value }}
