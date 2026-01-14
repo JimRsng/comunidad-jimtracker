@@ -242,7 +242,7 @@ const tableTooltip = ref<{
   value: undefined
 });
 
-const onFlagHover = (event: PointerEvent, text?: string) => {
+const onTooltip = (event: PointerEvent, text?: string) => {
   tableTooltip.value.reference = event.currentTarget as HTMLElement;
   tableTooltip.value.value = text;
   tableTooltip.value.hovered = true;
@@ -278,8 +278,8 @@ onMounted(() => {
                 <Icon name="simple-icons:riotgames" class="w-5 h-5 text-red-500" />
                 <div class="flex items-center gap-2">
                   <NuxtLink :to="`https://op.gg/es/lol/summoners/${getRegionLabel(row.original.region)}/${row.original.gameName}-${row.original.tagLine}`" target="_blank" class="font-semibold hover:underline">{{ row.original.gameName }} <span class="font-normal text-muted">#{{ row.original.tagLine }}</span></NuxtLink>
-                  <Twemoji v-if="row.original.user.country" class="max-w-fit" :emoji="row.original.user.country" png size="1.5em" @pointerenter="onFlagHover($event, getCountryName(row.original.user.country))" @pointerleave="tableTooltip.hovered = false" />
-                  <Icon v-if="row.original.user.bio" name="lucide:message-square-more" size="1.3em" @pointerenter="onFlagHover($event, row.original.user.bio)" @pointerleave="tableTooltip.hovered = false" />
+                  <Twemoji v-if="row.original.user.country" class="max-w-fit" :emoji="row.original.user.country" png size="1.5em" @pointerenter="onTooltip($event, getCountryName(row.original.user.country))" @pointerleave="tableTooltip.hovered = false" />
+                  <Icon v-if="row.original.user.bio" name="lucide:message-square-more" size="1.3em" @pointerenter="onTooltip($event, row.original.user.bio)" @pointerleave="tableTooltip.hovered = false" />
                 </div>
               </div>
               <div class="flex items-center gap-1">
