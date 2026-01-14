@@ -15,6 +15,11 @@
   }
 }
 
+.from-input:read-only, .from-input:disabled {
+  background-color: var(--ui-bg-muted);
+  cursor: not-allowed;
+}
+
 .form-input-icon,
 .form-input-floating {
   position: relative;
