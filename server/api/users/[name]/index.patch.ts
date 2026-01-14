@@ -6,7 +6,7 @@ export default defineEventHandler(async (event) => {
   }).parse);
 
   const body = await readValidatedBody(event, z.object({
-    country: z.string().nullable(),
+    // country: z.string().nullable(),
     bio: z.string().nullable()
   }).parse);
 
@@ -15,11 +15,11 @@ export default defineEventHandler(async (event) => {
   }
 
   const update = await db.update(tables.users).set({
-    country: body.country || null,
+    // country: body.country || null,
     bio: body.bio || null,
     updatedAt: unixepoch({ mode: "ms" })
   }).where(eq(tables.users.twitchLogin, params.name)).returning({
-    country: tables.users.country,
+    // country: tables.users.country,
     bio: tables.users.bio
   }).get();
 

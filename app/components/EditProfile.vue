@@ -7,7 +7,7 @@ const { user } = useUserSession();
 const model = defineModel<Pick<JimUser, "country" | "bio">>({ required: true });
 
 const form = useFormState({
-  country: model.value.country || "",
+  // country: model.value.country || "",
   bio: model.value.bio || ""
 });
 
@@ -32,10 +32,10 @@ const editProfile = async () => {
     body: form.value
   }).then(() => {
     model.value.bio = form.value.bio;
-    model.value.country = form.value.country;
+    // model.value.country = form.value.country;
     if (user.value) {
       user.value.bio = form.value.bio;
-      user.value.country = form.value.country;
+      // user.value.country = form.value.country;
     }
     useCachedData("riot-accounts", () => undefined);
     emits("edit");
@@ -58,7 +58,7 @@ const editProfile = async () => {
       </template>
     </USelectMenu>
     -->
-    <UTextarea v-model="form.bio" class="w-full" placeholder="Escribe algo sobre ti..." />
+    <UTextarea v-model="form.bio" class="w-full" placeholder="Escribe algo sobre ti..." icon="lucide:message-square-more" autoresize />
     <UButton type="submit" label="Guardar cambios" block :loading="isLoading" :disabled="isLoading" />
   </form>
 </template>
