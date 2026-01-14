@@ -22,6 +22,13 @@
       "when": 1768164146478,
       "tag": "0002_overjoyed_mantis",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1768374403276,
+      "tag": "0003_outgoing_giant_girl",
+      "breakpoints": true
     }
   ]
 }

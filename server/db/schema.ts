@@ -19,7 +19,7 @@ export const users = sqliteTable("users", {
 
 export const riotAccounts = sqliteTable("riot_accounts", {
   puuid: text().primaryKey(),
-  twitchId: text().notNull().references(() => users.twitchId),
+  twitchId: text().notNull().references(() => users.twitchId, { onDelete: "cascade" }),
   gameName: text().notNull(),
   tagLine: text().notNull(),
   region: text().notNull(),
