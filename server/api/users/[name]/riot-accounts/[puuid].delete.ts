@@ -6,14 +6,12 @@ export default defineEventHandler(async (event) => {
     puuid: z.string()
   }).parse);
 
-  const twitchId = await getTwitchIdByLogin(event, params.name);
-
-  if (user.twitchLogin !== params.name || user.twitchId !== twitchId) {
+  if (user.twitchLogin !== params.name) {
     throw createError({ status: ErrorCode.FORBIDDEN, message: "No tienes permiso para realizar esta acción" });
   }
 
   const result = await db.delete(tables.riotAccounts).where(and(
-    eq(tables.riotAccounts.twitchId, twitchId),
+    eq(tables.riotAccounts.twitchId, user.twitchId),
     eq(tables.riotAccounts.puuid, params.puuid)
   )).run();
 
