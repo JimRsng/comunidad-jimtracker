@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { TableColumn } from "@nuxt/ui";
 import type { Row, SortDirection, TableMeta } from "@tanstack/vue-table";
-import { onClickOutside } from "@vueuse/core";
 
 const { data } = await useFetch("/api/riot-accounts", {
   key: "riot-accounts",
@@ -233,45 +232,6 @@ const computedAccounts = computed(() => {
   });
 });
 
-const tablePopover = ref<{
-  reference: HTMLElement | undefined;
-  open: boolean;
-  value?: string;
-  mode?: "click" | "hover";
-}>({
-  reference: undefined,
-  open: false,
-  value: undefined,
-  mode: undefined
-});
-
-const onPopover = (event?: PointerEvent, text?: string, mode: "click" | "hover" = "hover") => {
-  if (mode === "hover" && event?.pointerType === "touch") return;
-  if (event) tablePopover.value.reference = event.currentTarget as HTMLElement;
-  if (text) tablePopover.value.value = text;
-  if (mode === "click" && text) {
-    tablePopover.value.open = true;
-    tablePopover.value.mode = "click";
-  }
-  else if (tablePopover.value.mode !== "click") {
-    tablePopover.value.open = !!text;
-    if (text) tablePopover.value.mode = "hover";
-  }
-};
-
-const popoverHandlers = (text?: string) => ({
-  pointerenter: (e: PointerEvent) => onPopover(e, text),
-  pointerleave: () => onPopover(),
-  click: (e: PointerEvent) => onPopover(e, text, "click")
-});
-
-onClickOutside(() => tablePopover.value.reference, () => {
-  if (tablePopover.value.mode === "click" && tablePopover.value.open) {
-    tablePopover.value.open = false;
-    tablePopover.value.mode = undefined;
-  }
-});
-
 onMounted(() => {
   const hideUnrankeds = localStorage.getItem("pref-hide-unrankeds");
   preferences.value.hideUnrankeds = hideUnrankeds === "true";
@@ -308,20 +268,31 @@ onMounted(() => {
                   >
                     <span>{{ row.original.gameName }} <span class="font-normal text-muted">#{{ row.original.tagLine }}</span></span>
                   </NuxtLink>
-                  <Twemoji
-                    v-if="row.original.user.country"
-                    class="max-w-fit"
-                    :emoji="row.original.user.country"
-                    png
-                    size="1.5em"
-                    v-on="popoverHandlers(getCountryName(row.original.user.country))"
-                  />
-                  <Icon
-                    v-if="row.original.user.bio"
-                    name="lucide:message-square-more"
-                    size="1.3em"
-                    v-on="popoverHandlers(row.original.user.bio)"
-                  />
+                  <UPopover v-if="row.original.user.country" mode="hover" :content="{ side: 'top' }" arrow>
+                    <UButton variant="link" class="p-0">
+                      <Twemoji
+                        class="max-w-fit"
+                        :emoji="row.original.user.country"
+                        png
+                        size="1.5em"
+                      />
+                    </UButton>
+                    <template #content>
+                      {{ getCountryName(row.original.user.country) }}
+                    </template>
+                  </UPopover>
+                  <UPopover v-if="row.original.user.country" mode="hover" :content="{ side: 'top' }" arrow>
+                    <UButton variant="link" class="p-0 text-default!">
+                      <Icon
+                        v-if="row.original.user.bio"
+                        name="lucide:message-square-more"
+                        size="1.3em"
+                      />
+                    </UButton>
+                    <template #content>
+                      {{ row.original.user.bio }}
+                    </template>
+                  </UPopover>
                 </div>
               </div>
               <div class="flex items-center gap-1">
@@ -337,12 +308,18 @@ onMounted(() => {
           </template>
           <template #elo-cell="{ row }">
             <div class="flex items-center justify-center gap-1">
-              <img
-                :src="`/images/lol/${row.original.tier?.toLowerCase() || 'unranked'}.png`"
-                class="w-10 h-10 md:w-10 md:h-10 max-w-fit"
-                :alt="row.original.tier || 'UNRANKED'"
-                v-on="popoverHandlers(row.original.tier || 'UNRANKED')"
-              >
+              <UPopover v-if="row.original.user.country" mode="hover" :content="{ side: 'top' }" arrow>
+                <UButton variant="link" class="p-0 text-default!">
+                  <img
+                    :src="`/images/lol/${row.original.tier?.toLowerCase() || 'unranked'}.png`"
+                    class="w-10 h-10 md:w-10 md:h-10 max-w-fit"
+                    :alt="row.original.tier || 'UNRANKED'"
+                  >
+                </UButton>
+                <template #content>
+                  {{ row.original.tier || 'UNRANKED' }}
+                </template>
+              </UPopover>
               <span v-if="row.original.division || row.original.lp"><span v-if="!['MASTER', 'GRANDMASTER', 'CHALLENGER'].includes(row.original.tier)">{{ row.original.division }} · </span>{{ row.original.lp }} LP</span>
             </div>
           </template>
@@ -367,17 +344,6 @@ onMounted(() => {
             </div>
           </template>
         </UTable>
-        <UPopover
-          :content="{ side: 'top', updatePositionStrategy: 'always', sideOffset: 0 }"
-          :open="tablePopover.open"
-          :reference="tablePopover.reference"
-          arrow
-          :ui="{ arrow: 'fill-current', content: 'py-2 px-3 whitespace-pre-wrap' }"
-        >
-          <template #content>
-            {{ tablePopover.value }}
-          </template>
-        </UPopover>
       </div>
     </div>
   </main>

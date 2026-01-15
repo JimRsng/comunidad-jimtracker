@@ -130,7 +130,7 @@ onUnmounted(() => {
   <main v-if="userInfo" class="relative">
     <div class="flex items-center md:justify-start justify-center gap-2 mb-2">
       <span class="font-bold text-3xl">{{ userInfo.twitchDisplay }}</span>
-      <UPopover v-if="userInfo.country" :ui="{ arrow: 'fill-current', content: 'py-2 px-3' }" mode="hover" arrow>
+      <UPopover v-if="userInfo.country" mode="hover" :content="{ side: 'top' }" arrow>
         <UButton variant="link" class="p-0">
           <Twemoji :emoji="userInfo.country" png size="2rem" :alt="getCountryName(userInfo.country)" />
         </UButton>
@@ -194,7 +194,7 @@ onUnmounted(() => {
             </div>
             <div class="flex flex-col items-center gap-2">
               <div class="flex items-center gap-1">
-                <UPopover :ui="{ arrow: 'fill-current', content: 'py-2 px-3' }" mode="hover" arrow>
+                <UPopover mode="hover" :content="{ side: 'top' }" arrow>
                   <UButton variant="link" class="p-0">
                     <img
                       :src="`/images/lol/${account.tier?.toLowerCase() || 'unranked'}.png`"
