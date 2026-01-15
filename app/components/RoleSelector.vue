@@ -51,11 +51,18 @@ const selectRole = async (event: { role: string | null, slot: 1 | 2 }) => {
     }
   });
 };
+
+const handleModalOwnerUpdate = () => {
+  if (!isOwner.value) {
+    modalRole1.value = false;
+    modalRole2.value = false;
+  }
+};
 </script>
 
 <template>
   <div class="flex items-center justify-center gap-1">
-    <UPopover v-model:open="modalRole1" arrow>
+    <UPopover v-model:open="modalRole1" arrow @update:open="handleModalOwnerUpdate">
       <div v-if="selectedRole1 || isOwner" class="rounded-full" :class="{ 'border p-1 border-neutral-200/20 hover:bg-neutral-500/20': isOwner, 'border-neutral-200/0': !isOwner }">
         <span v-if="selectedRole1" :title="selectedRole1">
           <Icon :name="`lol:${selectedRole1}`" class="w-6.5 h-6.5" />
@@ -68,7 +75,7 @@ const selectRole = async (event: { role: string | null, slot: 1 | 2 }) => {
         <RoleMenu :selected-slot="1" :selected-role="selectedRole1" @update:role="selectRole" />
       </template>
     </UPopover>
-    <UPopover v-if="selectedRole1 !== 'fill' && (selectedRole2 || isOwner)" v-model:open="modalRole2" arrow>
+    <UPopover v-if="selectedRole1 !== 'fill' && (selectedRole2 || isOwner)" v-model:open="modalRole2" arrow @update:open="handleModalOwnerUpdate">
       <div class="rounded-full" :class="{ 'border p-1 border-neutral-200/20 hover:bg-neutral-500/20': isOwner, 'border-neutral-200/0': !isOwner }">
         <span v-if="selectedRole2" :title="selectedRole2">
           <Icon :name="`lol:${selectedRole2}`" class="w-6.5 h-6.5" />
