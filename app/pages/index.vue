@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { TableColumn } from "@nuxt/ui";
 import type { Row, SortDirection, TableMeta } from "@tanstack/vue-table";
+import { onClickOutside } from "@vueuse/core";
 
 const { data } = await useFetch("/api/riot-accounts", {
   key: "riot-accounts",
@@ -232,21 +233,44 @@ const computedAccounts = computed(() => {
   });
 });
 
-const tableTooltip = ref<{
+const tablePopover = ref<{
   reference: HTMLElement | undefined;
-  hovered: boolean;
+  open: boolean;
   value?: string;
+  mode?: "click" | "hover";
 }>({
   reference: undefined,
-  hovered: false,
-  value: undefined
+  open: false,
+  value: undefined,
+  mode: undefined
 });
 
-const onTooltip = (event: PointerEvent, text?: string) => {
-  tableTooltip.value.reference = event.currentTarget as HTMLElement;
-  tableTooltip.value.value = text;
-  tableTooltip.value.hovered = true;
+const onPopover = (event?: PointerEvent, text?: string, mode: "click" | "hover" = "hover") => {
+  if (mode === "hover" && event?.pointerType === "touch") return;
+  if (event) tablePopover.value.reference = event.currentTarget as HTMLElement;
+  if (text) tablePopover.value.value = text;
+  if (mode === "click" && text) {
+    tablePopover.value.open = true;
+    tablePopover.value.mode = "click";
+  }
+  else if (tablePopover.value.mode !== "click") {
+    tablePopover.value.open = !!text;
+    if (text) tablePopover.value.mode = "hover";
+  }
 };
+
+const popoverHandlers = (text?: string) => ({
+  pointerenter: (e: PointerEvent) => onPopover(e, text),
+  pointerleave: () => onPopover(),
+  click: (e: PointerEvent) => onPopover(e, text, "click")
+});
+
+onClickOutside(() => tablePopover.value.reference, () => {
+  if (tablePopover.value.mode === "click" && tablePopover.value.open) {
+    tablePopover.value.open = false;
+    tablePopover.value.mode = undefined;
+  }
+});
 
 onMounted(() => {
   const hideUnrankeds = localStorage.getItem("pref-hide-unrankeds");
@@ -277,9 +301,27 @@ onMounted(() => {
               <div class="flex items-center gap-1">
                 <Icon name="simple-icons:riotgames" class="w-5 h-5 text-red-500" />
                 <div class="flex items-center gap-2">
-                  <NuxtLink :to="`https://op.gg/es/lol/summoners/${getRegionLabel(row.original.region)}/${row.original.gameName}-${row.original.tagLine}`" target="_blank" class="font-semibold hover:underline">{{ row.original.gameName }} <span class="font-normal text-muted">#{{ row.original.tagLine }}</span></NuxtLink>
-                  <Twemoji v-if="row.original.user.country" class="max-w-fit" :emoji="row.original.user.country" png size="1.5em" @pointerenter="onTooltip($event, getCountryName(row.original.user.country))" @pointerleave="tableTooltip.hovered = false" />
-                  <Icon v-if="row.original.user.bio" name="lucide:message-square-more" size="1.3em" @pointerenter="onTooltip($event, row.original.user.bio)" @pointerleave="tableTooltip.hovered = false" />
+                  <NuxtLink
+                    :to="`https://op.gg/es/lol/summoners/${getRegionLabel(row.original.region)}/${row.original.gameName}-${row.original.tagLine}`"
+                    target="_blank"
+                    class="font-semibold hover:underline"
+                  >
+                    <span>{{ row.original.gameName }} <span class="font-normal text-muted">#{{ row.original.tagLine }}</span></span>
+                  </NuxtLink>
+                  <Twemoji
+                    v-if="row.original.user.country"
+                    class="max-w-fit"
+                    :emoji="row.original.user.country"
+                    png
+                    size="1.5em"
+                    v-on="popoverHandlers(getCountryName(row.original.user.country))"
+                  />
+                  <Icon
+                    v-if="row.original.user.bio"
+                    name="lucide:message-square-more"
+                    size="1.3em"
+                    v-on="popoverHandlers(row.original.user.bio)"
+                  />
                 </div>
               </div>
               <div class="flex items-center gap-1">
@@ -322,13 +364,13 @@ onMounted(() => {
         </UTable>
         <UPopover
           :content="{ side: 'top', updatePositionStrategy: 'always', sideOffset: 0 }"
-          :open="tableTooltip.hovered"
-          :reference="tableTooltip.reference"
+          :open="tablePopover.open"
+          :reference="tablePopover.reference"
           arrow
           :ui="{ arrow: 'fill-current', content: 'py-2 px-3 whitespace-pre-wrap' }"
         >
           <template #content>
-            {{ tableTooltip.value }}
+            {{ tablePopover.value }}
           </template>
         </UPopover>
       </div>
