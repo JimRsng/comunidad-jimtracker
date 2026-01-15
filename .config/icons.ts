@@ -16,5 +16,10 @@ export default [
   "lucide:pencil",
   "lucide:menu",
   "lucide:trash",
-  "lucide:message-square-more"
+  "lucide:message-square-more",
+  "lucide:chevrons-left",
+  "lucide:chevron-left",
+  "lucide:chevrons-right",
+  "lucide:chevron-right",
+  "lucide:ellipsis"
 ];

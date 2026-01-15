@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { TableColumn } from "@nuxt/ui";
 import type { Row, SortDirection, TableMeta } from "@tanstack/vue-table";
+import { getPaginationRowModel } from "@tanstack/vue-table";
 
 const { data } = await useFetch("/api/riot-accounts", {
   key: "riot-accounts",
@@ -205,6 +206,12 @@ const preferences = ref({
 
 const searchTerm = ref("");
 
+const table = useTemplateRef("table");
+const pagination = ref({
+  pageIndex: 0,
+  pageSize: 50
+});
+
 watch(preferences, () => {
   localStorage.setItem("pref-hide-unrankeds", String(preferences.value.hideUnrankeds));
 
@@ -236,6 +243,10 @@ const computedAccounts = computed(() => {
   });
 });
 
+watch([() => preferences.value.hideUnrankeds, () => preferences.value.region, searchTerm], () => {
+  pagination.value.pageIndex = 0;
+});
+
 onMounted(() => {
   const hideUnrankeds = localStorage.getItem("pref-hide-unrankeds");
   preferences.value.hideUnrankeds = hideUnrankeds === "true";
@@ -255,10 +266,15 @@ onMounted(() => {
       </div>
       <div class="rounded-sm shadow bg-elevated/50">
         <UTable
+          ref="table"
+          v-model:pagination="pagination"
           :data="computedAccounts"
           :columns="columns"
           :meta="meta"
           :get-row-id="(row) => row.puuid"
+          :pagination-options="{
+            getPaginationRowModel: getPaginationRowModel(),
+          }"
           class="flex-1"
           :ui="{ td: 'p-2 text-highlighted text-base', th: 'text-center' }"
         >
@@ -358,6 +374,18 @@ onMounted(() => {
             </div>
           </template>
         </UTable>
+        <div class="flex flex-col lg:flex-row justify-between items-center px-4 py-3.5 border-t border-default gap-2">
+          <div class="text-sm text-muted">
+            Mostrando {{ Math.min((table?.tableApi?.getState().pagination.pageIndex || 0) * pagination.pageSize + 1, table?.tableApi?.getFilteredRowModel().rows.length || 0) }} - {{ Math.min(((table?.tableApi?.getState().pagination.pageIndex || 0) + 1) * pagination.pageSize, table?.tableApi?.getFilteredRowModel().rows.length || 0) }} de {{ table?.tableApi?.getFilteredRowModel().rows.length || 0 }}
+          </div>
+          <UPagination
+            :page="(table?.tableApi?.getState().pagination.pageIndex || 0) + 1"
+            :items-per-page="pagination.pageSize"
+            :total="table?.tableApi?.getFilteredRowModel().rows.length || 0"
+            :sibling-count="1"
+            @update:page="(p) => table?.tableApi?.setPageIndex(p - 1)"
+          />
+        </div>
       </div>
     </div>
   </main>
