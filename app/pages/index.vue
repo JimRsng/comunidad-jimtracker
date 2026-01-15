@@ -205,7 +205,7 @@ watch(preferences, () => {
   localStorage.setItem("pref-hide-unrankeds", String(preferences.value.hideUnrankeds));
 
   if (preferences.value.region) {
-    localStorage.setItem("pref-region", preferences.value.region);
+    // localStorage.setItem("pref-region", preferences.value.region);
   }
 }, { deep: true });
 
@@ -253,7 +253,7 @@ onMounted(() => {
   preferences.value.hideUnrankeds = hideUnrankeds === "true";
   const region = localStorage.getItem("pref-region");
   if (region) {
-    preferences.value.region = region;
+    // preferences.value.region = region;
   }
 });
 </script>
