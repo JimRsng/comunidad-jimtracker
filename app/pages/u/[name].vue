@@ -130,7 +130,7 @@ onUnmounted(() => {
   <main v-if="userInfo" class="relative">
     <div class="flex items-center md:justify-start justify-center gap-2 mb-2">
       <span class="font-bold text-3xl">{{ userInfo.twitchDisplay }}</span>
-      <UTooltip v-if="userInfo.country" :text="getCountryName(userInfo.country)" arrow>
+      <UTooltip v-if="userInfo.country" :text="getCountryName(userInfo.country)" :ui="{ arrow: 'fill-current' }" arrow>
         <Twemoji :emoji="userInfo.country" png size="2em" />
       </UTooltip>
     </div>
@@ -189,7 +189,13 @@ onUnmounted(() => {
             </div>
             <div class="flex flex-col items-center gap-2">
               <div class="flex items-center gap-1">
-                <img :src="`/images/lol/${account.tier?.toLowerCase() || 'unranked'}.png`" class="w-12 h-12 md:w-12 md:h-12 max-w-fit" :title="account.tier || 'Unranked'">
+                <UTooltip :text="account.tier || 'UNRANKED'" :ui="{ arrow: 'fill-current' }" arrow>
+                  <img
+                    :src="`/images/lol/${account.tier?.toLowerCase() || 'unranked'}.png`"
+                    class="w-12 h-12 md:w-12 md:h-12 max-w-fit"
+                    :alt="account.tier || 'UNRANKED'"
+                  >
+                </UTooltip>
                 <span v-if="account.division" class="font-semibold text-xl"><span v-if="account.tier && !['MASTER', 'GRANDMASTER', 'CHALLENGER'].includes(account.tier)">{{ account.division }} · </span>{{ account.lp }} LP</span>
               </div>
               <div v-if="account.wins || account.losses" class="text-sm text-neutral-400 font-semibold"><span class="text-blue-400">{{ account.wins }}</span>V · <span class="text-rose-400">{{ account.losses }}</span>D (<span class="text-white">{{ (account.wins || 0) + (account.losses || 0) }}</span>)</div>
