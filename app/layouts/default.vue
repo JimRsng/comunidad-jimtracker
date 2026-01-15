@@ -4,6 +4,6 @@
     <div class="lg:container py-5 px-2 grow max-w-screen">
       <slot />
     </div>
-    <SiteFooter />
+    <LazySiteFooter hydrate-on-visible />
   </div>
 </template>
