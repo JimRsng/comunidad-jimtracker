@@ -55,7 +55,7 @@ const selectRole = async (role: string | null, slot: 1 | 2) => {
 
 <template>
   <div class="flex items-center justify-center gap-1">
-    <UPopover v-model:open="modalRole1">
+    <UPopover v-model:open="modalRole1" arrow>
       <div v-if="selectedRole1 || isOwner" class="rounded-full" :class="{ 'border p-1 border-neutral-200/20 hover:bg-neutral-500/20': isOwner, 'border-neutral-200/0': !isOwner }">
         <span v-if="selectedRole1" :title="selectedRole1">
           <Icon :name="`lol:${selectedRole1}`" class="w-6.5 h-6.5" />
@@ -65,20 +65,20 @@ const selectRole = async (role: string | null, slot: 1 | 2) => {
         </span>
       </div>
       <template #content>
-        <div class="flex flex-wrap justify-center items-center max-w-40 gap-2 p-2">
-          <UButton v-for="role in roles" :key="role" variant="ghost" color="neutral" class="flex flex-col items-center justify-center gap-1 p-2" @click="selectRole(role, 1)">
-            <Icon :name="`lol:${role}`" class="w-6.5 h-6.5" />
+        <div class="flex flex-wrap justify-center items-center max-w-36 gap-1 p-1">
+          <UButton v-for="role in roles" :key="role" variant="ghost" color="neutral" class="flex flex-col items-center justify-center gap-1 p-1" @click="selectRole(role, 1)">
+            <Icon :name="`lol:${role}`" class="w-7 h-7" />
           </UButton>
-          <UButton variant="ghost" color="neutral" class="flex flex-col items-center justify-center gap-1 p-2" @click="selectRole('fill', 1)">
-            <Icon name="lol:fill" class="w-6.5 h-6.5" />
+          <UButton variant="ghost" color="neutral" class="flex flex-col items-center justify-center gap-1 p-1" @click="selectRole('fill', 1)">
+            <Icon name="lol:fill" class="w-7 h-7" />
           </UButton>
-          <UButton variant="ghost" color="neutral" class="flex flex-col items-center justify-center gap-1 p-2" @click="selectRole(null, 1)">
-            <Icon name="lucide:x" class="w-6.5 h-6.5 text-red-300" />
+          <UButton variant="ghost" color="neutral" class="flex flex-col items-center justify-center gap-1 p-1" @click="selectRole(null, 1)">
+            <Icon name="lucide:x" class="w-7 h-7 text-red-300" />
           </UButton>
         </div>
       </template>
     </UPopover>
-    <UPopover v-if="selectedRole1 !== 'fill' && (selectedRole2 || isOwner)" v-model:open="modalRole2">
+    <UPopover v-if="selectedRole1 !== 'fill' && (selectedRole2 || isOwner)" v-model:open="modalRole2" arrow>
       <div class="rounded-full" :class="{ 'border p-1 border-neutral-200/20 hover:bg-neutral-500/20': isOwner, 'border-neutral-200/0': !isOwner }">
         <span v-if="selectedRole2" :title="selectedRole2">
           <Icon :name="`lol:${selectedRole2}`" class="w-6.5 h-6.5" />
@@ -88,15 +88,15 @@ const selectRole = async (role: string | null, slot: 1 | 2) => {
         </span>
       </div>
       <template #content>
-        <div class="flex flex-wrap justify-center items-center max-w-40 gap-2 p-2">
-          <UButton v-for="role in roles" :key="role" variant="ghost" color="neutral" class="flex flex-col items-center justify-center gap-1 p-2" @click="selectRole(role, 2)">
-            <Icon :name="`lol:${role}`" class="w-6.5 h-6.5" />
+        <div class="flex flex-wrap justify-center items-center max-w-36 gap-1 p-1">
+          <UButton v-for="role in roles" :key="role" variant="ghost" color="neutral" class="flex flex-col items-center justify-center gap-1 p-1" @click="selectRole(role, 2)">
+            <Icon :name="`lol:${role}`" class="w-7 h-7" />
           </UButton>
-          <UButton variant="ghost" color="neutral" class="flex flex-col items-center justify-center gap-1 p-2" @click="selectRole('fill', 2)">
-            <Icon name="lol:fill" class="w-6.5 h-6.5" />
+          <UButton variant="ghost" color="neutral" class="flex flex-col items-center justify-center gap-1 p-1" @click="selectRole('fill', 2)">
+            <Icon name="lol:fill" class="w-7 h-7" />
           </UButton>
-          <UButton variant="ghost" color="neutral" class="flex flex-col items-center justify-center gap-1 p-2" @click="selectRole(null, 2)">
-            <Icon name="lucide:x" class="w-6.5 h-6.5 text-red-300" />
+          <UButton variant="ghost" color="neutral" class="flex flex-col items-center justify-center gap-1 p-1" @click="selectRole(null, 2)">
+            <Icon name="lucide:x" class="w-7 h-7 text-red-300" />
           </UButton>
         </div>
       </template>
