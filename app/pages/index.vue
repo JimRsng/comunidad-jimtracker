@@ -144,7 +144,7 @@ const columns: TableColumn<any>[] = [
       });
     },
     cell: ({ row }) => h(TableCellWinLosses, { row }),
-    sortingFn: (rowA, rowB, columnId) => {
+    sortingFn: (rowA, rowB) => {
       const aWins = rowA.original.wins || 0;
       const aLosses = rowA.original.losses || 0;
       const bWins = rowB.original.wins || 0;
