@@ -237,6 +237,8 @@ const pagination = ref({
   pageIndex: 0,
   pageSize: 100
 });
+
+const tablePopover = useTablePopover();
 </script>
 
 <template>
@@ -282,5 +284,16 @@ const pagination = ref({
         </div>
       </div>
     </div>
+    <UPopover
+      :content="{ side: 'top', updatePositionStrategy: 'always', sideOffset: 0 }"
+      :open="tablePopover.options.open"
+      :reference="tablePopover.options.reference"
+      arrow
+      :ui="{ arrow: 'fill-current', content: 'py-2 px-3 whitespace-pre-wrap' }"
+    >
+      <template #content>
+        {{ tablePopover.options.value }}
+      </template>
+    </UPopover>
   </main>
 </template>

@@ -58,14 +58,22 @@ const handleModalOwnerUpdate = () => {
     modalRole2.value = false;
   }
 };
+
+const tablePopover = useTablePopover();
 </script>
 
 <template>
   <div class="flex items-center justify-center gap-1">
     <UPopover v-if="isOwner" v-model:open="modalRole1" arrow @update:open="handleModalOwnerUpdate">
       <div v-if="selectedRole1 || isOwner" class="*:flex rounded-full" :class="{ 'border p-1 border-neutral-200/20 hover:bg-neutral-500/20': isOwner, 'border-neutral-200/0': !isOwner }">
-        <span v-if="selectedRole1" :title="selectedRole1">
-          <Icon :name="`lol:${selectedRole1}`" class="w-6.5 h-6.5" mode="css" />
+        <span v-if="selectedRole1">
+          <Icon
+            :name="`lol:${selectedRole1}`"
+            class="w-6.5 h-6.5"
+            mode="css"
+            :alt="selectedRole1"
+            v-on="tablePopover.handlers(selectedRole1.toUpperCase())"
+          />
         </span>
         <span v-else-if="!selectedRole1 && isOwner" title="Seleccionar rol primario">
           <Icon name="lucide:plus" class="w-6.5 h-6.5" mode="css" />
@@ -76,19 +84,32 @@ const handleModalOwnerUpdate = () => {
       </template>
     </UPopover>
     <div v-else>
-      <div v-if="selectedRole1 || isOwner" class="*:flex rounded-full" :class="{ 'border p-1 border-neutral-200/20 hover:bg-neutral-500/20': isOwner, 'border-neutral-200/0': !isOwner }">
-        <span v-if="selectedRole1" :title="selectedRole1">
-          <Icon :name="`lol:${selectedRole1}`" class="w-6.5 h-6.5" mode="css" />
-        </span>
-        <span v-else-if="!selectedRole1 && isOwner" title="Seleccionar rol primario">
-          <Icon name="lucide:plus" class="w-6.5 h-6.5" mode="css" />
+      <div
+        v-if="selectedRole1"
+        class="*:flex rounded-full"
+        :class="{ 'border p-1 border-neutral-200/20 hover:bg-neutral-500/20': isOwner, 'border-neutral-200/0': !isOwner }"
+        v-on="tablePopover.handlers(selectedRole1.toUpperCase())"
+      >
+        <span v-if="selectedRole1">
+          <Icon
+            :name="`lol:${selectedRole1}`"
+            class="w-6.5 h-6.5"
+            mode="css"
+            :alt="selectedRole1"
+          />
         </span>
       </div>
     </div>
     <UPopover v-if="isOwner && selectedRole1 !== 'fill' && (selectedRole2 || isOwner)" v-model:open="modalRole2" arrow @update:open="handleModalOwnerUpdate">
       <div class="*:flex rounded-full" :class="{ 'border p-1 border-neutral-200/20 hover:bg-neutral-500/20': isOwner, 'border-neutral-200/0': !isOwner }">
-        <span v-if="selectedRole2" :title="selectedRole2">
-          <Icon :name="`lol:${selectedRole2}`" class="w-6.5 h-6.5" mode="css" />
+        <span v-if="selectedRole2">
+          <Icon
+            :name="`lol:${selectedRole2}`"
+            class="w-6.5 h-6.5"
+            mode="css"
+            :alt="selectedRole2"
+            v-on="tablePopover.handlers(selectedRole2.toUpperCase())"
+          />
         </span>
         <span v-else-if="!selectedRole2 && isOwner" title="Seleccionar rol secundario">
           <Icon name="lucide:plus" class="w-6.5 h-6.5" mode="css" />
@@ -99,12 +120,19 @@ const handleModalOwnerUpdate = () => {
       </template>
     </UPopover>
     <div v-else>
-      <div v-if="selectedRole2" class="*:flex rounded-full" :class="{ 'border p-1 border-neutral-200/20 hover:bg-neutral-500/20': isOwner, 'border-neutral-200/0': !isOwner }">
-        <span v-if="selectedRole2" :title="selectedRole2">
-          <Icon :name="`lol:${selectedRole2}`" class="w-6.5 h-6.5" mode="css" />
-        </span>
-        <span v-else-if="!selectedRole2 && isOwner" title="Seleccionar rol secundario">
-          <Icon name="lucide:plus" class="w-6.5 h-6.5" mode="css" />
+      <div
+        v-if="selectedRole2"
+        class="*:flex rounded-full"
+        :class="{ 'border p-1 border-neutral-200/20 hover:bg-neutral-500/20': isOwner, 'border-neutral-200/0': !isOwner }"
+        v-on="tablePopover.handlers(selectedRole2.toUpperCase())"
+      >
+        <span v-if="selectedRole2">
+          <Icon
+            :name="`lol:${selectedRole2}`"
+            class="w-6.5 h-6.5"
+            mode="css"
+            :alt="selectedRole2"
+          />
         </span>
       </div>
     </div>

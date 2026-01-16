@@ -2,6 +2,8 @@
 defineProps<{
   row: any;
 }>();
+
+const tablePopover = useTablePopover();
 </script>
 
 <template>
@@ -19,16 +21,18 @@ defineProps<{
         <Twemoji
           class="max-w-fit"
           :emoji="row.original.user.country"
-          :title="getCountryName(row.original.user.country)"
+          :alt="getCountryName(row.original.user.country)"
           png
           size="1.5em"
+          v-on="tablePopover.handlers(getCountryName(row.original.user.country))"
         />
         <Icon
           v-if="row.original.user.bio"
           name="lucide:message-square-more"
           size="1.3em"
           mode="css"
-          :title="row.original.user.bio"
+          :alt="row.original.user.bio"
+          v-on="tablePopover.handlers(row.original.user.bio)"
         />
       </div>
     </div>
