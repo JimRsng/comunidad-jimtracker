@@ -1,11 +1,11 @@
 <script setup lang="ts">
 defineProps<{
-  row: any;
+  data: JimTableData;
 }>();
 </script>
 
 <template>
-  <div v-if="row.original.wins || row.original.losses" class="flex items-center justify-center">
-    {{ (row.original.wins || 0) + (row.original.losses || 0) }}
+  <div v-if="data.wins || data.losses" class="flex items-center justify-center">
+    {{ (data.wins || 0) + (data.losses || 0) }}
   </div>
 </template>

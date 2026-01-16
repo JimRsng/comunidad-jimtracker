@@ -1,11 +1,11 @@
 <script setup lang="ts">
 defineProps<{
-  row: any;
+  data: JimTableData;
 }>();
 </script>
 
 <template>
   <div class="flex items-center justify-center font-semibold">
-    {{ row.original.rank }}
+    {{ data.rank }}
   </div>
 </template>

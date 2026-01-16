@@ -1,6 +1,6 @@
 <script setup lang="ts">
 defineProps<{
-  row: any;
+  data: JimTableData;
 }>();
 
 const tablePopover = useTablePopover();
@@ -9,12 +9,12 @@ const tablePopover = useTablePopover();
 <template>
   <div class="flex items-center justify-center gap-1">
     <img
-      :src="`/images/lol/${row.original.tier?.toLowerCase() || 'unranked'}.png`"
+      :src="`/images/lol/${data.tier?.toLowerCase() || 'unranked'}.png`"
       class="w-10 h-10 md:w-10 md:h-10 max-w-fit"
-      :alt="row.original.tier || 'UNRANKED'"
-      :title="row.original.tier || 'UNRANKED'"
-      v-on="tablePopover.handlers(row.original.tier || 'UNRANKED')"
+      :alt="data.tier || 'UNRANKED'"
+      :title="data.tier || 'UNRANKED'"
+      v-on="tablePopover.handlers(data.tier || 'UNRANKED')"
     >
-    <span v-if="row.original.division || row.original.lp"><span v-if="!['MASTER', 'GRANDMASTER', 'CHALLENGER'].includes(row.original.tier)">{{ row.original.division }} · </span>{{ row.original.lp }} LP</span>
+    <span v-if="data.tier && (data.division || data.lp)"><span v-if="!['MASTER', 'GRANDMASTER', 'CHALLENGER'].includes(data.tier)">{{ data.division }} · </span>{{ data.lp }} LP</span>
   </div>
 </template>

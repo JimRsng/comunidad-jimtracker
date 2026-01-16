@@ -1,9 +1,9 @@
 <script setup lang="ts">
 defineProps<{
-  row: any;
+  data: JimTableData;
 }>();
 </script>
 
 <template>
-  <RegionBadge :region="row.original.region" size="lg" />
+  <RegionBadge :region="data.region" size="lg" />
 </template>

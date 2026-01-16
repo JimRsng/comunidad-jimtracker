@@ -1,9 +1,9 @@
 <script setup lang="ts">
 defineProps<{
-  row: any;
+  data: JimTableData;
 }>();
 </script>
 
 <template>
-  <RoleSelector :data="row.original" />
+  <RoleSelector :data="data" />
 </template>

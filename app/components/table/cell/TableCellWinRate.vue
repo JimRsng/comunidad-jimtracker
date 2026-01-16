@@ -1,14 +1,14 @@
 <script setup lang="ts">
 defineProps<{
-  row: any;
+  data: JimTableData;
 }>();
 </script>
 
 <template>
   <div class="flex items-center justify-center">
     {{
-      row.original.wins || row.original.losses
-        ? ((row.original.wins / (row.original.wins + row.original.losses)) * 100).toFixed(2) + '%'
+      data.wins || data.losses
+        ? (((data.wins || 0) / ((data.wins || 0) + (data.losses || 0))) * 100).toFixed(2) + '%'
         : ''
     }}
   </div>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 defineProps<{
-  row: any;
+  data: JimTableData;
 }>();
 
 const tablePopover = useTablePopover();
@@ -12,34 +12,35 @@ const tablePopover = useTablePopover();
       <Icon name="simple-icons:riotgames" class="w-5 h-5 text-red-500" mode="css" />
       <div class="flex items-center gap-2">
         <NuxtLink
-          :to="`https://op.gg/es/lol/summoners/${getRegionLabel(row.original.region)}/${row.original.gameName}-${row.original.tagLine}`"
+          :to="`https://op.gg/es/lol/summoners/${getRegionLabel(data.region)}/${data.gameName}-${data.tagLine}`"
           target="_blank"
           class="font-semibold hover:underline"
         >
-          <span>{{ row.original.gameName }} <span class="font-normal text-muted">#{{ row.original.tagLine }}</span></span>
+          <span>{{ data.gameName }} <span class="font-normal text-muted">#{{ data.tagLine }}</span></span>
         </NuxtLink>
         <Twemoji
+          v-if="data.user.country"
           class="max-w-fit"
-          :emoji="row.original.user.country"
-          :alt="getCountryName(row.original.user.country)"
+          :emoji="data.user.country"
+          :alt="getCountryName(data.user.country)"
           png
           size="1.5em"
-          v-on="tablePopover.handlers(getCountryName(row.original.user.country))"
+          v-on="tablePopover.handlers(getCountryName(data.user.country))"
         />
         <Icon
-          v-if="row.original.user.bio"
+          v-if="data.user.bio"
           name="lucide:message-square-more"
           size="1.3em"
           mode="css"
-          :alt="row.original.user.bio"
-          v-on="tablePopover.handlers(row.original.user.bio)"
+          :alt="data.user.bio"
+          v-on="tablePopover.handlers(data.user.bio)"
         />
       </div>
     </div>
     <div class="flex items-center gap-1">
-      <img v-if="row.original.user.twitchProfileImage" :src="row.original.user.twitchProfileImage" class="w-5 h-5 rounded-sm" :alt="row.original.user.twitchDisplay">
-      <NuxtLink :to="`/u/${row.original.user.twitchLogin}`" class="hover:underline">
-        <span class="text-xs text-muted font-semibold">{{ row.original.user.twitchDisplay }}</span>
+      <img v-if="data.user.twitchProfileImage" :src="data.user.twitchProfileImage" class="w-5 h-5 rounded-sm" :alt="data.user.twitchDisplay">
+      <NuxtLink :to="`/u/${data.user.twitchLogin}`" class="hover:underline">
+        <span class="text-xs text-muted font-semibold">{{ data.user.twitchDisplay }}</span>
       </NuxtLink>
     </div>
   </div>

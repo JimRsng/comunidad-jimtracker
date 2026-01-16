@@ -24,7 +24,7 @@ export default defineEventHandler(async () => {
     country: tables.users.country
   })
     .from(tables.riotAccounts)
-    .leftJoin(tables.users, eq(tables.riotAccounts.twitchId, tables.users.twitchId))
+    .innerJoin(tables.users, eq(tables.riotAccounts.twitchId, tables.users.twitchId))
     .all();
 
   return riotAccountsWithUsers.map((account) => {
