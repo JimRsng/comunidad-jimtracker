@@ -10,6 +10,18 @@
     "email": "ahmedrangel@outlook.com",
     "url": "https://ahmedrangel.com"
   },
+  "contributors": [
+    {
+      "name": "Ahmed Rangel",
+      "email": "ahmedrangel@outlook.com",
+      "url": "https://ahmedrangel.com"
+    },
+    {
+      "name": "Yizack Rangel",
+      "email": "yizackr@gmail.com",
+      "url": "https://yizack.com"
+    }
+  ],
   "homepage": "https://comunidad.jimtracker.com",
   "repository": {
     "type": "git",
