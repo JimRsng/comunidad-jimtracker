@@ -260,7 +260,7 @@ const tablePopover = useTablePopover();
       />
       <UCheckbox v-model="preferences.hideUnrankeds" label="Ocultar unrankeds" />
     </div>
-    <div class="rounded-sm shadow bg-elevated/50">
+    <div class="rounded-sm shadow bg-elevated/50 border border-neutral-400/10">
       <UTable
         ref="table"
         v-model:pagination="pagination"
