@@ -109,7 +109,7 @@ export default defineNuxtConfig({
       tasks: true
     },
     scheduledTasks: {
-      "0 * * * *": ["updateLeagueData"]
+      "*/30 * * * *": ["updateLeagueData"]
     }
   },
 
