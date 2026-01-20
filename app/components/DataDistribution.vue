@@ -1,0 +1,133 @@
+<script setup lang="ts">
+const props = defineProps<{
+  data: JimTableData[];
+}>();
+
+const countryStats = computed(() => {
+  const stats = new Map<string, number>();
+
+  props.data.forEach((item) => {
+    const country = item.user.country || "🏳️";
+    stats.set(country, (stats.get(country) || 0) + 1);
+  });
+
+  return Array.from(stats.entries())
+    .map(([country, count]) => ({ country, count, name: getCountryName(country) || "Sin país" }))
+    .sort((a, b) => b.count - a.count);
+});
+
+const regionStats = computed(() => {
+  const stats = new Map<string, number>();
+
+  props.data.forEach((item) => {
+    const region = item.region;
+    stats.set(region, (stats.get(region) || 0) + 1);
+  });
+
+  return Array.from(stats.entries())
+    .map(([region, count]) => ({
+      region,
+      count
+    }))
+    .sort((a, b) => b.count - a.count);
+});
+
+const tierStats = computed(() => {
+  const stats = new Map<string, { count: number, maxElo: number }>();
+
+  props.data.forEach((item) => {
+    const tier = item.tier || "UNRANKED";
+    const current = stats.get(tier) || { count: 0, maxElo: 0 };
+    stats.set(tier, {
+      count: current.count + 1,
+      maxElo: Math.max(current.maxElo, item.eloValue || 0)
+    });
+  });
+
+  return Array.from(stats.entries())
+    .map(([tier, data]) => ({
+      tier,
+      count: data.count,
+      maxElo: data.maxElo
+    }))
+    .sort((a, b) => {
+      if (a.tier === "UNRANKED") return 1;
+      if (b.tier === "UNRANKED") return -1;
+      return b.maxElo - a.maxElo;
+    });
+});
+
+const tablePopover = useTablePopover();
+</script>
+
+<template>
+  <div class="space-y-4">
+    <h2 class="text-2xl font-bold mb-6">Distribución</h2>
+    <div class="space-y-2">
+      <h3 class="text-xl font-semibold">País</h3>
+      <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2">
+        <UCard
+          v-for="stat in countryStats"
+          :key="stat.country"
+          :ui="{
+            root: 'bg-elevated/50 ring-accented hover:bg-primary/5',
+            body: 'px-2 py-3 sm:px-2 sm:py-3',
+          }"
+          v-on="tablePopover.handlers(getCountryName(stat.country))"
+        >
+          <div class="flex flex-col items-center text-center gap-1">
+            <Twemoji :emoji="stat.country" size="1.5em" png />
+            <div>
+              <p class="text-lg font-bold">{{ stat.count }}</p>
+            </div>
+          </div>
+        </UCard>
+      </div>
+    </div>
+    <div class="space-y-2">
+      <h3 class="text-xl font-semibold">Región</h3>
+      <div class="grid grid-cols-3 sm:grid-cols-4 gap-2">
+        <UCard
+          v-for="stat in regionStats"
+          :key="stat.region"
+          :ui="{
+            root: 'bg-elevated/50 ring-accented hover:bg-primary/5',
+            body: 'px-2 py-3 sm:px-2 sm:py-3',
+          }"
+        >
+          <div class="flex flex-col items-center text-center gap-1">
+            <RegionBadge :region="stat.region" size="lg" />
+            <div>
+              <p class="text-lg font-bold">{{ stat.count }}</p>
+            </div>
+          </div>
+        </UCard>
+      </div>
+    </div>
+    <div class="space-y-2">
+      <h3 class="text-xl font-semibold">Tier</h3>
+      <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
+        <UCard
+          v-for="stat in tierStats"
+          :key="stat.tier"
+          :ui="{
+            root: 'bg-elevated/50 ring-accented hover:bg-primary/5',
+            body: 'px-2 py-3 sm:px-2 sm:py-3',
+          }"
+          v-on="tablePopover.handlers(stat.tier)"
+        >
+          <div class="flex flex-col items-center text-center gap-1">
+            <img
+              :src="`/images/lol/${stat.tier?.toLowerCase() || 'unranked'}.png`"
+              :alt="stat.tier"
+              class="w-12 h-12 object-contain"
+            >
+            <div>
+              <p class="text-lg font-bold">{{ stat.count }}</p>
+            </div>
+          </div>
+        </UCard>
+      </div>
+    </div>
+  </div>
+</template>
