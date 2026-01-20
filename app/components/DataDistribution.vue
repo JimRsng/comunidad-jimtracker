@@ -84,102 +84,118 @@ const roleStats = computed(() => {
 });
 
 const tablePopover = useTablePopover();
+
+const tabItems = [
+  { label: "País", slot: "country" },
+  { label: "Región", slot: "region" },
+  { label: "Tier", slot: "tier" },
+  { label: "Rol", slot: "role" }
+];
 </script>
 
 <template>
-  <div class="space-y-4">
+  <div class="space-y-4 rounded-sm shadow bg-elevated/50 border border-accented p-4">
     <h2 class="text-2xl font-bold mb-6">Distribución</h2>
-    <div class="space-y-2">
-      <h3 class="text-xl font-semibold">País</h3>
-      <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2">
-        <UCard
-          v-for="stat in countryStats"
-          :key="stat.country"
-          :ui="{
-            root: 'bg-elevated/50 ring-accented hover:bg-primary/5',
-            body: 'px-2 py-3 sm:px-2 sm:py-3',
-          }"
-          v-on="tablePopover.handlers(getCountryName(stat.country))"
-        >
-          <div class="flex flex-col items-center text-center gap-1">
-            <Twemoji :emoji="stat.country" size="1.5em" png />
-            <div>
-              <p class="text-lg font-bold">{{ stat.count }}</p>
+    <p class="text-muted">Cantidad de usuarios y cuentas de la comunidad agrupados por diferentes categorías.</p>
+    <UTabs
+      :items="tabItems"
+      class="w-full"
+      :ui="{
+        list: 'border border-accented bg-default mb-4',
+        trigger: 'data-[state=inactive]:text-default',
+      }"
+    >
+      <template #country>
+        <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-0">
+          <UCard
+            v-for="stat in countryStats"
+            :key="stat.country"
+            :ui="{
+              root: 'ring-accented hover:bg-primary/5 rounded-none',
+              body: 'px-2 py-3 sm:px-2 sm:py-3',
+            }"
+            v-on="tablePopover.handlers(getCountryName(stat.country))"
+          >
+            <div class="flex flex-col items-center text-center gap-1">
+              <Twemoji :emoji="stat.country" size="1.5em" png />
+              <div>
+                <p class="text-lg font-bold">{{ stat.count }}</p>
+              </div>
             </div>
-          </div>
-        </UCard>
-      </div>
-    </div>
-    <div class="space-y-2">
-      <h3 class="text-xl font-semibold">Región</h3>
-      <div class="grid grid-cols-3 sm:grid-cols-4 gap-2">
-        <UCard
-          v-for="stat in regionStats"
-          :key="stat.region"
-          :ui="{
-            root: 'bg-elevated/50 ring-accented hover:bg-primary/5',
-            body: 'px-2 py-3 sm:px-2 sm:py-3',
-          }"
-        >
-          <div class="flex flex-col items-center text-center gap-1">
-            <RegionBadge :region="stat.region" size="lg" />
-            <div>
-              <p class="text-lg font-bold">{{ stat.count }}</p>
+          </UCard>
+        </div>
+      </template>
+
+      <template #region>
+        <div class="grid grid-cols-3 sm:grid-cols-4 gap-0 pt-4">
+          <UCard
+            v-for="stat in regionStats"
+            :key="stat.region"
+            :ui="{
+              root: 'ring-accented hover:bg-primary/5 rounded-none',
+              body: 'px-2 py-3 sm:px-2 sm:py-3',
+            }"
+          >
+            <div class="flex flex-col items-center text-center gap-1">
+              <RegionBadge :region="stat.region" size="lg" />
+              <div>
+                <p class="text-lg font-bold">{{ stat.count }}</p>
+              </div>
             </div>
-          </div>
-        </UCard>
-      </div>
-    </div>
-    <div class="space-y-2">
-      <h3 class="text-xl font-semibold">Tier</h3>
-      <div class="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-5 gap-2">
-        <UCard
-          v-for="stat in tierStats"
-          :key="stat.tier"
-          :ui="{
-            root: 'bg-elevated/50 ring-accented hover:bg-primary/5',
-            body: 'px-2 py-3 sm:px-2 sm:py-3',
-          }"
-          v-on="tablePopover.handlers(stat.tier)"
-        >
-          <div class="flex flex-col items-center text-center gap-1">
-            <img
-              :src="`/images/lol/${stat.tier?.toLowerCase() || 'unranked'}.png`"
-              :alt="stat.tier"
-              class="w-12 h-12 object-contain"
-            >
-            <div>
-              <p class="text-lg font-bold">{{ stat.count }}</p>
+          </UCard>
+        </div>
+      </template>
+
+      <template #tier>
+        <div class="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-5 gap-0">
+          <UCard
+            v-for="stat in tierStats"
+            :key="stat.tier"
+            :ui="{
+              root: 'ring-accented hover:bg-primary/5 rounded-none',
+              body: 'px-2 py-3 sm:px-2 sm:py-3',
+            }"
+            v-on="tablePopover.handlers(stat.tier)"
+          >
+            <div class="flex flex-col items-center text-center gap-1">
+              <img
+                :src="`/images/lol/${stat.tier?.toLowerCase() || 'unranked'}.png`"
+                :alt="stat.tier"
+                class="w-12 h-12 object-contain"
+              >
+              <div>
+                <p class="text-lg font-bold">{{ stat.count }}</p>
+              </div>
             </div>
-          </div>
-        </UCard>
-      </div>
-    </div>
-    <div class="space-y-2">
-      <h3 class="text-xl font-semibold">Rol</h3>
-      <div class="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-6 gap-2">
-        <UCard
-          v-for="stat in roleStats"
-          :key="stat.role"
-          :ui="{
-            root: 'bg-elevated/50 ring-accented hover:bg-primary/5',
-            body: 'px-2 py-3 sm:px-2 sm:py-3',
-          }"
-          v-on="tablePopover.handlers(stat.role.toUpperCase())"
-        >
-          <div class="flex flex-col items-center text-center gap-1">
-            <Icon
-              :name="`lol:${stat.role}`"
-              class="w-6.5 h-6.5"
-              mode="css"
-              :alt="stat.role"
-            />
-            <div>
-              <p class="text-lg font-bold">{{ stat.count }}</p>
+          </UCard>
+        </div>
+      </template>
+
+      <template #role>
+        <div class="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-6 gap-0">
+          <UCard
+            v-for="stat in roleStats"
+            :key="stat.role"
+            :ui="{
+              root: 'ring-accented hover:bg-primary/5 rounded-none',
+              body: 'px-2 py-3 sm:px-2 sm:py-3',
+            }"
+            v-on="tablePopover.handlers(stat.role.toUpperCase())"
+          >
+            <div class="flex flex-col items-center text-center gap-1">
+              <Icon
+                :name="`lol:${stat.role}`"
+                class="w-6.5 h-6.5"
+                mode="css"
+                :alt="stat.role"
+              />
+              <div>
+                <p class="text-lg font-bold">{{ stat.count }}</p>
+              </div>
             </div>
-          </div>
-        </UCard>
-      </div>
-    </div>
+          </UCard>
+        </div>
+      </template>
+    </UTabs>
   </div>
 </template>
