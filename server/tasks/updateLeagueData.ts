@@ -45,22 +45,17 @@ export default defineTask({
             eq(tables.riotAccounts.puuid, league.puuid)
           ));
 
-          if (import.meta.dev) {
-            updateQuery.returning({
-              puuid: tables.riotAccounts.puuid,
-              twitchId: tables.riotAccounts.twitchId,
-              lp: tables.riotAccounts.lp,
-              tier: tables.riotAccounts.tier,
-              division: tables.riotAccounts.division,
-              wins: tables.riotAccounts.wins,
-              losses: tables.riotAccounts.losses
-            }).get();
-          }
-          else {
-            updateQuery.run();
-          }
+          const updatePromise = import.meta.dev ? updateQuery.returning({
+            puuid: tables.riotAccounts.puuid,
+            twitchId: tables.riotAccounts.twitchId,
+            lp: tables.riotAccounts.lp,
+            tier: tables.riotAccounts.tier,
+            division: tables.riotAccounts.division,
+            wins: tables.riotAccounts.wins,
+            losses: tables.riotAccounts.losses
+          }).get() : updateQuery.run();
 
-          toUpdatePromises.push(updateQuery);
+          toUpdatePromises.push(updatePromise);
         }
       }
     }
