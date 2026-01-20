@@ -44,8 +44,8 @@
     "test:types": "vue-tsc -b --noEmit"
   },
   "devDependencies": {
-    "@iconify-json/lucide": "^1.2.85",
-    "@iconify-json/simple-icons": "^1.2.66",
+    "@iconify-json/lucide": "^1.2.86",
+    "@iconify-json/simple-icons": "^1.2.67",
     "@libsql/client": "^0.17.0",
     "@nuxt/eslint": "^1.12.1",
     "@nuxt/ui": "^4.3.0",
@@ -67,8 +67,8 @@
     "typescript": "^5.9.3",
     "ufo": "^1.6.3",
     "vue-tsc": "^3.2.2",
-    "wrangler": "^4.59.2",
+    "wrangler": "^4.59.3",
     "zod": "^4.3.5"
   },
-  "packageManager": "pnpm@10.28.0"
+  "packageManager": "pnpm@10.28.1"
 }
