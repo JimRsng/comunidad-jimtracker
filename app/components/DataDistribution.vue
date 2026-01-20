@@ -111,7 +111,7 @@ const tabItems = [
             v-for="stat in countryStats"
             :key="stat.country"
             :ui="{
-              root: 'ring-accented hover:bg-primary/5 rounded-none',
+              root: 'ring-0 border border-accented hover:bg-primary/5 rounded-none -ml-px -mt-px',
               body: 'px-2 py-3 sm:px-2 sm:py-3',
             }"
             v-on="tablePopover.handlers(getCountryName(stat.country))"
@@ -132,7 +132,7 @@ const tabItems = [
             v-for="stat in regionStats"
             :key="stat.region"
             :ui="{
-              root: 'ring-accented hover:bg-primary/5 rounded-none',
+              root: 'ring-0 border border-accented hover:bg-primary/5 rounded-none -ml-px -mt-px',
               body: 'px-2 py-3 sm:px-2 sm:py-3',
             }"
           >
@@ -152,7 +152,7 @@ const tabItems = [
             v-for="stat in tierStats"
             :key="stat.tier"
             :ui="{
-              root: 'ring-accented hover:bg-primary/5 rounded-none',
+              root: 'ring-0 border border-accented hover:bg-primary/5 rounded-none -ml-px -mt-px',
               body: 'px-2 py-3 sm:px-2 sm:py-3',
             }"
             v-on="tablePopover.handlers(stat.tier)"
@@ -177,7 +177,7 @@ const tabItems = [
             v-for="stat in roleStats"
             :key="stat.role"
             :ui="{
-              root: 'ring-accented hover:bg-primary/5 rounded-none',
+              root: 'ring-0 border border-accented hover:bg-primary/5 rounded-none -ml-px -mt-px',
               body: 'px-2 py-3 sm:px-2 sm:py-3',
             }"
             v-on="tablePopover.handlers(stat.role.toUpperCase())"
