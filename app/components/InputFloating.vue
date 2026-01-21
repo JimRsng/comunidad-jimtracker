@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { InputHTMLAttributes } from "vue";
 
-const props = defineProps<{
+defineProps<{
   id?: string;
   name?: string;
   type?: InputHTMLAttributes["type"];
@@ -36,17 +36,6 @@ const applyModifiers = (event: Event) => {
   emit("change", input.value);
 };
 
-const binds = {
-  id: props.id,
-  name: props.name,
-  type: props.type || "text",
-  placeholder: "",
-  autocomplete: props.autocomplete,
-  required: props.required,
-  disabled: props.disabled,
-  readonly: props.readonly
-};
-
 const slots = useSlots();
 </script>
 
@@ -58,18 +47,30 @@ const slots = useSlots();
     <Icon v-else-if="icon" :name="icon" class="input-icon h-5 w-5 text-primary" />
     <input
       v-if="!value"
+      :id="id"
       v-model="model"
+      :name="name"
+      :type="type"
+      :placeholder="placeholder"
+      :required="required"
+      :disabled="disabled"
+      :readonly="readonly"
       class="from-input peer"
-      v-bind="binds"
       @change="applyModifiers"
       @focus="emit('focus', $event)"
       @blur="emit('blur', $event)"
     >
     <input
       v-else
-      class="from-input peer"
+      :id="id"
+      :name="name"
       :value="value"
-      v-bind="binds"
+      :type="type"
+      :placeholder="placeholder"
+      :required="required"
+      :disabled="disabled"
+      :readonly="readonly"
+      class="from-input peer"
       @change="applyModifiers"
       @focus="emit('focus', $event)"
       @blur="emit('blur', $event)"
