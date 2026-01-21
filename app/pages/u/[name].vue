@@ -30,27 +30,27 @@ const maxAccounts = 4;
 
 const addRiotAccount = async () => {
   verifying.value = true;
-  const verifyFollow = await $fetch<{ isFollowing: boolean }>(`/api/users/${name}/verify-follow`).catch((e) => {
+  $fetch<{ isFollowing: boolean }>(`/api/users/${name}/verify-follow`).catch((e) => {
     toast.add({
       title: "Error",
       description: e.message || "Ha ocurrido un error.",
       color: "error"
     });
     return null;
-  }).finally(() => verifying.value = false);
+  }).then(async (response) => {
+    if (!response?.isFollowing) {
+      toast.add({
+        title: "Error",
+        description: "Debes seguir a JimRsng en Twitch para agregar una cuenta.",
+        color: "error"
+      });
+      return;
+    }
 
-  if (!verifyFollow) return;
-
-  if (!verifyFollow.isFollowing) {
-    toast.add({
-      title: "Error",
-      description: "Debes seguir a JimRsng en Twitch para agregar una cuenta.",
-      color: "error"
-    });
-    return;
-  }
-
-  navigateTo("/auth/riot", { external: true });
+    await navigateTo("/auth/riot", { external: true });
+  }).finally(() => {
+    verifying.value = false;
+  });
 };
 
 const removeAccount = async (puuid: string) => {
