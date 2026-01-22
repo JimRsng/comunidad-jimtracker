@@ -245,6 +245,11 @@ const pagination = ref({
   pageSize: 100
 });
 
+const setPage = (page: number) => {
+  table.value?.tableApi?.setPageIndex(page - 1);
+  window.scrollTo({ top: 0, behavior: "instant" });
+};
+
 const tablePopover = useTablePopover();
 </script>
 
@@ -285,7 +290,7 @@ const tablePopover = useTablePopover();
           :items-per-page="pagination.pageSize"
           :total="table?.tableApi?.getFilteredRowModel().rows.length || 0"
           :sibling-count="1"
-          @update:page="(p) => table?.tableApi?.setPageIndex(p - 1)"
+          @update:page="setPage"
         />
       </div>
     </div>
