@@ -213,10 +213,6 @@ watch(() => preferences.value.hideUnrankeds, (newValue) => {
   table.value?.tableApi?.setPageIndex(0);
 });
 
-watch(() => preferences.value.region, () => {
-  localStorage.setItem("pref-region", preferences.value.region);
-});
-
 watch(debouncedSearch, (value) => {
   table.value?.tableApi?.getColumn("account")?.setFilterValue(noSpaced(value));
 });
@@ -225,17 +221,9 @@ onMounted(() => {
   const hideUnrankeds = localStorage.getItem("pref-hide-unrankeds");
   preferences.value.hideUnrankeds = hideUnrankeds === "true";
 
-  const region = localStorage.getItem("pref-region");
-  if (region && region !== "ALL") {
-    preferences.value.region = region;
-  }
-
   nextTick(() => {
     if (preferences.value.hideUnrankeds) {
       table.value?.tableApi?.getColumn("elo")?.setFilterValue(true);
-    }
-    if (preferences.value.region && preferences.value.region !== "ALL") {
-      table.value?.tableApi?.getColumn("region")?.setFilterValue(preferences.value.region);
     }
   });
 });
