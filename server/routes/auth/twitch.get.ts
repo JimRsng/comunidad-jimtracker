@@ -1,7 +1,7 @@
 import countries from "~/assets/json/countries.json";
 
 export default defineOAuthTwitchEventHandler({
-  async onSuccess (event, result: { user: TwitchUser }) {
+  async onSuccess (event, result) {
     const twitch = result.user;
 
     const countryCode = event.context.cloudflare?.request?.cf?.country as string || null;

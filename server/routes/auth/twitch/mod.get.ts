@@ -5,7 +5,7 @@ export default defineOAuthTwitchEventHandler({
   config: {
     scope: ["user:read:moderated_channels", "moderator:read:followers", "channel:read:subscriptions"]
   },
-  async onSuccess (event, result: { user: TwitchUser, tokens: any }) {
+  async onSuccess (event, result) {
     const twitch = result.user;
     const config = useRuntimeConfig(event);
     const provider = new StaticAuthProvider(config.oauth.twitch.clientId, result.tokens.access_token);
@@ -24,7 +24,7 @@ export default defineOAuthTwitchEventHandler({
         set: {
           accessToken: result.tokens.access_token,
           refreshToken: result.tokens.refresh_token,
-          expiresIn: result.tokens.expiresIn,
+          expiresIn: result.tokens.expires_in,
           updatedAt: unixepoch({ mode: "ms" })
         }
       }).returning().get();
