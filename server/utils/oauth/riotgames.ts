@@ -61,7 +61,7 @@ export interface OAuthRiotGamesConfig {
   region?: "americas" | "europe" | "asia";
 }
 
-interface RiotGamesUser extends RiotGamesAccount, Partial<RiotGamesUserInfo> {}
+interface RiotGamesUser extends RiotGamesAccount, RiotGamesUserInfo {}
 
 interface RiotGamesAccount {
   puuid: string;
@@ -78,6 +78,7 @@ interface RiotGamesUserInfo {
 interface RiotGamesTokens {
   access_token: string;
   refresh_token: string;
+  id_token: string;
   expires_in: number;
   scope: string;
   token_type: string;
@@ -150,21 +151,18 @@ export function defineOAuthRiotGamesEventHandler ({ config, onSuccess, onError }
 
     const accessToken = tokens.access_token;
 
-    let userInfo = {} as RiotGamesUserInfo;
-
-    if (config.scope?.includes("cpid")) {
-      userInfo = await $fetch<RiotGamesUserInfo>(`${config.apiURL}/userinfo`, {
+    const [account, userInfo] = await Promise.all([
+      $fetch<RiotGamesAccount>(`https://${config.region}.api.riotgames.com/riot/account/v1/accounts/me`, {
         headers: {
           Authorization: `Bearer ${accessToken}`
         }
-      });
-    }
-
-    const account = await $fetch<RiotGamesAccount>(`https://${config.region}.api.riotgames.com/riot/account/v1/accounts/me`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`
-      }
-    });
+      }),
+      $fetch<RiotGamesUserInfo>(`${config.apiURL}/userinfo`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      })
+    ]);
 
     const user = {
       ...account,
