@@ -68,10 +68,10 @@ const deleteAccount = async () => {
     <!--
     <USelectMenu id="country" v-model="form.country" :items="countriesMenu" value-key="value" placeholder="País" icon="lucide:search" size="xl" class="w-full" clear>
       <template #leading="{ modelValue }">
-        <Twemoji v-if="modelValue" :emoji="modelValue" size="1.5rem" png />
+        <Twemoji v-if="modelValue" :emoji="modelValue" size="1.5rem" />
       </template>
       <template #item-leading="{ item }">
-        <Twemoji v-if="item" :emoji="item.value" size="1.5rem" png />
+        <Twemoji v-if="item" :emoji="item.value" size="1.5rem" />
       </template>
     </USelectMenu>
     -->

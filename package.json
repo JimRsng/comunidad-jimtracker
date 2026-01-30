@@ -59,7 +59,7 @@
     "eslint": "^9.39.2",
     "nuxt": "^4.3.0",
     "nuxt-auth-utils": "^0.5.28",
-    "nuxt-twemoji": "^3.8.1",
+    "nuxt-twemoji": "^4.0.1",
     "sass": "^1.97.3",
     "stylelint": "^17.0.0",
     "stylelint-config-standard-scss": "^17.0.0",

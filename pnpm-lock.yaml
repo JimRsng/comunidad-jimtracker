@@ -54,8 +54,8 @@ importers:
         specifier: ^0.5.28
         version: 0.5.28(magicast@0.5.1)
       nuxt-twemoji:
-        specifier: ^3.8.1
-        version: 3.8.1(magicast@0.5.1)
+        specifier: ^4.0.1
+        version: 4.0.1(magicast@0.5.1)
       sass:
         specifier: ^1.97.3
         version: 1.97.3
@@ -5298,8 +5298,8 @@ packages:
   nuxt-site-config@3.2.18:
     resolution: {integrity: sha512-pvFM9wNjmb/CTiea36lqVT7WO0zGDHq4MNoFaO4cdOYrym9JeMg5VJIOYnAcAsa6VK1FlH+Cw7Af9UjcqwRg/w==}
 
-  nuxt-twemoji@3.8.1:
-    resolution: {integrity: sha512-U3MLCbxO4Oym+sPvOBcn0j1cp3HYAcxjCNFcKoBr1pML1QJium2OF9+miVZnQSBC86NrtLomdf6pv1pVy7EeUg==}
+  nuxt-twemoji@4.0.1:
+    resolution: {integrity: sha512-mm0QhKuS+YoDjFSW4/11MQgKi47d/KnS6fddEB2GaorVwGLoC+UIqbsgLMUqNVb8xLCa1Wr4P0Y/IrSzdJ5OMw==}
 
   nuxt@4.3.0:
     resolution: {integrity: sha512-99Iw3E3L5/2QtJyV4errZ0axkX/S9IAFK0AHm0pmRHkCu37OFn8mz2P4/CYTt6B/TG3mcKbXAVaeuF2FsAc1cA==}
@@ -12094,11 +12094,12 @@ snapshots:
       - magicast
       - vue
 
-  nuxt-twemoji@3.8.1(magicast@0.5.1):
+  nuxt-twemoji@4.0.1(magicast@0.5.1):
     dependencies:
       '@nuxt/kit': 4.3.0(magicast@0.5.1)
       '@twemoji/api': 17.0.2
       '@twemoji/parser': 17.0.1
+      defu: 6.1.4
     transitivePeerDependencies:
       - magicast
 

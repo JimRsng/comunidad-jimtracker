@@ -117,7 +117,7 @@ const tabItems = [
             v-on="tablePopover.handlers(getCountryName(stat.country))"
           >
             <div class="flex flex-col items-center text-center gap-1">
-              <Twemoji :emoji="stat.country" size="1.5em" png />
+              <Twemoji :emoji="stat.country" size="1.5em" />
               <div>
                 <p class="text-lg font-bold">{{ stat.count }}</p>
               </div>

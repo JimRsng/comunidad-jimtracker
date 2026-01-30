@@ -23,7 +23,6 @@ const tablePopover = useTablePopover();
           class="max-w-fit"
           :emoji="data.user.country"
           :alt="getCountryName(data.user.country)"
-          png
           size="1.5em"
           v-on="tablePopover.handlers(getCountryName(data.user.country))"
         />

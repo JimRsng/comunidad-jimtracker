@@ -2,7 +2,6 @@ import { SITE } from "../shared/utils/site";
 import icons from "./icons";
 
 export default defineNuxtConfig({
-
   modules: [
     "@nuxt/ui",
     "@nuxt/eslint",
@@ -12,12 +11,15 @@ export default defineNuxtConfig({
     "nuxt-auth-utils",
     "nuxt-twemoji"
   ],
+
   $production: {
     nitro: {
       preset: "cloudflare-module"
     }
   },
+
   devtools: { enabled: true },
+
   app: {
     head: {
       charset: "utf-8",
@@ -162,5 +164,9 @@ export default defineNuxtConfig({
       { label: "Priority", select: "sitemap:priority", width: "12.5%" },
       { label: "Last Modified", select: "sitemap:lastmod", width: "35%" }
     ]
+  },
+
+  twemoji: {
+    mode: "png"
   }
 });

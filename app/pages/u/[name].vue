@@ -132,7 +132,7 @@ onUnmounted(() => {
       <span class="font-bold text-3xl">{{ userInfo.twitchDisplay }}</span>
       <UPopover v-if="userInfo.country" mode="hover" :content="{ side: 'top' }" arrow>
         <UButton variant="link" class="p-0">
-          <Twemoji :emoji="userInfo.country" png size="2rem" :alt="getCountryName(userInfo.country)" />
+          <Twemoji :emoji="userInfo.country" size="2rem" :alt="getCountryName(userInfo.country)" />
         </UButton>
         <template #content>
           {{ getCountryName(userInfo.country) }}
