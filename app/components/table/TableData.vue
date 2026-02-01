@@ -275,48 +275,46 @@ for (const item of props.data) {
 
 <template>
   <div class="w-full mx-auto">
-    <div class="flex justify-between items-center gap-2 pb-3.5 flex-wrap">
-      <div class="flex items-center justify-center gap-2 flex-wrap">
-        <UInput
-          v-model="searchInput"
-          placeholder="Escribe para filtrar..."
-          class="min-w-[12ch]"
-          trailing-icon="lucide:search"
-          type="search"
-        />
-        <USelect
-          v-model="preferences.country"
-          class="min-w-[30ch]"
-          :items="[
-            { label: 'País', value: 'ALL' },
-            ...Array.from(countriesSet).sort(
-              (a, b) => getCountryName(a)!.localeCompare(getCountryName(b)!),
-            ).map(country => ({ label: getCountryName(country), value: country })),
-          ]"
-        >
-          <template #leading="{ modelValue }">
+    <div class="flex justify-start items-center gap-2 pb-3.5 flex-wrap">
+      <UInput
+        v-model="searchInput"
+        placeholder="Escribe para filtrar..."
+        class="min-w-[12ch]"
+        trailing-icon="lucide:search"
+        type="search"
+      />
+      <USelect
+        v-model="preferences.country"
+        class="min-w-[30ch]"
+        :items="[
+          { label: 'País', value: 'ALL' },
+          ...Array.from(countriesSet).sort(
+            (a, b) => getCountryName(a)!.localeCompare(getCountryName(b)!),
+          ).map(country => ({ label: getCountryName(country), value: country })),
+        ]"
+      >
+        <template #leading="{ modelValue }">
+          <Twemoji
+            v-if="modelValue !== 'ALL'"
+            :emoji="modelValue"
+            :alt="getCountryName(modelValue)"
+            size="1.5em"
+          />
+          <Icon v-else name="lucide:globe" size="1.5em" mode="css" />
+        </template>
+        <template #item="{ item }">
+          <div class="flex items-center gap-2 min-w-[12ch] shrink-0">
             <Twemoji
-              v-if="modelValue !== 'ALL'"
-              :emoji="modelValue"
-              :alt="getCountryName(modelValue)"
+              v-if="item.value !== 'ALL'"
+              :emoji="item.value"
+              :alt="getCountryName(item.value)"
               size="1.5em"
             />
             <Icon v-else name="lucide:globe" size="1.5em" mode="css" />
-          </template>
-          <template #item="{ item }">
-            <div class="flex items-center gap-2 min-w-[12ch] shrink-0">
-              <Twemoji
-                v-if="item.value !== 'ALL'"
-                :emoji="item.value"
-                :alt="getCountryName(item.value)"
-                size="1.5em"
-              />
-              <Icon v-else name="lucide:globe" size="1.5em" mode="css" />
-              <span>{{ item.label }}</span>
-            </div>
-          </template>
-        </USelect>
-      </div>
+            <span>{{ item.label }}</span>
+          </div>
+        </template>
+      </USelect>
       <UCheckbox v-model="preferences.hideUnrankeds" label="Ocultar unrankeds" />
     </div>
     <div class="rounded-sm shadow bg-elevated/50 border border-accented">
