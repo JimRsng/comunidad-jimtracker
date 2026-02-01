@@ -12,35 +12,33 @@ const isOnlineChatter = computed(() => {
 </script>
 
 <template>
-  <div class="flex items-center gap-3 max-w-60">
+  <div class="flex items-center gap-3 xl:max-w-60">
     <img v-if="data.user.twitchProfileImage" :src="data.user.twitchProfileImage.replace('300x300', '50x50')" class="w-10 h-10 rounded-sm border-2 border-accented" :alt="data.user.twitchDisplay">
-    <div class="flex flex-col items-start gap-0.5">
-      <div class="flex items-center gap-1">
-        <div class="flex items-center gap-2">
-          <NuxtLink
-            :to="`https://op.gg/es/lol/summoners/${getRegionLabel(data.region)}/${data.gameName}-${data.tagLine}`"
-            target="_blank"
-            class="font-semibold hover:underline"
-          >
-            <span>{{ data.gameName }} <span class="font-normal text-muted">#{{ data.tagLine }}</span></span>
-          </NuxtLink>
-          <Twemoji
-            v-if="data.user.country"
-            class="max-w-fit"
-            :emoji="data.user.country"
-            :alt="getCountryName(data.user.country)"
-            size="1.5em"
-            v-on="tablePopover.handlers(getCountryName(data.user.country))"
-          />
-          <Icon
-            v-if="data.user.bio"
-            name="lucide:message-square-more"
-            size="1.3em"
-            mode="css"
-            :alt="data.user.bio"
-            v-on="tablePopover.handlers(data.user.bio)"
-          />
-        </div>
+    <div class="flex flex-col gap-0.5">
+      <div class="flex items-center gap-2">
+        <NuxtLink
+          :to="`https://op.gg/es/lol/summoners/${getRegionLabel(data.region)}/${data.gameName}-${data.tagLine}`"
+          target="_blank"
+          class="font-semibold hover:underline"
+        >
+          <span>{{ data.gameName }} <span class="font-normal text-muted">#{{ data.tagLine }}</span></span>
+        </NuxtLink>
+        <Twemoji
+          v-if="data.user.country"
+          class="max-w-fit"
+          :emoji="data.user.country"
+          :alt="getCountryName(data.user.country)"
+          size="1.5em"
+          v-on="tablePopover.handlers(getCountryName(data.user.country))"
+        />
+        <Icon
+          v-if="data.user.bio"
+          name="lucide:message-square-more"
+          size="1.3em"
+          mode="css"
+          :alt="data.user.bio"
+          v-on="tablePopover.handlers(data.user.bio)"
+        />
       </div>
       <div class="flex items-center gap-1">
         <NuxtLink :to="`/u/${data.user.twitchLogin}`" class="hover:underline flex items-center gap-1">
