@@ -76,8 +76,9 @@ const columns: TableColumn<JimTableData>[] = [
       const nameTagMatch = noSpaced(`${row.original.gameName}#${row.original.tagLine}`).includes(search);
       const twitchDisplayMatch = noSpaced(row.original.user?.twitchDisplay).includes(search);
       const twitchLoginMatch = noSpaced(row.original.user?.twitchLogin).includes(search);
+      const countryMatch = noSpaced(row.original.user?.country).includes(search);
 
-      return gameNameMatch || tagLineMatch || nameTagMatch || twitchDisplayMatch || twitchLoginMatch;
+      return gameNameMatch || tagLineMatch || nameTagMatch || twitchDisplayMatch || twitchLoginMatch || countryMatch;
     }
   },
   {
@@ -210,7 +211,8 @@ const meta: TableMeta<any> = {
 
 const preferences = ref({
   hideUnrankeds: false,
-  region: "ALL"
+  region: "ALL",
+  country: "ALL"
 });
 
 watch(() => preferences.value.hideUnrankeds, (newValue) => {
@@ -220,6 +222,19 @@ watch(() => preferences.value.hideUnrankeds, (newValue) => {
     eloColumn.setFilterValue(newValue ? true : undefined);
   }
   // reset to first page when toggling
+  table.value?.tableApi?.setPageIndex(0);
+});
+
+watch(() => preferences.value.country, (newValue) => {
+  const countryColumn = table.value?.tableApi?.getColumn("account");
+  if (countryColumn) {
+    if (newValue === "ALL") {
+      countryColumn.setFilterValue(undefined);
+    }
+    else {
+      countryColumn.setFilterValue(newValue);
+    }
+  }
   table.value?.tableApi?.setPageIndex(0);
 });
 
@@ -249,18 +264,59 @@ const setPage = (page: number) => {
 };
 
 const tablePopover = useTablePopover();
+
+const countriesSet = new Set<string>();
+for (const item of props.data) {
+  if (item.user.country) {
+    countriesSet.add(item.user.country);
+  }
+}
 </script>
 
 <template>
   <div class="w-full mx-auto">
-    <div class="flex justify-between items-center gap-2 pb-3.5">
-      <UInput
-        v-model="searchInput"
-        placeholder="Escribe para filtrar..."
-        class="min-w-[12ch]"
-        trailing-icon="lucide:search"
-        type="search"
-      />
+    <div class="flex justify-between items-center gap-2 pb-3.5 flex-wrap">
+      <div class="flex items-center justify-center gap-2 flex-wrap">
+        <UInput
+          v-model="searchInput"
+          placeholder="Escribe para filtrar..."
+          class="min-w-[12ch]"
+          trailing-icon="lucide:search"
+          type="search"
+        />
+        <USelect
+          v-model="preferences.country"
+          class="min-w-[30ch]"
+          :items="[
+            { label: 'País', value: 'ALL' },
+            ...Array.from(countriesSet).sort(
+              (a, b) => getCountryName(a)!.localeCompare(getCountryName(b)!),
+            ).map(country => ({ label: getCountryName(country), value: country })),
+          ]"
+        >
+          <template #leading="{ modelValue }">
+            <Twemoji
+              v-if="modelValue !== 'ALL'"
+              :emoji="modelValue"
+              :alt="getCountryName(modelValue)"
+              size="1.5em"
+            />
+            <Icon v-else name="lucide:globe" size="1.5em" mode="css" />
+          </template>
+          <template #item="{ item }">
+            <div class="flex items-center gap-2 min-w-[12ch] shrink-0">
+              <Twemoji
+                v-if="item.value !== 'ALL'"
+                :emoji="item.value"
+                :alt="getCountryName(item.value)"
+                size="1.5em"
+              />
+              <Icon v-else name="lucide:globe" size="1.5em" mode="css" />
+              <span>{{ item.label }}</span>
+            </div>
+          </template>
+        </USelect>
+      </div>
       <UCheckbox v-model="preferences.hideUnrankeds" label="Ocultar unrankeds" />
     </div>
     <div class="rounded-sm shadow bg-elevated/50 border border-accented">

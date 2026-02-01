@@ -23,5 +23,6 @@ export default [
   "lucide:chevron-right",
   "lucide:ellipsis",
   "lucide:user",
-  "tabler:circle-filled"
+  "tabler:circle-filled",
+  "lucide:globe"
 ];
