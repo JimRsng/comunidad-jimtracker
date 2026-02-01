@@ -5,7 +5,7 @@ defineProps<{
 </script>
 
 <template>
-  <div class="min-w-32 mx-5">
+  <div class="min-w-24 mx-5">
     <div class="flex w-full items-center justify-center gap-1 font-semibold">
       <span class="text-blue-400">{{ data.wins || 0 }}</span>
       <UProgress
