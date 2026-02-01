@@ -324,8 +324,7 @@ for (const item of props.data) {
           getPaginationRowModel: getPaginationRowModel(),
         }"
       />
-
-      <div class="flex flex-col lg:flex-row justify-between items-center px-4 py-3.5 border-t border-default gap-2">
+      <div class="flex flex-col lg:flex-row justify-between items-center px-4 py-3.5 border-t border-accented gap-2">
         <div class="text-sm text-muted">
           Mostrando {{ Math.min((table?.tableApi?.getState().pagination.pageIndex || 0) * pagination.pageSize + 1, table?.tableApi?.getFilteredRowModel().rows.length || 0) }} - {{ Math.min(((table?.tableApi?.getState().pagination.pageIndex || 0) + 1) * pagination.pageSize, table?.tableApi?.getFilteredRowModel().rows.length || 0) }} de {{ table?.tableApi?.getFilteredRowModel().rows.length || 0 }}
         </div>
