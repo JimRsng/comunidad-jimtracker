@@ -255,6 +255,11 @@ for (const item of props.data) {
     countriesSet.add(item.user.country);
   }
 }
+
+const countriesSetItems = Array.from(countriesSet).map(country => ({
+  label: getCountryName(country)!,
+  value: country
+})).sort((a, b) => a.label.localeCompare(b.label));
 </script>
 
 <template>
@@ -273,11 +278,8 @@ for (const item of props.data) {
         clear
         placeholder="País"
         value-key="value"
-        :items="[
-          ...Array.from(countriesSet).sort(
-            (a, b) => getCountryName(a)!.localeCompare(getCountryName(b)!),
-          ).map(country => ({ label: getCountryName(country), value: country })),
-        ]"
+        :search-input="{ placeholder: 'Buscar...', icon: 'lucide:search' }"
+        :items="countriesSetItems"
       >
         <template #leading>
           <Twemoji
