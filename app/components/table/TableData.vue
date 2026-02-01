@@ -263,13 +263,13 @@ for (const item of props.data) {
       <UInput
         v-model="searchInput"
         placeholder="Escribe para filtrar..."
-        class="min-w-[12ch]"
+        class="min-w-full sm:min-w-[12ch]"
         trailing-icon="lucide:search"
         type="search"
       />
       <USelectMenu
         v-model="preferences.country"
-        class="min-w-[30ch]"
+        class="min-w-full sm:min-w-[30ch]"
         clear
         placeholder="País"
         value-key="value"
