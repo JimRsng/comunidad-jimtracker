@@ -19,7 +19,7 @@ const pages: NavigationMenuItem[] = [
   }
 ];
 
-const userMenu: DropdownMenuItem[][] = [
+const userMenu = computed<DropdownMenuItem[][]>(() => [
   [
     {
       label: "Perfil",
@@ -35,7 +35,7 @@ const userMenu: DropdownMenuItem[][] = [
       onSelect: clear
     }
   ]
-];
+]);
 </script>
 
 <template>
