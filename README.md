@@ -55,3 +55,27 @@ A full-stack serverless League of Legends multi-regional leaderboard tracker for
 Made with ❤️ by [Ahmed](https://github.com/ahmedrangel) and [Yizack](https://github.com/yizack).
 
 Open Source app and published under [MIT License](https://github.com/ahmedrangel/comunidad-jimtracker/blob/main/LICENSE).
+
+## Development
+
+<details>
+  <summary>Local development</summary>
+
+```sh
+# Install dependencies
+pnpm install
+
+# Datebase migration
+pnpm db:migrate
+
+# Build
+pnpm build
+
+# Run ESLint
+pnpm lint
+
+# Run typecheck
+pnpm test:types
+```
+
+</details>
