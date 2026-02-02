@@ -32,7 +32,11 @@ const addRiotAccount = async () => {
   verifying.value = true;
   $fetch<{ isFollowing: boolean }>(`/api/users/${name}/verify-follow`).catch((e) => {
     toast.add({
-      title: "Error",
+      avatar: {
+        src: SITE.logo,
+        alt: SITE.name
+      },
+      orientation: "horizontal",
       description: e.message || "Ha ocurrido un error.",
       color: "error"
     });
@@ -40,7 +44,11 @@ const addRiotAccount = async () => {
   }).then(async (response) => {
     if (!response?.isFollowing) {
       toast.add({
-        title: "Error",
+        avatar: {
+          src: SITE.logo,
+          alt: SITE.name
+        },
+        orientation: "horizontal",
         description: "Debes seguir a JimRsng en Twitch para agregar una cuenta.",
         color: "error"
       });
@@ -79,8 +87,12 @@ const updateProfile = async () => {
     useCachedData(`user:${name}`, () => userInfo.value);
     riotAccounts.value = response.riotAccounts;
     toast.add({
-      title: "Éxito",
-      description: "Perfil actualizado correctamente.",
+      avatar: {
+        src: SITE.logo,
+        alt: SITE.name
+      },
+      orientation: "horizontal",
+      description: "La información de tu perfil ha sido actualizada.",
       color: "success"
     });
   }).catch(() => {}).finally(() => {
@@ -113,7 +125,11 @@ onMounted(() => {
 
   if (error) {
     toast.add({
-      title: "Error",
+      avatar: {
+        src: SITE.logo,
+        alt: SITE.name
+      },
+      orientation: "horizontal",
       description: getErrorMessage(String(error)),
       color: "error"
     });
