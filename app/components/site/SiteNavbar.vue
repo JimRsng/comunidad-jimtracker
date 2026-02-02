@@ -85,7 +85,7 @@ const userMenu = computed<DropdownMenuItem[][]>(() => [
         color="neutral"
         :ui="{
           leadingIcon: 'text-white',
-          base: 'text-md bg-violet-800 hover:bg-violet-700',
+          base: 'text-white text-md dark:bg-violet-600 light:bg-violet-800 dark:hover:bg-violet-700 light:hover:bg-violet-900',
         }"
         @click="openInPopup('/auth/twitch')"
       />
