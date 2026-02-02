@@ -35,7 +35,7 @@ declare global {
   interface JimTableData extends Omit<JimRiotAccount, "twitchId" | "profileIcon" | "verified" | "createdAt" | "updatedAt"> {
     rank: number;
     eloValue: number;
-    user: Omit<JimUser, "twitchCumulativeMonths" | "twitchSubExpiration" | "badges" | "createdAt" | "updatedAt">;
+    user: Omit<JimUser, "twitchCumulativeMonths" | "twitchSubExpiration" | "badges" | "createdAt">;
   }
 }
 

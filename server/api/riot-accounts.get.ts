@@ -21,19 +21,20 @@ export default defineEventHandler(async () => {
     twitchDisplay: tables.users.twitchDisplay,
     twitchProfileImage: tables.users.twitchProfileImage,
     bio: tables.users.bio,
-    country: tables.users.country
+    country: tables.users.country,
+    userUpdatedAt: tables.users.updatedAt
   })
     .from(tables.riotAccounts)
     .innerJoin(tables.users, eq(tables.riotAccounts.twitchId, tables.users.twitchId))
     .all();
 
   return riotAccountsWithUsers.map((account) => {
-    const { twitchId, twitchLogin, twitchDisplay, twitchProfileImage, bio, country, ...riotData } = account;
+    const { twitchId, twitchLogin, twitchDisplay, twitchProfileImage, bio, country, userUpdatedAt, ...riotData } = account;
 
     return {
       ...riotData,
       eloValue: eloToValue(riotData.tier || "", riotData.division || "", riotData.lp || 0),
-      user: { twitchId, twitchLogin, twitchDisplay, twitchProfileImage, bio, country }
+      user: { twitchId, twitchLogin, twitchDisplay, twitchProfileImage, bio, country, updatedAt: userUpdatedAt }
     };
   }).sort((a, b) => a.gameName.localeCompare(b.gameName)).sort((a, b) => b.eloValue - a.eloValue).map((data, index) => ({
     rank: index + 1,
