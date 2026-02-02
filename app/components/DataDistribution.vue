@@ -94,7 +94,7 @@ const tabItems = [
 </script>
 
 <template>
-  <div class="space-y-4 rounded-sm shadow bg-elevated/50 border border-accented p-4">
+  <div class="space-y-4 rounded-sm bg-elevated/50 border border-accented p-4">
     <h2 class="text-2xl font-bold mb-6">Distribución</h2>
     <p class="text-muted">Cantidad de usuarios y cuentas de la comunidad agrupados por diferentes categorías.</p>
     <UTabs

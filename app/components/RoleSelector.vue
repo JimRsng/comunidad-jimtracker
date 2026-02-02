@@ -67,7 +67,7 @@ const tablePopover = useTablePopover();
 <template>
   <div class="flex items-center justify-center gap-1">
     <UPopover v-if="isOwner" v-model:open="modalRole1" arrow @update:open="handleModalOwnerUpdate">
-      <div v-if="selectedRole1 || isOwner" class="*:flex rounded-full" :class="{ 'border p-1 border-neutral-200/20 hover:bg-neutral-500/20': isOwner, 'border-neutral-200/0': !isOwner }">
+      <div v-if="selectedRole1 || isOwner" class="*:flex rounded-full" :class="{ 'border p-1 border-accented hover:bg-accented/50': isOwner }">
         <span v-if="selectedRole1">
           <Icon
             :name="`lol:${selectedRole1}`"
@@ -89,7 +89,6 @@ const tablePopover = useTablePopover();
       <div
         v-if="selectedRole1"
         class="*:flex rounded-full"
-        :class="{ 'border p-1 border-neutral-200/20 hover:bg-neutral-500/20': isOwner, 'border-neutral-200/0': !isOwner }"
         v-on="tablePopover.handlers(selectedRole1.toUpperCase())"
       >
         <span v-if="selectedRole1">
@@ -103,7 +102,7 @@ const tablePopover = useTablePopover();
       </div>
     </div>
     <UPopover v-if="isOwner && selectedRole1 !== 'fill' && (selectedRole2 || isOwner)" v-model:open="modalRole2" arrow @update:open="handleModalOwnerUpdate">
-      <div class="*:flex rounded-full" :class="{ 'border p-1 border-neutral-200/20 hover:bg-neutral-500/20': isOwner, 'border-neutral-200/0': !isOwner }">
+      <div class="*:flex rounded-full" :class="{ 'border p-1 border-accented hover:bg-accented/50': isOwner }">
         <span v-if="selectedRole2">
           <Icon
             :name="`lol:${selectedRole2}`"
@@ -125,7 +124,6 @@ const tablePopover = useTablePopover();
       <div
         v-if="selectedRole2"
         class="*:flex rounded-full"
-        :class="{ 'border p-1 border-neutral-200/20 hover:bg-neutral-500/20': isOwner, 'border-neutral-200/0': !isOwner }"
         v-on="tablePopover.handlers(selectedRole2.toUpperCase())"
       >
         <span v-if="selectedRole2">

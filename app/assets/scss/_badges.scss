@@ -1,0 +1,35 @@
+:root {
+  --lan-badge-color: oklch(58.362% 0.1466 252.927deg);
+  --las-badge-color: oklch(59.334% 0.1710 41.181deg);
+  --na-badge-color: oklch(57.208% 0.1885 289.829deg);
+  --euw-badge-color: oklch(60.478% 0.1581 164.978deg);
+  --eune-badge-color: oklch(58.628% 0.2147 350.294deg);
+  --br-badge-color: oklch(60.425% 0.1131 92.813deg);
+}
+
+.dark {
+  --lan-badge-color: oklch(80.9% 0.105 251.813deg);
+  --las-badge-color: oklch(83.7% 0.128 66.29deg);
+  --na-badge-color: oklch(81.1% 0.111 293.571deg);
+  --euw-badge-color: oklch(84.5% 0.143 164.978deg);
+  --eune-badge-color: oklch(82.3% 0.12 346.018deg);
+  --br-badge-color: oklch(90.5% 0.182 98.111deg);
+}
+
+.la1-badge { --region-color: var(--lan-badge-color); }
+.la2-badge { --region-color: var(--las-badge-color); }
+.na1-badge { --region-color: var(--na-badge-color); }
+.euw1-badge { --region-color: var(--euw-badge-color); }
+.eun1-badge { --region-color: var(--eune-badge-color); }
+.br1-badge { --region-color: var(--br-badge-color); }
+
+.region-badge {
+  border-width: 1px;
+  border-style: solid;
+  color: var(--region-color);
+  border-color: var(--region-color);
+}
+
+.light .region-badge {
+  background-color: color-mix(in oklch, var(--region-color) 5%, transparent);
+}

@@ -311,7 +311,7 @@ const countriesSetItems = Array.from(countriesSet).map(country => ({
       </USelectMenu>
       <USwitch v-model="preferences.hideUnrankeds" label="Ocultar unrankeds" />
     </div>
-    <div class="rounded-sm shadow bg-elevated/50 border border-accented">
+    <div class="rounded-sm bg-elevated/50 border border-accented">
       <UTable
         ref="table"
         v-model:pagination="pagination"

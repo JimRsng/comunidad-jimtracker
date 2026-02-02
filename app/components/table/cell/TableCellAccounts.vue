@@ -47,7 +47,7 @@ const isOnlineChatter = computed(() => {
         <Icon
           v-if="isOnlineChatter"
           name="tabler:circle-filled"
-          class="text-purple-400 animate-pulse"
+          class="dark:text-purple-400 light:text-purple-600 animate-pulse"
           size="0.75rem"
           mode="css"
           :alt="'En el chat'"

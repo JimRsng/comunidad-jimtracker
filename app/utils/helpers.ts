@@ -1,3 +1,4 @@
+import type { AvatarProps } from "@nuxt/ui";
 import countries from "~/assets/json/countries.json";
 
 export const getIconURL = (iconId: number) => {
@@ -25,3 +26,23 @@ export const getErrorMessage = (code: string): string => {
 };
 
 export const roles = ["top", "jungle", "mid", "adc", "support"];
+
+export const toastImage: AvatarProps = {
+  src: SITE.logo,
+  alt: SITE.name,
+  ui: { image: "light:invert" }
+};
+
+export const regionMap = [
+  { label: "LAN", value: "LA1" },
+  { label: "LAS", value: "LA2" },
+  { label: "NA", value: "NA1" },
+  { label: "EUW", value: "EUW1" },
+  { label: "EUNE", value: "EUN1" },
+  { label: "BR", value: "BR1" }
+];
+
+export const getRegionLabel = (value: string): string => {
+  const region = regionMap.find(r => r.value === value);
+  return region ? region.label : "Unknown";
+};

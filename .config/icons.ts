@@ -24,5 +24,7 @@ export default [
   "lucide:ellipsis",
   "lucide:user",
   "tabler:circle-filled",
-  "lucide:globe"
+  "lucide:globe",
+  "lucide:moon",
+  "lucide:sun"
 ];

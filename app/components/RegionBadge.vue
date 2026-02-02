@@ -1,5 +1,5 @@
 <script setup lang="ts">
-defineProps<{
+const props = defineProps<{
   region: string;
   size?: "sm" | "md" | "lg" | "xs" | "xl";
 }>();
@@ -7,6 +7,12 @@ defineProps<{
 
 <template>
   <div class="flex items-center justify-center">
-    <UBadge :label="getRegionLabel(region)" :size="size" variant="outline" :ui="{ base: 'bg-default ring-0' }" :style="{ color: getRegionColor(region), border: `1px solid ${getRegionColor(region)}` }" />
+    <UBadge
+      :label="getRegionLabel(props.region)"
+      :size="props.size"
+      variant="outline"
+      :ui="{ base: 'bg-default ring-0' }"
+      :class="`${props.region.toLowerCase()}-badge region-badge`"
+    />
   </div>
 </template>

@@ -32,10 +32,7 @@ const addRiotAccount = async () => {
   verifying.value = true;
   $fetch<{ isFollowing: boolean }>(`/api/users/${name}/verify-follow`).catch((e) => {
     toast.add({
-      avatar: {
-        src: SITE.logo,
-        alt: SITE.name
-      },
+      avatar: toastImage,
       orientation: "horizontal",
       description: e.message || "Ha ocurrido un error.",
       color: "error"
@@ -44,10 +41,7 @@ const addRiotAccount = async () => {
   }).then(async (response) => {
     if (!response?.isFollowing) {
       toast.add({
-        avatar: {
-          src: SITE.logo,
-          alt: SITE.name
-        },
+        avatar: toastImage,
         orientation: "horizontal",
         description: "Debes seguir a JimRsng en Twitch para agregar una cuenta.",
         color: "error"
@@ -87,10 +81,7 @@ const updateProfile = async () => {
     useCachedData(`user:${name}`, () => userInfo.value);
     riotAccounts.value = response.riotAccounts;
     toast.add({
-      avatar: {
-        src: SITE.logo,
-        alt: SITE.name
-      },
+      avatar: toastImage,
       orientation: "horizontal",
       description: "La información de tu perfil ha sido actualizada.",
       color: "success"
@@ -125,10 +116,7 @@ onMounted(() => {
 
   if (error) {
     toast.add({
-      avatar: {
-        src: SITE.logo,
-        alt: SITE.name
-      },
+      avatar: toastImage,
       orientation: "horizontal",
       description: getErrorMessage(String(error)),
       color: "error"
@@ -186,7 +174,7 @@ onUnmounted(() => {
       </div>
       <div class="lg:col-span-4 md:col-span-2 grid lg:grid-cols-2 gap-4">
         <template v-if="riotAccounts.length">
-          <div v-for="account in riotAccounts" :key="account.puuid" class="relative rounded-md border-2 border-accented p-4 flex flex-col justify-center gap-2 bg-black/20">
+          <div v-for="account in riotAccounts" :key="account.puuid" class="relative rounded-md border-2 border-accented p-4 flex flex-col justify-center gap-2 dark:bg-black/20">
             <div class="flex items-center justify-center gap-2 text-xl flex-wrap">
               <img v-if="account.profileIcon !== null" :src="getIconURL(account.profileIcon)" class="w-10 h-10 rounded-full border border-default shadow-lg shadow-black/20" :alt="`Icono de perfil de ${account.gameName}`">
               <NuxtLink
@@ -198,7 +186,7 @@ onUnmounted(() => {
               </NuxtLink>
               <RegionBadge :region="account.region" size="md" />
             </div>
-            <div v-if="isOwner" class="absolute top-2 right-2 text-xs text-white rounded">
+            <div v-if="isOwner" class="absolute top-2 right-2 text-xs rounded">
               <div class="flex items-center gap-1">
                 <UDropdownMenu :items="[
                   {
@@ -227,15 +215,19 @@ onUnmounted(() => {
                     {{ account.tier || 'UNRANKED' }}
                   </template>
                 </UPopover>
-                <span v-if="account.division" class="font-semibold text-xl"><span v-if="account.tier && !['MASTER', 'GRANDMASTER', 'CHALLENGER'].includes(account.tier)">{{ account.division }} · </span>{{ account.lp }} LP</span>
+                <span v-if="account.division" class="font-semibold text-xl">
+                  <span v-if="account.tier && !['MASTER', 'GRANDMASTER', 'CHALLENGER'].includes(account.tier)">{{ account.division }}</span>
+                  <span> · </span>
+                  <span>{{ account.lp }} LP</span>
+                </span>
               </div>
-              <div v-if="account.wins || account.losses" class="text-sm text-neutral-400 font-semibold"><span class="text-blue-400">{{ account.wins }}</span>V · <span class="text-rose-400">{{ account.losses }}</span>D (<span class="text-white">{{ (account.wins || 0) + (account.losses || 0) }}</span>)</div>
-              <span v-if="account.wins || account.losses" class="text-base font-semibold text-white">
-                {{
-                  account.wins || account.losses
-                    ? (((account.wins || 0) / ((account.wins || 0) + (account.losses || 0))) * 100).toFixed(2) + '% WR'
-                    : ''
-                }}
+              <div v-if="account.wins || account.losses" class="text-sm text-muted font-semibold">
+                <span class="dark:text-blue-400 light:text-blue-500">{{ account.wins }}</span>V ·
+                <span class="dark:text-rose-400 light:text-rose-500">{{ account.losses }}</span>D (
+                <span class="text-default">{{ (account.wins || 0) + (account.losses || 0) }}</span>)
+              </div>
+              <span v-if="account.wins || account.losses" class="text-base font-semibold">
+                {{ (((account.wins || 0) / ((account.wins || 0) + (account.losses || 0))) * 100).toFixed(2) + '% WR' }}
               </span>
             </div>
             <div class="mt-2">
@@ -243,7 +235,7 @@ onUnmounted(() => {
             </div>
           </div>
         </template>
-        <UButton v-if="isOwner && riotAccounts.length < maxAccounts" variant="soft" class="light:bg-default dark:bg-muted border-2 border-dashed border-accented p-6 flex flex-col items-center justify-center text-center h-full hover:border-primary transition-colors group" @click="addRiotAccount">
+        <UButton v-if="isOwner && riotAccounts.length < maxAccounts" variant="soft" class="bg-muted border-2 border-dashed border-accented p-6 flex flex-col items-center justify-center text-center h-full hover:border-primary transition-colors group" @click="addRiotAccount">
           <div v-if="!verifying" class="w-12 h-12 bg-primary/10 text-primary rounded-full flex items-center justify-center mb-4 group-hover:scale-[1.1] transition-transform">
             <Icon name="lucide:plus" class="w-8 h-8" />
           </div>

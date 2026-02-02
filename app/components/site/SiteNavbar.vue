@@ -40,7 +40,7 @@ const userMenu = computed<DropdownMenuItem[][]>(() => [
 
 <template>
   <UHeader
-    class="top-0 py-1 z-50 border-0 backdrop-blur-sm border-b border-default bg-elevated/50"
+    class="top-0 py-1 z-50 border-0 backdrop-blur-sm border-b border-default bg-elevated/50 shadow-sm"
     toggle-side="left"
   >
     <UNavigationMenu
@@ -48,23 +48,24 @@ const userMenu = computed<DropdownMenuItem[][]>(() => [
       color="neutral"
       :ui="{
         list: 'gap-2',
-        link: 'text-md hover:before:bg-accented/50 data-active:before:bg-accented/75',
+        link: 'text-md hover:before:bg-accented/50 data-active:before:bg-accented/75 before:border before:border-default data-active:before:border-accented',
       }"
     />
 
     <template #title>
       <div class="flex items-center gap-2">
-        <img :src="SITE.logo" :alt="SITE.name" class="h-8 w-auto">
+        <img :src="SITE.logo" :alt="SITE.name" class="h-8 w-auto light:invert">
         <h1>Comunidad</h1>
       </div>
     </template>
 
     <template #right>
+      <UColorModeButton />
       <UDropdownMenu v-if="user" :items="userMenu" :content="{ align: 'end', side: 'bottom', sideOffset: 8 }">
         <UButton
           :label="user.twitchDisplay"
           trailing-icon="lucide:chevron-down"
-          variant="soft"
+          variant="subtle"
           color="neutral"
           :ui="{
             base: 'text-md hover:bg-accented/50 data-active:bg-accented/75',
