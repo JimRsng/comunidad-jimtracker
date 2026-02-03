@@ -48,7 +48,7 @@ const userMenu = computed<DropdownMenuItem[][]>(() => [
       color="neutral"
       :ui="{
         list: 'gap-2',
-        link: 'text-md hover:before:bg-accented/50 data-active:before:bg-accented/75 before:border before:border-default data-active:before:border-accented',
+        link: 'text-md hover:before:bg-accented/50 data-active:before:bg-accented/75 before:border before:border-accented before:bg-elevated',
       }"
     />
 
