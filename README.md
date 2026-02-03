@@ -5,24 +5,25 @@ A full-stack serverless League of Legends multi-regional leaderboard tracker for
 ## Features
 
 - Multi-regional support
-- Real-time leaderboard
-- Riot Account integration via Riot Games API
+- Riot Account integration
 - User profiles
 - Automated data refresh every 30 minutes
 - Data distribution visualization
 - Serverless architecture
 - Twitch authentication
+- Twitch chatters indicator
+- Color mode support
 
 ## Screenshots
 
 ### Leaderboard Table
-![table](https://github.com/user-attachments/assets/e360ae78-55c7-4b42-93a7-7daec2434a8f)
+![table](https://github.com/user-attachments/assets/6782cc87-0fbb-49c6-ac50-714a7cb18995)
 
 ### Distribution Section
-![distribution](https://github.com/user-attachments/assets/c00c1f5b-8afd-4fe2-b094-f6d9dcf8ba5f)
+![distribution](https://github.com/user-attachments/assets/a4b4c81c-e3f3-44c7-915b-d3362caa8315)
 
 ### Profile Page
-![profile](https://github.com/user-attachments/assets/b393b90c-c714-4fc7-80cc-5a07873a7419)
+![profile](https://github.com/user-attachments/assets/b7e931e4-10fd-42e0-b07f-8b90c7dd3c41)
 
 ## Tech stack
 
