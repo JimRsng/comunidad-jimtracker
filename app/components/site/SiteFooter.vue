@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { useTimeAgoIntl } from "@vueuse/core";
-
 const config = useRuntimeConfig();
 const buildInfo = config.public.buildInfo;
 

@@ -23,10 +23,31 @@ const { data: riotAccounts } = await useFetch(`/api/users/${name}/riot-accounts`
   deep: true
 });
 
+const { data: riotAccountLogs } = await useFetch(`/api/users/${name}/riot-accounts/logs`, {
+  key: `user:${name}:riot-accounts:logs`,
+  default: () => [] as JimRiotAccountLog[],
+  getCachedData: (key, nuxtApp) => nuxtApp.payload.data[key],
+  deep: true
+});
+
+const riotAccountLogsSorted = computed(() => {
+  return riotAccountLogs.value.toSorted((a, b) => b.createdAt - a.createdAt);
+});
+
 const toast = useToast();
 const isUpdating = ref(false);
 const verifying = ref(false);
 const maxAccounts = 4;
+
+const riotAccountMap = computed(() => {
+  return new Map(riotAccounts.value.map(acc => [acc.puuid, acc]));
+});
+
+const isRankUp = (logData: JimRiotAccountLogData) => {
+  const oldValue = eloToValue(logData.old.tier, logData.old.division, logData.old.lp);
+  const newValue = eloToValue(logData.new.tier, logData.new.division, logData.new.lp);
+  return newValue > oldValue;
+};
 
 const addRiotAccount = async () => {
   verifying.value = true;
@@ -69,17 +90,13 @@ const removeAccount = async (puuid: string) => {
 const updateProfile = async () => {
   isUpdating.value = true;
   $fetch(`/api/users/${name}/update`, {
-    method: "POST",
-    body: {
-      riotAccounts: riotAccounts.value.map(account => ({
-        puuid: account.puuid,
-        region: account.region
-      }))
-    }
+    method: "POST"
   }).then((response) => {
     userInfo.value = response.user;
     useCachedData(`user:${name}`, () => userInfo.value);
     riotAccounts.value = response.riotAccounts;
+    riotAccountLogs.value.push(...response.newRiotAccountLogs);
+    useCachedData(`user:${name}:riot-accounts:logs`, () => riotAccountLogsSorted.value);
     toast.add({
       avatar: toastImage,
       orientation: "horizontal",
@@ -125,6 +142,7 @@ onMounted(() => {
     window.history.replaceState({}, document.title, window.location.pathname);
   }
 });
+
 onUnmounted(() => {
   if (intervalId) clearInterval(intervalId);
 });
@@ -132,19 +150,17 @@ onUnmounted(() => {
 
 <template>
   <main v-if="userInfo" class="relative">
-    <div class="flex items-center md:justify-start justify-center gap-2 mb-2">
-      <span class="font-bold text-3xl">{{ userInfo.twitchDisplay }}</span>
-      <UPopover v-if="userInfo.country" mode="hover" :content="{ side: 'top' }" arrow>
-        <UButton variant="link" class="p-0">
-          <Twemoji :emoji="userInfo.country" size="2rem" :alt="getCountryName(userInfo.country)" />
-        </UButton>
-        <template #content>
-          {{ getCountryName(userInfo.country) }}
-        </template>
-      </UPopover>
-    </div>
-    <div class="grid lg:grid-cols-5 lg:grid-rows-2 md:grid-cols-3 md:grid-rows-1 gap-4">
-      <div class="row-span-2 flex flex-col gap-1">
+    <div class="grid lg:grid-cols-5 lg:grid-rows-[auto_1fr] md:grid-cols-3 gap-4">
+      <div class="row-span-2 flex flex-col gap-1 md:sticky md:top-21 md:self-start">
+        <div class="flex items-center md:justify-start justify-center gap-2 mb-1">
+          <span class="font-bold text-3xl">{{ userInfo.twitchDisplay }}</span>
+          <UPopover v-if="userInfo.country" mode="hover" :content="{ side: 'top' }" arrow>
+            <Twemoji :emoji="userInfo.country" size="2rem" :alt="getCountryName(userInfo.country)" />
+            <template #content>
+              {{ getCountryName(userInfo.country) }}
+            </template>
+          </UPopover>
+        </div>
         <img v-if="userInfo.twitchProfileImage" :src="userInfo.twitchProfileImage" alt="Avatar" class="w-full rounded-sm mx-auto max-w-75">
         <div v-if="userInfo.badges" class="flex items-center gap-2 text-lg">
           <!-- TODO: Badges -->
@@ -163,82 +179,158 @@ onUnmounted(() => {
           <span v-else>Disponible en <ClientOnly>{{ secondsToAvailable }}s</ClientOnly></span>
         </UButton>
       </div>
-      <div class="flex items-center gap-2 md:absolute top-2 end-0 justify-end">
-        <Icon name="simple-icons:riotgames" class="text-red-500" />
-        <span>{{ riotAccounts.length }} / {{ maxAccounts }}</span>
-      </div>
-      <div class="lg:col-span-4 md:col-span-2 grid lg:grid-cols-2 gap-4">
-        <template v-if="riotAccounts.length">
-          <div v-for="account in riotAccounts" :key="account.puuid" class="relative rounded-md border-2 border-accented p-4 flex flex-col justify-center gap-2 dark:bg-black/20">
-            <div class="flex items-center justify-center gap-2 text-xl flex-wrap">
-              <img v-if="account.profileIcon !== null" :src="getIconURL(account.profileIcon)" class="w-10 h-10 rounded-full border border-default shadow-lg shadow-black/20" :alt="`Icono de perfil de ${account.gameName}`">
-              <NuxtLink
-                :to="`https://op.gg/es/lol/summoners/${getRegionLabel(account.region)}/${account.gameName}-${account.tagLine}`"
-                target="_blank"
-                class="font-semibold hover:underline"
-              >
-                <span>{{ account.gameName }} <span class="font-normal text-muted">#{{ account.tagLine }}</span></span>
-              </NuxtLink>
-              <RegionBadge :region="account.region" size="md" />
-            </div>
-            <div v-if="isOwner" class="absolute top-2 right-2 text-xs rounded">
-              <div class="flex items-center gap-1">
-                <UDropdownMenu :items="[
-                  {
-                    label: 'Eliminar',
-                    color: 'error',
-                    icon: 'lucide:trash',
-                    onSelect: () => removeAccount(account.puuid),
-                  },
-                ]"
+      <div class="lg:col-span-4 md:col-span-2 space-y-4 md:mt-11">
+        <div class="flex items-center gap-2 md:absolute top-2 end-0 justify-end">
+          <Icon name="simple-icons:riotgames" class="text-red-500" />
+          <span>{{ riotAccounts.length }} / {{ maxAccounts }}</span>
+        </div>
+        <div class="grid lg:grid-cols-2 gap-4">
+          <template v-if="riotAccounts.length">
+            <div v-for="account in riotAccounts" :key="account.puuid" class="relative rounded-md border-2 border-accented p-4 flex flex-col justify-center gap-2 dark:bg-black/20">
+              <div class="flex items-center justify-center gap-2 text-xl flex-wrap">
+                <img
+                  v-if="account.profileIcon !== null"
+                  :src="getIconURL(account.profileIcon)"
+                  class="w-10 h-10 rounded-full border border-default shadow-lg shadow-black/20"
+                  :alt="`Icono de perfil de ${account.gameName}`"
                 >
-                  <UButton icon="lucide:ellipsis-vertical" variant="ghost" color="neutral" />
-                </UDropdownMenu>
+                <NuxtLink
+                  :to="`https://op.gg/es/lol/summoners/${getRegionLabel(account.region)}/${account.gameName}-${account.tagLine}`"
+                  target="_blank"
+                  class="font-semibold hover:underline"
+                >
+                  <span>{{ account.gameName }} <span class="font-normal text-muted">#{{ account.tagLine }}</span></span>
+                </NuxtLink>
+                <RegionBadge :region="account.region" size="md" />
               </div>
-            </div>
-            <div class="flex flex-col items-center gap-2">
-              <div class="flex items-center gap-1">
-                <UPopover mode="hover" :content="{ side: 'top' }" arrow>
-                  <UButton variant="link" class="p-0">
+              <div v-if="isOwner" class="absolute top-2 right-2 text-xs rounded">
+                <div class="flex items-center gap-1">
+                  <UDropdownMenu :items="[
+                    {
+                      label: 'Eliminar',
+                      color: 'error',
+                      icon: 'lucide:trash',
+                      onSelect: () => removeAccount(account.puuid),
+                    },
+                  ]"
+                  >
+                    <UButton icon="lucide:ellipsis-vertical" variant="ghost" color="neutral" />
+                  </UDropdownMenu>
+                </div>
+              </div>
+              <div class="flex flex-col items-center gap-2">
+                <div class="flex items-center gap-1">
+                  <UPopover mode="hover" :content="{ side: 'top' }" arrow>
                     <img
-                      :src="`/images/lol/${account.tier?.toLowerCase() || 'unranked'}.png`"
+                      :src="getTierImage(account.tier)"
                       class="w-12 h-12 md:w-12 md:h-12 max-w-fit"
-                      :alt="account.tier || 'UNRANKED'"
+                      :alt="getTierLabel(account.tier)"
                     >
-                  </UButton>
-                  <template #content>
-                    {{ account.tier || 'UNRANKED' }}
-                  </template>
-                </UPopover>
-                <span v-if="account.division" class="font-semibold text-xl">
-                  <span v-if="account.tier && !['MASTER', 'GRANDMASTER', 'CHALLENGER'].includes(account.tier)">{{ account.division }}</span>
-                  <span> · </span>
-                  <span>{{ account.lp }} LP</span>
+                    <template #content>
+                      {{ getTierLabel(account.tier) }}
+                    </template>
+                  </UPopover>
+                  <span v-if="account.division" class="font-semibold text-xl">
+                    <span v-if="account.tier && !['MASTER', 'GRANDMASTER', 'CHALLENGER'].includes(account.tier)">{{ account.division }}</span>
+                    <span> · </span>
+                    <span>{{ account.lp }} LP</span>
+                  </span>
+                </div>
+                <div v-if="account.wins || account.losses" class="text-sm text-muted font-semibold">
+                  <span class="dark:text-blue-400 light:text-blue-500">{{ account.wins }}</span>V ·
+                  <span class="dark:text-rose-400 light:text-rose-500">{{ account.losses }}</span>D (
+                  <span class="text-default">{{ (account.wins || 0) + (account.losses || 0) }}</span>)
+                </div>
+                <span v-if="account.wins || account.losses" class="text-base font-semibold">
+                  {{ (((account.wins || 0) / ((account.wins || 0) + (account.losses || 0))) * 100).toFixed(2) + '% WR' }}
                 </span>
               </div>
-              <div v-if="account.wins || account.losses" class="text-sm text-muted font-semibold">
-                <span class="dark:text-blue-400 light:text-blue-500">{{ account.wins }}</span>V ·
-                <span class="dark:text-rose-400 light:text-rose-500">{{ account.losses }}</span>D (
-                <span class="text-default">{{ (account.wins || 0) + (account.losses || 0) }}</span>)
+              <div class="mt-2">
+                <RoleSelector :data="{ ...account, user: userInfo }" />
               </div>
-              <span v-if="account.wins || account.losses" class="text-base font-semibold">
-                {{ (((account.wins || 0) / ((account.wins || 0) + (account.losses || 0))) * 100).toFixed(2) + '% WR' }}
+            </div>
+          </template>
+          <UButton v-if="isOwner && riotAccounts.length < maxAccounts" variant="soft" class="bg-muted border-2 border-dashed border-accented p-6 flex flex-col items-center justify-center text-center h-full hover:border-primary transition-colors group" @click="addRiotAccount">
+            <div v-if="!verifying" class="w-12 h-12 bg-primary/10 text-primary rounded-full flex items-center justify-center mb-4 group-hover:scale-[1.1] transition-transform">
+              <Icon name="lucide:plus" class="w-8 h-8" />
+            </div>
+            <div v-else class="w-12 h-12 bg-primary/10 text-primary rounded-full flex items-center justify-center mb-4 animate-spin">
+              <Icon name="lucide:loader-circle" class="w-8 h-8" />
+            </div>
+            <span class="font-medium">Agregar Riot Account</span>
+          </UButton>
+        </div>
+        <div v-if="riotAccountLogsSorted.length">
+          <h2 class="text-xl font-bold mb-4">Cambios de rango</h2>
+          <div class="flex flex-col gap-2">
+            <div
+              v-for="log of riotAccountLogsSorted"
+              :key="log.id"
+              class="flex flex-col md:flex-row items-center gap-1 justify-between p-3 rounded-md border bg-elevated/50"
+              :class="isRankUp(log.data)
+                ? 'dark:border-blue-400/50 light:border-blue-500/50 dark:bg-blue-400/5 light:bg-blue-500/5'
+                : 'dark:border-rose-400/50 light:border-rose-500/50 dark:bg-rose-400/5 light:bg-rose-500/5'
+              "
+            >
+              <span v-if="riotAccountMap.get(log.puuid)" class="flex items-center gap-2">
+                <img
+                  v-if="riotAccountMap.get(log.puuid)!.profileIcon !== null"
+                  :src="getIconURL(riotAccountMap.get(log.puuid)!.profileIcon!)"
+                  class="w-6 h-6 rounded-full border border-default"
+                  :alt="`Icono de perfil de ${riotAccountMap.get(log.puuid)!.gameName}`"
+                >
+                <span>
+                  <span class="font-semibold">{{ riotAccountMap.get(log.puuid)!.gameName }}</span>
+                  <span class="text-muted"> #{{ riotAccountMap.get(log.puuid)!.tagLine }}</span>
+                </span>
+              </span>
+              <div class="flex items-center gap-2">
+                <div class="flex items-center gap-2">
+                  <UPopover mode="hover" :content="{ side: 'top' }" arrow>
+                    <img
+                      :src="getTierImage(log.data.old.tier)"
+                      class="w-8 h-8"
+                      :alt="getTierLabel(log.data.old.tier)"
+                    >
+                    <template #content>
+                      {{ getTierLabel(log.data.old.tier) }}
+                    </template>
+                  </UPopover>
+                  <span class="text-sm font-semibold">{{ log.data.old.division }} · {{ log.data.old.lp }} LP</span>
+                </div>
+                <Icon name="lucide:arrow-right" />
+                <div class="flex items-center gap-2">
+                  <UPopover mode="hover" :content="{ side: 'top' }" arrow>
+                    <img
+                      :src="getTierImage(log.data.new.tier)"
+                      class="w-8 h-8"
+                      :alt="getTierLabel(log.data.new.tier)"
+                    >
+                    <template #content>
+                      {{ getTierLabel(log.data.new.tier) }}
+                    </template>
+                  </UPopover>
+                  <span class="text-sm font-semibold">{{ log.data.new.division }} · {{ log.data.new.lp }} LP</span>
+                </div>
+              </div>
+              <span class="text-xs text-muted">
+                <UPopover mode="hover" :content="{ side: 'top' }" arrow>
+                  <NuxtTime
+                    :datetime="log.createdAt"
+                    year="numeric"
+                    month="short"
+                    day="numeric"
+                    hour="2-digit"
+                    minute="2-digit"
+                  />
+                  <template #content>
+                    <span> {{ useTimeAgoIntl(log.createdAt, { locale: "es" }) }} </span>
+                  </template>
+                </UPopover>
               </span>
             </div>
-            <div class="mt-2">
-              <RoleSelector :data="{ ...account, user: userInfo }" />
-            </div>
           </div>
-        </template>
-        <UButton v-if="isOwner && riotAccounts.length < maxAccounts" variant="soft" class="bg-muted border-2 border-dashed border-accented p-6 flex flex-col items-center justify-center text-center h-full hover:border-primary transition-colors group" @click="addRiotAccount">
-          <div v-if="!verifying" class="w-12 h-12 bg-primary/10 text-primary rounded-full flex items-center justify-center mb-4 group-hover:scale-[1.1] transition-transform">
-            <Icon name="lucide:plus" class="w-8 h-8" />
-          </div>
-          <div v-else class="w-12 h-12 bg-primary/10 text-primary rounded-full flex items-center justify-center mb-4 animate-spin">
-            <Icon name="lucide:loader-circle" class="w-8 h-8" />
-          </div>
-          <span class="font-medium">Agregar Riot Account</span>
-        </UButton>
+        </div>
       </div>
     </div>
   </main>

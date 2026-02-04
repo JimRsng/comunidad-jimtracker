@@ -26,5 +26,6 @@ export default [
   "tabler:circle-filled",
   "lucide:globe",
   "lucide:moon",
-  "lucide:sun"
+  "lucide:sun",
+  "lucide:arrow-right"
 ];

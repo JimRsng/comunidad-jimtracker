@@ -37,6 +37,21 @@ declare global {
     eloValue: number;
     user: Omit<JimUser, "twitchCumulativeMonths" | "twitchSubExpiration" | "badges" | "createdAt">;
   }
+
+  interface JimRiotAccountLogData {
+    old: Pick<JimRiotAccount, "tier" | "division" | "lp">;
+    new: Pick<JimRiotAccount, "tier" | "division" | "lp">;
+  }
+
+  interface JimRiotAccountLog {
+    id: number;
+    puuid: string;
+    twitchId: string;
+    description: string | null;
+    data: JimRiotAccountLogData;
+    createdAt: number;
+    updatedAt: number;
+  }
 }
 
 export {};

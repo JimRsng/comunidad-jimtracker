@@ -15,7 +15,7 @@ export default defineEventHandler(async (event) => {
   }).from(tables.users).where(eq(tables.users.twitchLogin, params.name.toLowerCase())).get();
 
   if (!user) {
-    throw createError({ status: ErrorCode.NOT_FOUND, statusMessage: "User not found" });
+    throw createError({ status: ErrorCode.NOT_FOUND, message: "User not found" });
   }
 
   return user;

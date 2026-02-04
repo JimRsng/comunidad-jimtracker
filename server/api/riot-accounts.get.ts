@@ -1,4 +1,3 @@
-import { eloToValue } from "../utils/helpers";
 import { eq } from "drizzle-orm";
 
 export default defineEventHandler(async () => {
@@ -33,7 +32,7 @@ export default defineEventHandler(async () => {
 
     return {
       ...riotData,
-      eloValue: eloToValue(riotData.tier || "", riotData.division || "", riotData.lp || 0),
+      eloValue: eloToValue(riotData.tier, riotData.division, riotData.lp),
       user: { twitchId, twitchLogin, twitchDisplay, twitchProfileImage, bio, country, updatedAt: userUpdatedAt }
     };
   }).sort((a, b) => a.gameName.localeCompare(b.gameName)).sort((a, b) => b.eloValue - a.eloValue).map((data, index) => ({

@@ -10,9 +10,11 @@ export default defineTask({
     result?: any[];
     updated?: number;
     unchanged?: number;
+    logs?: number;
   }> {
     const riotAccounts = await db.select({
       puuid: tables.riotAccounts.puuid,
+      twitchId: tables.riotAccounts.twitchId,
       region: tables.riotAccounts.region,
       lp: tables.riotAccounts.lp,
       tier: tables.riotAccounts.tier,
@@ -30,6 +32,7 @@ export default defineTask({
 
     const promisesWithChanges = [];
     const promisesWithNoChanges = [];
+    const promisesRiotAccountLogs = [];
     const processedPuuids = new Set<string>();
 
     for (const result of results) {
@@ -38,7 +41,9 @@ export default defineTask({
       if (league) {
         processedPuuids.add(league.puuid);
         const account = riotAccounts.find(acc => acc.puuid === league.puuid);
-        if (account?.division != league.rank || account?.tier != league.tier || account?.lp != league.leaguePoints || account?.wins != league.wins || account?.losses != league.losses) {
+        if (!account) continue;
+
+        if (account.division != league.rank || account.tier != league.tier || account.lp != league.leaguePoints || account.wins != league.wins || account.losses != league.losses) {
           const updateQuery = db.update(tables.riotAccounts).set({
             lp: league.leaguePoints,
             tier: league.tier,
@@ -61,6 +66,24 @@ export default defineTask({
           }).get() : updateQuery.run();
 
           promisesWithChanges.push(updatePromise);
+
+          if (league?.leaguePoints
+            && (league?.tier !== account?.tier
+              || league?.rank !== account.division)
+          ) {
+            const logInsert = db.insert(tables.riotAccountLogs).values({
+              puuid: league.puuid,
+              twitchId: account.twitchId,
+              data: {
+                old: { tier: account!.tier, division: account!.division, lp: account!.lp },
+                new: { tier: league.tier, division: league.rank, lp: league.leaguePoints }
+              }
+            });
+
+            const riotAccountLogsPromise = import.meta.dev ? logInsert.returning().get() : logInsert.run();
+
+            promisesRiotAccountLogs.push(riotAccountLogsPromise);
+          }
         }
         else {
           const touchQuery = db.update(tables.riotAccounts).set({
@@ -92,15 +115,17 @@ export default defineTask({
 
     if (!promisesWithChanges.length && !promisesWithNoChanges.length) return { result: [] };
 
-    const [changedData, noChangesData] = await Promise.all([
+    const [changedData, noChangesData, riotAccountLogs] = await Promise.all([
       Promise.all(promisesWithChanges),
-      Promise.all(promisesWithNoChanges)
+      Promise.all(promisesWithNoChanges),
+      Promise.all(promisesRiotAccountLogs)
     ]);
 
     return {
       result: changedData,
       updated: changedData.length,
-      unchanged: noChangesData.length
+      unchanged: noChangesData.length,
+      logs: riotAccountLogs.length
     };
   }
 });

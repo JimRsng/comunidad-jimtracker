@@ -13,7 +13,7 @@ export default defineOAuthRiotGamesEventHandler({
   async onSuccess (event, result) {
     const { user } = await requireUserSession(event);
     const userURL = `/u/${user.twitchLogin}`;
-    const cpid = result.user.cpid;
+    const cpid = result.user.cpid as Regions;
 
     if (!cpid) {
       return sendRedirect(event, withQuery(userURL, { error: "riot_link_failed" }));
@@ -30,8 +30,8 @@ export default defineOAuthRiotGamesEventHandler({
     }
 
     const [summoner, leagueData] = await Promise.all([
-      lol.Summoner.getByPUUID(result.user.puuid, cpid as Regions),
-      lol.League.byPUUID(result.user.puuid, cpid as Regions).catch(() => null)
+      lol.Summoner.getByPUUID(result.user.puuid, cpid),
+      lol.League.byPUUID(result.user.puuid, cpid).catch(() => null)
     ]);
 
     const soloQueue = leagueData?.response.find(entry => entry.queueType === Constants.Queues.RANKED_SOLO_5x5);

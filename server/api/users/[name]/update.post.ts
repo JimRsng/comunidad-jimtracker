@@ -8,16 +8,24 @@ export default defineEventHandler(async (event) => {
   }).parse);
 
   const twitchId = await getTwitchIdByLogin(event, params.name);
-
   const config = useRuntimeConfig(event);
+
   const riot = new RiotApi(config.oauth.riotgames.apiKey);
   const lol = new LolApi(config.oauth.riotgames.apiKey);
   const authProvider = new AppTokenAuthProvider(config.oauth.twitch.clientId, config.oauth.twitch.clientSecret);
   const twitch = new ApiClient({ authProvider });
-  const body = await readBody(event);
-  const { riotAccounts } = body;
 
   const newRiotAccountData = [];
+  const newRiotAccountLogs: Pick<JimRiotAccountLog, "puuid" | "data">[] = [];
+
+  const riotAccounts = await db.select({
+    puuid: tables.riotAccounts.puuid,
+    region: tables.riotAccounts.region,
+    tier: tables.riotAccounts.tier,
+    division: tables.riotAccounts.division,
+    lp: tables.riotAccounts.lp
+  }).from(tables.riotAccounts).where(eq(tables.riotAccounts.twitchId, twitchId)).all();
+
   if (riotAccounts && riotAccounts.length) {
     for (const account of riotAccounts) {
       const [accountData, summonerData, leagueData] = await Promise.allSettled([
@@ -25,9 +33,11 @@ export default defineEventHandler(async (event) => {
         lol.Summoner.getByPUUID(account.puuid, account.region),
         lol.League.byPUUID(account.puuid, account.region)
       ]);
+
       if (accountData.status === "rejected" || summonerData.status === "rejected" || leagueData.status === "rejected") {
         continue;
       }
+
       const soloQueue = leagueData.value.response.find(entry => entry.queueType === Constants.Queues.RANKED_SOLO_5x5);
 
       newRiotAccountData.push({
@@ -41,43 +51,72 @@ export default defineEventHandler(async (event) => {
         wins: soloQueue?.wins ?? null,
         losses: soloQueue?.losses ?? null
       });
+
+      if (soloQueue?.leaguePoints
+        && (soloQueue?.tier !== account.tier
+          || soloQueue?.rank !== account.division)
+      ) {
+        newRiotAccountLogs.push({
+          puuid: accountData.value.response.puuid,
+          data: {
+            old: { tier: account.tier, division: account.division, lp: account.lp },
+            new: { tier: soloQueue.tier, division: soloQueue.rank, lp: soloQueue.leaguePoints }
+          }
+        });
+      }
     }
   }
 
   const newUserInfo = await twitch.users.getUserById(twitchId);
 
-  if (newUserInfo) {
-    const updateUser = db.update(tables.users).set({
-      twitchLogin: newUserInfo.name,
-      twitchDisplay: newUserInfo.displayName,
-      twitchProfileImage: newUserInfo.profilePictureUrl,
-      updatedAt: unixepoch({ mode: "ms" })
-    }).where(eq(tables.users.twitchId, twitchId)).returning().get();
-
-    const updateRiotAccounts = newRiotAccountData.map((accountData) => {
-      return db.update(tables.riotAccounts).set({
-        gameName: accountData.gameName,
-        tagLine: accountData.tagLine,
-        profileIcon: accountData.profileIcon,
-        tier: accountData.tier,
-        division: accountData.division,
-        lp: accountData.lp,
-        wins: accountData.wins,
-        losses: accountData.losses,
-        updatedAt: unixepoch({ mode: "ms" })
-      }).where(and(
-        eq(tables.riotAccounts.twitchId, twitchId),
-        eq(tables.riotAccounts.puuid, accountData.puuid)
-      )).returning().get();
+  if (!newUserInfo) {
+    throw createError({
+      status: ErrorCode.NOT_FOUND,
+      message: "User not found"
     });
-
-    const [userResults, ...riotAccountResults] = await Promise.all([updateUser, ...updateRiotAccounts]);
-
-    return {
-      user: userResults,
-      riotAccounts: riotAccountResults
-    };
   }
 
-  throw createError({ status: ErrorCode.NOT_FOUND, statusMessage: "User not found" });
+  const updateUser = db.update(tables.users).set({
+    twitchLogin: newUserInfo.name,
+    twitchDisplay: newUserInfo.displayName,
+    twitchProfileImage: newUserInfo.profilePictureUrl,
+    updatedAt: unixepoch({ mode: "ms" })
+  }).where(eq(tables.users.twitchId, twitchId)).returning().get();
+
+  const updateRiotAccounts = newRiotAccountData.map((accountData) => {
+    return db.update(tables.riotAccounts).set({
+      gameName: accountData.gameName,
+      tagLine: accountData.tagLine,
+      profileIcon: accountData.profileIcon,
+      tier: accountData.tier,
+      division: accountData.division,
+      lp: accountData.lp,
+      wins: accountData.wins,
+      losses: accountData.losses,
+      updatedAt: unixepoch({ mode: "ms" })
+    }).where(and(
+      eq(tables.riotAccounts.twitchId, twitchId),
+      eq(tables.riotAccounts.puuid, accountData.puuid)
+    )).returning().get();
+  });
+
+  const createRiotAccountLogs = newRiotAccountLogs.map((log) => {
+    return db.insert(tables.riotAccountLogs).values({
+      puuid: log.puuid,
+      twitchId: twitchId,
+      data: log.data
+    }).returning().get();
+  });
+
+  const [userResults, riotAccountResults, riotAccountLogsResults] = await Promise.all([
+    updateUser,
+    Promise.all(updateRiotAccounts),
+    Promise.all(createRiotAccountLogs)
+  ]);
+
+  return {
+    user: userResults,
+    riotAccounts: riotAccountResults,
+    newRiotAccountLogs: riotAccountLogsResults
+  };
 });

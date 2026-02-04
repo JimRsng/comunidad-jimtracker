@@ -1,6 +1,8 @@
 import type { AvatarProps } from "@nuxt/ui";
 import countries from "~/assets/json/countries.json";
 
+export { useTimeAgoIntl } from "@vueuse/core";
+
 export const getIconURL = (iconId: number) => {
   return `https://cdn.communitydragon.org/latest/profile-icon/${iconId}`;
 };
@@ -45,4 +47,14 @@ export const regionMap = [
 export const getRegionLabel = (value: string): string => {
   const region = regionMap.find(r => r.value === value);
   return region ? region.label : "Unknown";
+};
+
+export const getTierLabel = (tier: string | null) => {
+  if (!tier) return "UNRANKED";
+  return tier;
+};
+
+export const getTierImage = (tier: string | null) => {
+  if (!tier) return "/images/lol/unranked.png";
+  return `/images/lol/${tier.toLowerCase()}.png`;
 };
