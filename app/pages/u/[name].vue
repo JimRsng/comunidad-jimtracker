@@ -155,7 +155,9 @@ onUnmounted(() => {
         <div class="flex items-center md:justify-start justify-center gap-2 mb-1">
           <span class="font-bold text-3xl">{{ userInfo.twitchDisplay }}</span>
           <UPopover v-if="userInfo.country" mode="hover" :content="{ side: 'top' }" arrow>
-            <Twemoji :emoji="userInfo.country" size="2rem" :alt="getCountryName(userInfo.country)" />
+            <UButton variant="link" class="p-0">
+              <Twemoji :emoji="userInfo.country" size="2rem" :alt="getCountryName(userInfo.country)" />
+            </UButton>
             <template #content>
               {{ getCountryName(userInfo.country) }}
             </template>
@@ -221,11 +223,13 @@ onUnmounted(() => {
               <div class="flex flex-col items-center gap-2">
                 <div class="flex items-center gap-1">
                   <UPopover mode="hover" :content="{ side: 'top' }" arrow>
-                    <img
-                      :src="getTierImage(account.tier)"
-                      class="w-12 h-12 md:w-12 md:h-12 max-w-fit"
-                      :alt="getTierLabel(account.tier)"
-                    >
+                    <UButton variant="link" class="p-0">
+                      <img
+                        :src="getTierImage(account.tier)"
+                        class="w-12 h-12 md:w-12 md:h-12 max-w-fit"
+                        :alt="getTierLabel(account.tier)"
+                      >
+                    </UButton>
                     <template #content>
                       {{ getTierLabel(account.tier) }}
                     </template>
@@ -287,11 +291,13 @@ onUnmounted(() => {
               <div class="flex items-center gap-2">
                 <div class="flex items-center gap-2">
                   <UPopover mode="hover" :content="{ side: 'top' }" arrow>
-                    <img
-                      :src="getTierImage(log.data.old.tier)"
-                      class="w-8 h-8"
-                      :alt="getTierLabel(log.data.old.tier)"
-                    >
+                    <UButton variant="link" class="p-0">
+                      <img
+                        :src="getTierImage(log.data.old.tier)"
+                        class="w-8 h-8"
+                        :alt="getTierLabel(log.data.old.tier)"
+                      >
+                    </UButton>
                     <template #content>
                       {{ getTierLabel(log.data.old.tier) }}
                     </template>
@@ -301,11 +307,13 @@ onUnmounted(() => {
                 <Icon name="lucide:arrow-right" />
                 <div class="flex items-center gap-2">
                   <UPopover mode="hover" :content="{ side: 'top' }" arrow>
-                    <img
-                      :src="getTierImage(log.data.new.tier)"
-                      class="w-8 h-8"
-                      :alt="getTierLabel(log.data.new.tier)"
-                    >
+                    <UButton variant="link" class="p-0">
+                      <img
+                        :src="getTierImage(log.data.new.tier)"
+                        class="w-8 h-8"
+                        :alt="getTierLabel(log.data.new.tier)"
+                      >
+                    </UButton>
                     <template #content>
                       {{ getTierLabel(log.data.new.tier) }}
                     </template>
@@ -313,8 +321,8 @@ onUnmounted(() => {
                   <span class="text-sm font-semibold">{{ log.data.new.division }} · {{ log.data.new.lp }} LP</span>
                 </div>
               </div>
-              <span class="text-xs text-muted">
-                <UPopover mode="hover" :content="{ side: 'top' }" arrow>
+              <UPopover mode="hover" :content="{ side: 'top' }" arrow>
+                <UButton variant="link" color="neutral" class="text-xs text-muted p-0">
                   <NuxtTime
                     :datetime="log.createdAt"
                     year="numeric"
@@ -323,11 +331,11 @@ onUnmounted(() => {
                     hour="2-digit"
                     minute="2-digit"
                   />
-                  <template #content>
-                    <span> {{ useTimeAgoIntl(log.createdAt, { locale: "es" }) }} </span>
-                  </template>
-                </UPopover>
-              </span>
+                </UButton>
+                <template #content>
+                  <span> {{ useTimeAgoIntl(log.createdAt, { locale: "es" }) }} </span>
+                </template>
+              </UPopover>
             </div>
           </div>
         </div>
