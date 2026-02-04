@@ -235,8 +235,10 @@ onUnmounted(() => {
                     </template>
                   </UPopover>
                   <span v-if="account.division" class="font-semibold text-xl">
-                    <span v-if="account.tier && !isApexTier(account.tier)">{{ account.division }}</span>
-                    <span> · </span>
+                    <template v-if="!isApexTier(account.tier)">
+                      <span>{{ account.division }}</span>
+                      <span> · </span>
+                    </template>
                     <span>{{ account.lp }} LP</span>
                   </span>
                 </div>
@@ -302,7 +304,13 @@ onUnmounted(() => {
                       {{ getTierLabel(log.data.old.tier) }}
                     </template>
                   </UPopover>
-                  <span class="text-sm font-semibold">{{ log.data.old.division }} · {{ log.data.old.lp }} LP</span>
+                  <span class="text-sm font-semibold">
+                    <template v-if="!isApexTier(log.data.old.tier)">
+                      <span>{{ log.data.old.division }}</span>
+                      <span> · </span>
+                    </template>
+                    <span>{{ log.data.old.lp }} LP</span>
+                  </span>
                 </div>
                 <Icon name="lucide:arrow-right" />
                 <div class="flex items-center gap-2">
@@ -318,7 +326,13 @@ onUnmounted(() => {
                       {{ getTierLabel(log.data.new.tier) }}
                     </template>
                   </UPopover>
-                  <span class="text-sm font-semibold">{{ log.data.new.division }} · {{ log.data.new.lp }} LP</span>
+                  <span class="text-sm font-semibold">
+                    <template v-if="!isApexTier(log.data.new.tier)">
+                      <span>{{ log.data.new.division }}</span>
+                      <span> · </span>
+                    </template>
+                    <span>{{ log.data.new.lp }} LP</span>
+                  </span>
                 </div>
               </div>
               <UPopover mode="hover" :content="{ side: 'top' }" arrow>

@@ -14,6 +14,12 @@ const tablePopover = useTablePopover();
       :alt="getTierLabel(data.tier)"
       v-on="tablePopover.handlers(getTierLabel(data.tier))"
     >
-    <span v-if="data.tier && (data.division || data.lp)"><span v-if="!isApexTier(data.tier)">{{ data.division }} · </span>{{ data.lp }} LP</span>
+    <span v-if="data.tier && (data.division || data.lp)">
+      <template v-if="!isApexTier(data.tier)">
+        <span>{{ data.division }}</span>
+        <span> · </span>
+      </template>
+      <span>{{ data.lp }} LP</span>
+    </span>
   </div>
 </template>
