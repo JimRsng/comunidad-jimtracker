@@ -118,9 +118,21 @@ onUnmounted(() => {
                 </UPopover>
               </NuxtLink>
             </div>
-            <UButton variant="link" color="neutral" class="text-sm text-muted p-0">
-              {{ useTimeAgoIntl(log.createdAt, { locale: "es" }) }}
-            </UButton>
+            <UPopover mode="hover" :content="{ side: 'top' }" arrow>
+              <UButton variant="link" color="neutral" class="text-sm text-muted p-0">
+                {{ useTimeAgoIntl(log.createdAt, { locale: "es" }) }}
+              </UButton>
+              <template #content>
+                <NuxtTime
+                  :datetime="log.createdAt"
+                  year="numeric"
+                  month="short"
+                  day="numeric"
+                  hour="2-digit"
+                  minute="2-digit"
+                />
+              </template>
+            </UPopover>
           </div>
 
           <div class="flex flex-col items-center justify-between bg-inverted/5 p-3 rounded-md text-sm">
