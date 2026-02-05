@@ -64,6 +64,10 @@ const loadMore = async () => {
 if (logs.value.length < limit) {
   hasMore.value = false;
 }
+
+onUnmounted(() => {
+  useCachedData("riot-accounts:logs", () => logs.value.slice(0, limit));
+});
 </script>
 
 <template>
@@ -87,7 +91,7 @@ if (logs.value.length < limit) {
             <div class="flex items-center gap-2">
               <Icon
                 :name="isRankUp(log.data) ? 'lucide:trending-up' : 'lucide:trending-down'"
-                class="w-5 h-5"
+                size="1.25rem"
                 :class="isRankUp(log.data) ? 'dark:text-blue-400 light:text-blue-500' : 'dark:text-rose-400 light:text-rose-500'"
               />
               <NuxtLink
@@ -119,7 +123,7 @@ if (logs.value.length < limit) {
             </UButton>
           </div>
 
-          <div class="flex flex-col items-center justify-between bg-accented/30 p-3 rounded-md text-sm">
+          <div class="flex flex-col items-center justify-between bg-inverted/5 p-3 rounded-md text-sm">
             <div class="flex items-center gap-2 flex-wrap">
               <span v-if="log.account" class="flex items-center gap-2">
                 <img
@@ -206,7 +210,7 @@ if (logs.value.length < limit) {
           :loading="isLoading"
           :disabled="isLoading"
           trailing-icon="lucide:chevron-down"
-          class="w-full sm:w-auto"
+          class="w-full sm:w-auto justify-center"
           :label="isLoading ? 'Cargando...' : 'Mostrar más'"
           @click="loadMore"
         />
