@@ -28,6 +28,9 @@
       "id": "c6231afa245a45b68fb9e90b6485b991",
     }
   ],
+  "observability": {
+    "enabled": true
+  },
   "triggers": {
     "crons": [
       "*/30 * * * *", // Every 30 minutes
