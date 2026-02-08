@@ -74,8 +74,8 @@ watch(enrichedLogs, () => {
 </script>
 
 <template>
-  <div v-if="logs.length">
-    <h2 class="text-xl font-bold mb-4">Cambios de rango</h2>
+  <div v-if="logs.length" class="space-y-4">
+    <h2 class="text-xl font-bold">Cambios de rango</h2>
     <div class="flex flex-col gap-2">
       <TransitionGroup name="slide">
         <div

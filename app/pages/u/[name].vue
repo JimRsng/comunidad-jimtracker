@@ -162,90 +162,95 @@ onUnmounted(() => {
           <span v-else>Disponible en <ClientOnly>{{ secondsToAvailable }}s</ClientOnly></span>
         </UButton>
       </div>
-      <div class="lg:col-span-4 md:col-span-2 space-y-4 md:mt-11">
-        <div class="flex items-center gap-2 md:absolute top-2 end-0 justify-end">
-          <Icon name="simple-icons:riotgames" class="text-red-500" />
-          <span>{{ riotAccounts.length }} / {{ maxAccounts }}</span>
-        </div>
-        <div class="grid lg:grid-cols-2 gap-4">
-          <template v-if="riotAccounts.length">
-            <div v-for="account in riotAccounts" :key="account.puuid" class="relative rounded-md border-2 border-accented p-4 flex flex-col justify-center gap-2 dark:bg-black/20">
-              <div class="flex items-center justify-center gap-2 text-xl flex-wrap">
-                <img
-                  v-if="account.profileIcon !== null"
-                  :src="getIconURL(account.profileIcon)"
-                  class="w-10 h-10 rounded-full border border-default shadow-lg shadow-black/20"
-                  :alt="`Icono de perfil de ${account.gameName}`"
-                >
-                <NuxtLink
-                  :to="`https://op.gg/es/lol/summoners/${getRegionLabel(account.region)}/${account.gameName}-${account.tagLine}`"
-                  target="_blank"
-                  class="font-semibold hover:underline"
-                >
-                  <span>{{ account.gameName }} <span class="font-normal text-muted">#{{ account.tagLine }}</span></span>
-                </NuxtLink>
-                <RegionBadge :region="account.region" size="md" />
-              </div>
-              <div v-if="isOwner" class="absolute top-2 right-2 text-xs rounded">
-                <div class="flex items-center gap-1">
-                  <UDropdownMenu :items="[
-                    {
-                      label: 'Eliminar',
-                      color: 'error',
-                      icon: 'lucide:trash',
-                      onSelect: () => removeAccount(account.puuid),
-                    },
-                  ]"
+      <div class="lg:col-span-4 md:col-span-2 space-y-4">
+        <div class="space-y-4">
+          <div class="flex items-center gap-2 justify-between">
+            <h2 class="text-xl font-bold">Cuentas de Riot</h2>
+            <div class="flex items-center gap-2">
+              <Icon name="simple-icons:riotgames" class="text-red-500" />
+              <span>{{ riotAccounts.length }} / {{ maxAccounts }}</span>
+            </div>
+          </div>
+          <div class="grid lg:grid-cols-2 gap-4">
+            <template v-if="riotAccounts.length">
+              <div v-for="account in riotAccounts" :key="account.puuid" class="relative rounded-md border-2 border-accented p-4 flex flex-col justify-center gap-2 dark:bg-black/20">
+                <div class="flex items-center justify-center gap-2 text-xl flex-wrap">
+                  <img
+                    v-if="account.profileIcon !== null"
+                    :src="getIconURL(account.profileIcon)"
+                    class="w-10 h-10 rounded-full border border-default shadow-lg shadow-black/20"
+                    :alt="`Icono de perfil de ${account.gameName}`"
                   >
-                    <UButton icon="lucide:ellipsis-vertical" variant="ghost" color="neutral" />
-                  </UDropdownMenu>
+                  <NuxtLink
+                    :to="`https://op.gg/es/lol/summoners/${getRegionLabel(account.region)}/${account.gameName}-${account.tagLine}`"
+                    target="_blank"
+                    class="font-semibold hover:underline"
+                  >
+                    <span>{{ account.gameName }} <span class="font-normal text-muted">#{{ account.tagLine }}</span></span>
+                  </NuxtLink>
+                  <RegionBadge :region="account.region" size="md" />
                 </div>
-              </div>
-              <div class="flex flex-col items-center gap-2">
-                <div class="flex items-center gap-1">
-                  <UPopover mode="hover" :content="{ side: 'top' }" arrow>
-                    <UButton variant="link" class="p-0">
-                      <img
-                        :src="getTierImage(account.tier)"
-                        class="w-12 h-12 max-w-fit"
-                        :alt="getTierLabel(account.tier)"
-                      >
-                    </UButton>
-                    <template #content>
-                      {{ getTierLabel(account.tier) }}
-                    </template>
-                  </UPopover>
-                  <span v-if="account.division" class="font-semibold text-xl">
-                    <template v-if="!isApexTier(account.tier)">
-                      <span>{{ account.division }}</span>
-                      <span> · </span>
-                    </template>
-                    <span>{{ account.lp }} LP</span>
+                <div v-if="isOwner" class="absolute top-2 right-2 text-xs rounded">
+                  <div class="flex items-center gap-1">
+                    <UDropdownMenu :items="[
+                      {
+                        label: 'Eliminar',
+                        color: 'error',
+                        icon: 'lucide:trash',
+                        onSelect: () => removeAccount(account.puuid),
+                      },
+                    ]"
+                    >
+                      <UButton icon="lucide:ellipsis-vertical" variant="ghost" color="neutral" />
+                    </UDropdownMenu>
+                  </div>
+                </div>
+                <div class="flex flex-col items-center gap-2">
+                  <div class="flex items-center gap-1">
+                    <UPopover mode="hover" :content="{ side: 'top' }" arrow>
+                      <UButton variant="link" class="p-0">
+                        <img
+                          :src="getTierImage(account.tier)"
+                          class="w-12 h-12 max-w-fit"
+                          :alt="getTierLabel(account.tier)"
+                        >
+                      </UButton>
+                      <template #content>
+                        {{ getTierLabel(account.tier) }}
+                      </template>
+                    </UPopover>
+                    <span v-if="account.division" class="font-semibold text-xl">
+                      <template v-if="!isApexTier(account.tier)">
+                        <span>{{ account.division }}</span>
+                        <span> · </span>
+                      </template>
+                      <span>{{ account.lp }} LP</span>
+                    </span>
+                  </div>
+                  <div v-if="account.wins || account.losses" class="text-sm text-muted font-semibold">
+                    <span class="dark:text-blue-400 light:text-blue-500">{{ account.wins }}</span>V ·
+                    <span class="dark:text-rose-400 light:text-rose-500">{{ account.losses }}</span>D
+                    <span class="text-default">({{ (account.wins || 0) + (account.losses || 0) }}</span>)
+                  </div>
+                  <span v-if="account.wins || account.losses" class="text-base font-semibold">
+                    {{ (((account.wins || 0) / ((account.wins || 0) + (account.losses || 0))) * 100).toFixed(2) + '% WR' }}
                   </span>
                 </div>
-                <div v-if="account.wins || account.losses" class="text-sm text-muted font-semibold">
-                  <span class="dark:text-blue-400 light:text-blue-500">{{ account.wins }}</span>V ·
-                  <span class="dark:text-rose-400 light:text-rose-500">{{ account.losses }}</span>D
-                  <span class="text-default">({{ (account.wins || 0) + (account.losses || 0) }}</span>)
+                <div class="mt-2">
+                  <RoleSelector :data="{ ...account, user: userInfo }" />
                 </div>
-                <span v-if="account.wins || account.losses" class="text-base font-semibold">
-                  {{ (((account.wins || 0) / ((account.wins || 0) + (account.losses || 0))) * 100).toFixed(2) + '% WR' }}
-                </span>
               </div>
-              <div class="mt-2">
-                <RoleSelector :data="{ ...account, user: userInfo }" />
+            </template>
+            <UButton v-if="isOwner && riotAccounts.length < maxAccounts" variant="soft" class="bg-muted border-2 border-dashed border-accented p-6 flex flex-col items-center justify-center text-center h-full hover:border-primary transition-colors group" @click="addRiotAccount">
+              <div v-if="!verifying" class="w-12 h-12 bg-primary/10 text-primary rounded-full flex items-center justify-center mb-4 group-hover:scale-[1.1] transition-transform">
+                <Icon name="lucide:plus" class="w-8 h-8" />
               </div>
-            </div>
-          </template>
-          <UButton v-if="isOwner && riotAccounts.length < maxAccounts" variant="soft" class="bg-muted border-2 border-dashed border-accented p-6 flex flex-col items-center justify-center text-center h-full hover:border-primary transition-colors group" @click="addRiotAccount">
-            <div v-if="!verifying" class="w-12 h-12 bg-primary/10 text-primary rounded-full flex items-center justify-center mb-4 group-hover:scale-[1.1] transition-transform">
-              <Icon name="lucide:plus" class="w-8 h-8" />
-            </div>
-            <div v-else class="w-12 h-12 bg-primary/10 text-primary rounded-full flex items-center justify-center mb-4 animate-spin">
-              <Icon name="lucide:loader-circle" class="w-8 h-8" />
-            </div>
-            <span class="font-medium">Agregar Riot Account</span>
-          </UButton>
+              <div v-else class="w-12 h-12 bg-primary/10 text-primary rounded-full flex items-center justify-center mb-4 animate-spin">
+                <Icon name="lucide:loader-circle" class="w-8 h-8" />
+              </div>
+              <span class="font-medium">Agregar Riot Account</span>
+            </UButton>
+          </div>
         </div>
         <UserRiotAccountLogs :accounts="riotAccounts" :name="name" />
       </div>
