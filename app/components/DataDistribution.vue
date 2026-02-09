@@ -7,13 +7,13 @@ const countryStats = computed(() => {
   const seenUsers = new Set<string>();
   const stats = new Map<string, number>();
 
-  props.data.forEach((item) => {
+  for (const item of props.data) {
     if (!seenUsers.has(item.user.twitchId)) {
       seenUsers.add(item.user.twitchId);
       const country = item.user.country || "🏳️";
       stats.set(country, (stats.get(country) || 0) + 1);
     }
-  });
+  }
 
   return Array.from(stats.entries())
     .map(([country, count]) => ({ country, count, name: getCountryName(country) || "Sin país" }))
@@ -23,10 +23,10 @@ const countryStats = computed(() => {
 const regionStats = computed(() => {
   const stats = new Map<string, number>();
 
-  props.data.forEach((item) => {
+  for (const item of props.data) {
     const region = item.region;
     stats.set(region, (stats.get(region) || 0) + 1);
-  });
+  }
 
   return Array.from(stats.entries())
     .map(([region, count]) => ({
@@ -39,14 +39,14 @@ const regionStats = computed(() => {
 const tierStats = computed(() => {
   const stats = new Map<string, { count: number, maxElo: number }>();
 
-  props.data.forEach((item) => {
+  for (const item of props.data) {
     const tier = item.tier || "UNRANKED";
     const current = stats.get(tier) || { count: 0, maxElo: 0 };
     stats.set(tier, {
       count: current.count + 1,
       maxElo: Math.max(current.maxElo, item.eloValue || 0)
     });
-  });
+  }
 
   return Array.from(stats.entries())
     .map(([tier, data]) => ({
@@ -64,14 +64,14 @@ const tierStats = computed(() => {
 const roleStats = computed(() => {
   const stats = new Map<string, number>();
 
-  props.data.forEach((item) => {
+  for (const item of props.data) {
     if (item.role1) {
       stats.set(item.role1, (stats.get(item.role1) || 0) + 1);
     }
     if (item.role2) {
       stats.set(item.role2, (stats.get(item.role2) || 0) + 1);
     }
-  });
+  }
 
   const roleOrder = ["top", "jungle", "mid", "adc", "support", "fill"];
 
