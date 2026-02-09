@@ -27,8 +27,6 @@ export const getErrorMessage = (code: string): string => {
   return errorMap[code] || "Ocurrió un error desconocido.";
 };
 
-export const roles = ["top", "jungle", "mid", "adc", "support"];
-
 export const toastImage: AvatarProps = {
   src: SITE.logo,
   alt: SITE.name,

@@ -9,6 +9,8 @@ const emit = defineEmits(["update:role"]);
 const emitUpdate = (role: string | null) => {
   emit("update:role", { slot: props.selectedSlot, role });
 };
+
+const roles = ["top", "jungle", "mid", "adc", "support"];
 </script>
 
 <template>
