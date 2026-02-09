@@ -4,11 +4,15 @@ const props = defineProps<{
 }>();
 
 const countryStats = computed(() => {
+  const seenUsers = new Set<string>();
   const stats = new Map<string, number>();
 
   props.data.forEach((item) => {
-    const country = item.user.country || "🏳️";
-    stats.set(country, (stats.get(country) || 0) + 1);
+    if (!seenUsers.has(item.user.twitchId)) {
+      seenUsers.add(item.user.twitchId);
+      const country = item.user.country || "🏳️";
+      stats.set(country, (stats.get(country) || 0) + 1);
+    }
   });
 
   return Array.from(stats.entries())
