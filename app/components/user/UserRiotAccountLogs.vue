@@ -81,7 +81,7 @@ watch(enrichedLogs, () => {
         <div
           v-for="log of enrichedLogs"
           :key="log.id"
-          class="flex flex-col md:flex-row items-center gap-1 justify-between p-3 rounded-md border bg-elevated/50"
+          class="flex flex-col md:grid md:grid-cols-[1fr_auto_1fr] items-center gap-1 p-3 rounded-md border bg-elevated/50"
           :class="isRankUp(log.data)
             ? 'dark:border-blue-400/50 light:border-blue-500/50 dark:bg-blue-400/5 light:bg-blue-500/5'
             : 'dark:border-rose-400/50 light:border-rose-500/50 dark:bg-rose-400/5 light:bg-rose-500/5'
@@ -98,6 +98,7 @@ watch(enrichedLogs, () => {
               <span class="font-semibold">{{ log.account.gameName }}</span>
               <span class="text-muted"> #{{ log.account.tagLine }}</span>
             </span>
+            <RegionBadge :region="log.account.region" size="md" />
           </span>
           <div class="flex items-center gap-2">
             <div class="flex items-center gap-2">
@@ -138,7 +139,7 @@ watch(enrichedLogs, () => {
               </span>
             </div>
           </div>
-          <UPopover mode="hover" :content="{ side: 'top' }" arrow>
+          <UPopover mode="hover" :content="{ side: 'top' }" arrow class="md:justify-self-end">
             <UButton variant="link" color="neutral" class="text-xs text-muted p-0">
               <span>{{ useTimeAgoIntl(log.createdAt, { locale: "es", relativeTimeFormatOptions: { style: "long" } }) }}</span>
             </UButton>
