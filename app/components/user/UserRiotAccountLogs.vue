@@ -81,7 +81,7 @@ watch(enrichedLogs, () => {
         <div
           v-for="log of enrichedLogs"
           :key="log.id"
-          class="flex flex-col md:grid md:grid-cols-[1fr_auto_1fr] items-center gap-1 p-3 rounded-md border bg-elevated/50"
+          class="flex flex-col lg:grid lg:grid-cols-[1fr_auto_1fr] items-center gap-1 p-3 rounded-md border bg-elevated/50"
           :class="isRankUp(log.data)
             ? 'dark:border-blue-400/50 light:border-blue-500/50 dark:bg-blue-400/5 light:bg-blue-500/5'
             : 'dark:border-rose-400/50 light:border-rose-500/50 dark:bg-rose-400/5 light:bg-rose-500/5'
