@@ -48,3 +48,10 @@ export const getTierImage = (tier: string | null) => {
   if (!tier) return "/images/lol/unranked.png";
   return `/images/lol/${tier.toLowerCase()}.png`;
 };
+
+export const getFixedTwitchDisplayName = (displayName: string, login: string) => {
+  if (displayName.toLowerCase() === login.toLowerCase()) {
+    return displayName;
+  }
+  return `${displayName} (${login})`;
+};

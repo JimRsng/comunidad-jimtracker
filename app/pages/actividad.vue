@@ -106,7 +106,7 @@ onUnmounted(() => {
                   :alt="log.account.user.twitchLogin"
                 >
                 <span class="font-semibold group-hover:text-highlighted transition-colors">
-                  {{ log.account.user.twitchDisplay }}
+                  {{ getFixedTwitchDisplayName(log.account.user.twitchDisplay, log.account.user.twitchLogin) }}
                 </span>
                 <UPopover v-if="log.account.user.country" mode="hover" :content="{ side: 'top' }" arrow>
                   <UButton variant="link" class="p-0">

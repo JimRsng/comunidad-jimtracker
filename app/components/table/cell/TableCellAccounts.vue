@@ -42,7 +42,7 @@ const isOnlineChatter = computed(() => {
       </div>
       <div class="flex items-center gap-1">
         <NuxtLink :to="`/u/${data.user.twitchLogin}`" class="hover:underline flex items-center gap-1">
-          <span class="text-xs text-muted font-semibold">{{ data.user.twitchDisplay }}</span>
+          <span class="text-xs text-muted font-semibold">{{ getFixedTwitchDisplayName(data.user.twitchDisplay, data.user.twitchLogin) }}</span>
         </NuxtLink>
         <Icon
           v-if="isOnlineChatter"

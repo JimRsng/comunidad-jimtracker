@@ -134,7 +134,7 @@ onUnmounted(() => {
     <div class="grid lg:grid-cols-5 lg:grid-rows-[auto_1fr] md:grid-cols-3 gap-4">
       <div class="row-span-2 flex flex-col gap-1 md:sticky md:top-21 md:self-start">
         <div class="flex items-center md:justify-start justify-center gap-2 mb-1">
-          <span class="font-bold text-3xl">{{ userInfo.twitchDisplay }}</span>
+          <span class="font-bold text-3xl">{{ getFixedTwitchDisplayName(userInfo.twitchDisplay, userInfo.twitchLogin) }}</span>
           <UPopover v-if="userInfo.country" mode="hover" :content="{ side: 'top' }" arrow>
             <UButton variant="link" class="p-0">
               <Twemoji :emoji="userInfo.country" size="2rem" :alt="getCountryName(userInfo.country)" />
