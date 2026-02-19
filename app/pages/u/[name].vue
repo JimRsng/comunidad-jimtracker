@@ -133,17 +133,17 @@ onUnmounted(() => {
   <main v-if="userInfo" class="relative">
     <div class="grid lg:grid-cols-5 lg:grid-rows-[auto_1fr] md:grid-cols-3 gap-4">
       <div class="row-span-2 flex flex-col gap-1 md:sticky md:top-21 md:self-start">
-        <div class="flex items-center md:justify-start justify-center gap-2 mb-1">
-          <span class="font-bold text-3xl">{{ getFixedTwitchDisplayName(userInfo.twitchDisplay, userInfo.twitchLogin) }}</span>
-          <UPopover v-if="userInfo.country" mode="hover" :content="{ side: 'top' }" arrow>
-            <UButton variant="link" class="p-0">
-              <Twemoji :emoji="userInfo.country" size="2rem" :alt="getCountryName(userInfo.country)" />
+        <h1 class="mb-1 font-bold text-3xl wrap-anywhere md:text-start text-center">
+          {{ getFixedTwitchDisplayName(userInfo.twitchDisplay, userInfo.twitchLogin) }}
+          <UPopover v-if="userInfo.country" mode="hover" :content="{ side: 'top' }" arrow class="inline-flex items-center align-bottom">
+            <UButton variant="link" class="p-0 inline-flex">
+              <Twemoji :emoji="userInfo.country" size="2rem" :alt="getCountryName(userInfo.country)" class="shrink-0" />
             </UButton>
             <template #content>
               {{ getCountryName(userInfo.country) }}
             </template>
           </UPopover>
-        </div>
+        </h1>
         <img v-if="userInfo.twitchProfileImage" :src="userInfo.twitchProfileImage" alt="Avatar" class="w-full rounded-sm mx-auto max-w-75">
         <div v-if="userInfo.badges" class="flex items-center gap-2 text-lg">
           <!-- TODO: Badges -->
