@@ -17,13 +17,16 @@ A full-stack serverless League of Legends multi-regional leaderboard tracker for
 ## Screenshots
 
 ### Leaderboard Table
-![table](https://github.com/user-attachments/assets/6782cc87-0fbb-49c6-ac50-714a7cb18995)
+![table](https://github.com/user-attachments/assets/491eddd1-5185-4ead-aa26-55ce6051b785)
 
 ### Distribution Section
-![distribution](https://github.com/user-attachments/assets/a4b4c81c-e3f3-44c7-915b-d3362caa8315)
+![distribution](https://github.com/user-attachments/assets/cfc945e3-8226-436d-926a-3e6104a28c56)
 
 ### Profile Page
-![profile](https://github.com/user-attachments/assets/b7e931e4-10fd-42e0-b07f-8b90c7dd3c41)
+![profile](https://github.com/user-attachments/assets/6d9a197e-6016-420b-957a-5e1638fc26cc)
+
+### Activity Page
+![activity](https://github.com/user-attachments/assets/65559907-aef2-4a93-8243-28abb84e342f)
 
 ## Tech stack
 
@@ -77,3 +80,4 @@ pnpm test:types
 ```
 
 </details>
+
