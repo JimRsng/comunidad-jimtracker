@@ -19,6 +19,6 @@ export const SITE = {
         url: "https://github.com/yizack"
       }
     },
-    repository: "https://github.com/ahmedrangel/comunidad-jimtracker"
+    repository: "https://github.com/JimRsng/comunidad-jimtracker"
   }
 };

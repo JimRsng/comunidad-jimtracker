@@ -2,7 +2,7 @@
   "private": true,
   "name": "comunidad-jimtracker",
   "version": "1.0.0",
-  "description": "",
+  "description": "A full-stack serverless League of Legends multi-regional leaderboard tracker for JimRsng's Twitch community.",
   "type": "module",
   "license": "MIT",
   "author": {
@@ -25,9 +25,9 @@
   "homepage": "https://comunidad.jimtracker.com",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ahmedrangel/comunidad-jimtracker.git"
+    "url": "git+https://github.com/JimRsng/comunidad-jimtracker.git"
   },
-  "bugs": "https://github.com/ahmedrangel/comunidad-jimtracker/issues",
+  "bugs": "https://github.com/JimRsng/comunidad-jimtracker/issues",
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev --port=5173 --public",
@@ -44,7 +44,7 @@
     "test:types": "vue-tsc -b --noEmit"
   },
   "devDependencies": {
-    "@iconify-json/lucide": "^1.2.91",
+    "@iconify-json/lucide": "^1.2.92",
     "@iconify-json/simple-icons": "^1.2.71",
     "@iconify-json/tabler": "^1.2.26",
     "@libsql/client": "^0.17.0",
@@ -57,7 +57,7 @@
     "@types/node": "^25.3.0",
     "drizzle-kit": "^0.31.9",
     "drizzle-orm": "^0.45.1",
-    "eslint": "^10.0.0",
+    "eslint": "^10.0.1",
     "nuxt": "^4.3.1",
     "nuxt-auth-utils": "^0.5.29",
     "nuxt-twemoji": "^4.0.1",
@@ -68,8 +68,8 @@
     "typescript": "^5.9.3",
     "ufo": "^1.6.3",
     "vue-tsc": "^3.2.4",
-    "wrangler": "^4.66.0",
+    "wrangler": "^4.67.0",
     "zod": "^4.3.6"
   },
-  "packageManager": "pnpm@10.30.0"
+  "packageManager": "pnpm@10.30.1"
 }
