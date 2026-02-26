@@ -335,7 +335,7 @@ const countriesSetItems = Array.from(countriesSet).map(country => ({
     :open="tablePopover.options.open"
     :reference="tablePopover.options.reference"
     arrow
-    :ui="{ arrow: 'fill-current', content: 'py-2 px-3 whitespace-pre-wrap' }"
+    :ui="{ content: 'whitespace-pre-wrap' }"
   >
     <template #content>
       <ChannelEmotes
