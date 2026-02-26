@@ -65,7 +65,7 @@ const userMenu = computed<DropdownMenuItem[][]>(() => [
 
     <template #right>
       <UColorModeButton />
-      <UDropdownMenu v-if="user" :items="userMenu" :content="{ align: 'end', side: 'bottom', sideOffset: 8 }">
+      <UDropdownMenu v-if="user" :items="userMenu" :content="{ align: 'end', side: 'bottom', sideOffset: 8 }" :modal="false">
         <UButton
           :label="user.twitchDisplay"
           trailing-icon="lucide:chevron-down"

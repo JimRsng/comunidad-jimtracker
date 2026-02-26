@@ -192,7 +192,7 @@ onUnmounted(() => {
                 </div>
                 <div v-if="isOwner" class="absolute top-2 right-2 text-xs rounded">
                   <div class="flex items-center gap-1">
-                    <UDropdownMenu :items="[
+                    <UDropdownMenu :modal="false" :items="[
                       {
                         label: 'Eliminar',
                         color: 'error',
