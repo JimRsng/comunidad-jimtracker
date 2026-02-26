@@ -16,7 +16,7 @@ const parsedText = computed(() => {
 
   for (const word of words) {
     const emote = emotes.value[word];
-    parts.push(emote ? `<img class="inline-block align-middle h-8" src="${emote}" alt="${word}">` : word);
+    parts.push(emote ? `<img class="inline-block align-middle h-8" src="${emote}" alt="${word}" title="${word}">` : word);
   }
 
   return parts.join(" ");
