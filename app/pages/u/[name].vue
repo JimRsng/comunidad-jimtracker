@@ -153,9 +153,7 @@ onUnmounted(() => {
             <Icon name="lucide:message-square-more" />
             <span class="font-semibold uppercase text-xs">Mensaje</span>
           </div>
-          <span>
-            <ChannelEmotes :text="userInfo.bio" />
-          </span>
+          <ChannelEmotes :text="userInfo.bio" />
         </div>
         <UserEditProfile v-if="isOwner" v-model="userInfo" />
         <UButton class="w-full py-4 flex items-center gap-2" variant="subtle" color="info" :loading="isUpdating" :disabled="!canUpdate || isUpdating" @click="updateProfile">

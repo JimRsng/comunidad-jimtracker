@@ -341,6 +341,7 @@ const countriesSetItems = Array.from(countriesSet).map(country => ({
       <ChannelEmotes
         v-if="tablePopover.options.reference?.className === 'iconify i-lucide:message-square-more' && tablePopover.options.value"
         :text="tablePopover.options.value"
+        :popover="false"
       />
       <span v-else>{{ tablePopover.options.value }}</span>
     </template>
