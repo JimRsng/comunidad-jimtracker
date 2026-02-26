@@ -192,14 +192,17 @@ onUnmounted(() => {
                 </div>
                 <div v-if="isOwner" class="absolute top-2 right-2 text-xs rounded">
                   <div class="flex items-center gap-1">
-                    <UDropdownMenu :modal="false" :items="[
-                      {
-                        label: 'Eliminar',
-                        color: 'error',
-                        icon: 'lucide:trash',
-                        onSelect: () => removeAccount(account.puuid),
-                      },
-                    ]"
+                    <UDropdownMenu
+                      :modal="false"
+                      arrow
+                      :items="[
+                        {
+                          label: 'Eliminar',
+                          color: 'error',
+                          icon: 'lucide:trash',
+                          onSelect: () => removeAccount(account.puuid),
+                        },
+                      ]"
                     >
                       <UButton icon="lucide:ellipsis-vertical" variant="ghost" color="neutral" />
                     </UDropdownMenu>
