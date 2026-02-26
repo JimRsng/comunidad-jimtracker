@@ -338,7 +338,11 @@ const countriesSetItems = Array.from(countriesSet).map(country => ({
     :ui="{ arrow: 'fill-current', content: 'py-2 px-3 whitespace-pre-wrap' }"
   >
     <template #content>
-      {{ tablePopover.options.value }}
+      <ChannelEmotes
+        v-if="tablePopover.options.reference?.className === 'iconify i-lucide:message-square-more' && tablePopover.options.value"
+        :text="tablePopover.options.value"
+      />
+      <span v-else>{{ tablePopover.options.value }}</span>
     </template>
   </UPopover>
 </template>
