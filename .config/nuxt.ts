@@ -40,7 +40,8 @@ export default defineNuxtConfig({
         { rel: "preconnect", href: "https://cdn.communitydragon.org" },
         { rel: "preconnect", href: "https://static-cdn.jtvnw.net" },
         { rel: "preconnect", href: SITE.cdn },
-        { rel: "preconnect", href: "https://cdn.jsdelivr.net" }
+        { rel: "preconnect", href: "https://cdn.jsdelivr.net" },
+        { rel: "preconnect", href: "https://cdn.7tv.app" }
       ],
       meta: [
         { name: "robots", content: "index, follow" },
