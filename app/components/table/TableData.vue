@@ -343,7 +343,7 @@ const countriesSetItems = Array.from(countriesSet).map(country => ({
         :text="tablePopover.options.value"
         :popover="false"
       />
-      <span v-else>{{ tablePopover.options.value }}</span>
+      <template v-else>{{ tablePopover.options.value }}</template>
     </template>
   </UPopover>
 </template>
