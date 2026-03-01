@@ -144,7 +144,18 @@ onUnmounted(() => {
             </template>
           </UPopover>
         </h1>
-        <img v-if="userInfo.twitchProfileImage" :src="userInfo.twitchProfileImage" alt="Avatar" class="w-full rounded-sm mx-auto max-w-75">
+        <UAvatar
+          v-if="userInfo.twitchProfileImage"
+          :src="userInfo.twitchProfileImage"
+          :alt="userInfo.twitchDisplay"
+          icon="lucide:user"
+          :ui="{
+            root: 'size-auto rounded-sm',
+            image: 'w-full mx-auto max-w-75',
+            fallback: 'size-60 flex items-center justify-center',
+            icon: 'size-60 flex items-center justify-center',
+          }"
+        />
         <div v-if="userInfo.badges" class="flex items-center gap-2 text-lg">
           <!-- TODO: Badges -->
         </div>

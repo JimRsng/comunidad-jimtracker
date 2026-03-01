@@ -13,7 +13,17 @@ const isOnlineChatter = computed(() => {
 
 <template>
   <div class="flex items-center gap-3 xl:max-w-60">
-    <img v-if="data.user.twitchProfileImage" :src="data.user.twitchProfileImage.replace('300x300', '50x50')" class="w-10 h-10 rounded-sm border-2 border-accented" :alt="data.user.twitchDisplay">
+    <UAvatar
+      v-if="data.user.twitchProfileImage"
+      :src="data.user.twitchProfileImage.replace('300x300', '50x50')"
+      :alt="data.user.twitchDisplay"
+      icon="lucide:user"
+      :ui="{
+        root: 'size-10 rounded-sm border-2 border-accented',
+        fallback: 'size-10 flex items-center justify-center',
+        icon: 'size-10 flex items-center justify-center',
+      }"
+    />
     <div class="flex flex-col gap-0.5">
       <div class="flex items-center gap-2">
         <NuxtLink
